@@ -73,11 +73,6 @@ export default function AdminLoginModal({
     }
   };
 
-  const handleFillDev = () => {
-    setUsername("admin");
-    setPassword("admin123");
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
       {/* Backdrop click to close */}
@@ -180,18 +175,6 @@ export default function AdminLoginModal({
               )}
             </button>
           </form>
-
-          {/* Quick Credential Hint */}
-          <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
-            <span>Akun Default: <strong>admin</strong> / <strong>admin123</strong></span>
-            <button
-              type="button"
-              onClick={handleFillDev}
-              className="text-[#4A0E4E] font-bold hover:underline cursor-pointer"
-            >
-              Isi Otomatis
-            </button>
-          </div>
         </div>
       </div>
     </div>

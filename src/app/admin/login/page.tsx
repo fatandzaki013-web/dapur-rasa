@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, User, Eye, EyeOff, ShieldCheck, AlertCircle, UtensilsCrossed, ArrowRight } from "lucide-react";
+import { Lock, User, Eye, EyeOff, AlertCircle, UtensilsCrossed, ArrowRight } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -50,11 +50,6 @@ export default function AdminLoginPage() {
     }
   };
 
-  const handleFillDevCredentials = () => {
-    setUsername("admin");
-    setPassword("admin123");
-  };
-
   return (
     <div className="min-h-screen bg-stone-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -90,7 +85,7 @@ export default function AdminLoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="Username admin"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-800/20 focus:border-amber-800 text-stone-900"
                 />
               </div>
@@ -113,7 +108,7 @@ export default function AdminLoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -135,29 +130,6 @@ export default function AdminLoginPage() {
               </button>
             </div>
           </form>
-
-          {/* Development Credentials Helper */}
-          <div className="mt-8 pt-6 border-t border-stone-100">
-            <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/70 text-xs text-amber-900 space-y-2">
-              <div className="flex items-center gap-2 font-bold text-amber-950">
-                <ShieldCheck className="w-4 h-4 text-amber-700" />
-                <span>Kredensial Lingkungan Development:</span>
-              </div>
-              <div className="font-mono text-[11px] bg-white/80 p-2 rounded-lg border border-amber-200 flex justify-between items-center">
-                <span>Username: <strong>admin</strong> | Password: <strong>admin123</strong></span>
-                <button
-                  type="button"
-                  onClick={handleFillDevCredentials}
-                  className="text-amber-800 font-bold hover:underline text-[10px]"
-                >
-                  Isi Otomatis
-                </button>
-              </div>
-              <p className="text-[10px] text-amber-800 leading-tight">
-                * Kredensial ini hanya untuk pengujian lokal. Wajib diubah sebelum deployment produksi.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
