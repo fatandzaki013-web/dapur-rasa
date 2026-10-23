@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String    @unique
+  description  String?
+  imageUrl     String?
+  displayOrder Int       @default(0)
+  isActive     Boolean   @default(true)
+  showOnHome   Boolean   @default(true)
+  products     Product[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  shortDescription String?
+  description      String
+  price            Float
+  promoPrice       Float?
+  sku              String?
+  unit             String           @default("pcs")
+  stock            Int              @default(10)
+  minStockAlert    Int              @default(5)
+  isAvailable      Boolean          @default(true)
+  isBestSeller     Boolean          @default(false)
+  isFeatured       Boolean          @default(false)
+  isNew            Boolean          @default(false)
+  showOnHome       Boolean          @default(true)
+  displayOrder     Int              @default(0)
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  images           ProductImage[]
+  variants         ProductVariant[]
+  orderItems       OrderItem[]
+  galleryItems     GalleryItem[]
+  seoTitle         String?
+  seoDesc          String?
+  ingredients      String?
+  allergens        String?
+  storageGuide     String?
+  shelfLife        String?
+  weightGrams      Int?
+  piecesPerPack    Int?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+}
+
+model ProductImage {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url          String
+  alt          String?
+  isPrimary    Boolean  @default(false)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+}
+
+model ProductVariant {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name            String
+  priceAdjustment Float    @default(0)
+  stock           Int      @default(10)
+  isAvailable     Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model GalleryItem {
+  id           String   @id @default(cuid())
+  title        String
+  imageUrl     String
+  caption      String?
+  categoryTag  String?
+  altText      String?
+  productId    String?
+  product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  isPublished  Boolean  @default(true)
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderCode       String      @unique
+  customerName    String
+  customerPhone   String
+  fulfillmentType String      @default("PICKUP")
+  deliveryAddress String?
+  scheduleDate    String?
+  scheduleTime    String?
+  notes           String?
+  paymentMethod   String?     @default("QRIS_GOPAY")
+  status          String      @default("MENUNGGU_KONFIRMASI")
+  paymentStatus   String      @default("BELUM_DIVERIFIKASI")
+  subtotal        Float
+  shippingFee     Float       @default(0)
+  discount        Float       @default(0)
+  totalAmount     Float
+  adminNotes      String?
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName String
+  variantName String?
+  unitPrice   Float
+  quantity    Int
+  subtotal    Float
+}
+
+model StockLog {
+  id            String   @id @default(cuid())
+  productId     String
+  changeAmount  Int
+  previousStock Int
+  newStock      Int
+  reason        String
+  createdAt     DateTime @default(now())
+}
+
+model StoreSetting {
+  id                 String   @id @default("default")
+  brandName          String   @default("Dapur Rasa")
+  tagline            String   @default("Kue & Camilan Rumahan Kualitas Premium")
+  logoUrl            String?
+  faviconUrl         String?
+  whatsappNumber     String   @default("6281234567890")
+  address            String?  @default("Jl. Mawar Melati No. 12, Jakarta")
+  operationalHours   String   @default("Senin - Sabtu: 08:00 - 18:00 WIB")
+  fulfillmentOptions String   @default("PICKUP,DELIVERY")
+  defaultShippingFee Float    @default(15000)
+  minOrderAmount     Float    @default(0)
+  currency           String   @default("IDR")
+  timezone           String   @default("Asia/Jakarta")
+  instagramUrl       String?
+  facebookUrl        String?
+  tiktokUrl          String?
+  metaTitle          String?  @default("Dapur Rasa | Aneka Kue & Camilan Rumahan Lezat")
+  metaDescription    String?  @default("Pesan aneka kue basah, pastel, risol, bolu, dan snack box lezat khas rumahan dengan bahan premium.")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model ThemeConfig {
+  id                 String   @id @default("default")
+  primaryColor       String   @default("#4B291B")
+  secondaryColor     String   @default("#A9683B")
+  backgroundColor    String   @default("#FAF5EF")
+  surfaceColor       String   @default("#FFFDF9")
+  accentColor        String   @default("#EBD9C7")
+  textColor          String   @default("#211A16")
+  successColor       String   @default("#287A49")
+  errorColor         String   @default("#B42318")
+  fontFamilyHeading  String   @default("serif")
+  fontFamilyBody     String   @default("sans")
+  borderRadius       String   @default("rounded-xl")
+  buttonShape        String   @default("rounded-lg")
+  updatedAt          DateTime @updatedAt
+}
+
+model HomepageSection {
+  id                  String   @id @default(cuid())
+  sectionKey          String   @unique
+  title               String
+  subtitle            String?
+  description         String?
+  imageUrl            String?
+  mobileImageUrl      String?
+  buttonText          String?
+  buttonLink          String?
+  secondaryButtonText String?
+  secondaryButtonLink String?
+  badgeText           String?
+  isEnabled           Boolean  @default(true)
+  displayOrder        Int      @default(0)
+  customConfig        String?
+  updatedAt           DateTime @updatedAt
+}
+
+model Testimonial {
+  id             String   @id @default(cuid())
+  customerName   String
+  comment        String
+  rating         Int      @default(5)
+  avatarUrl      String?
+  eventOrProduct String?
+  isApproved     Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  isSample       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+}
+
+model FaqItem {
+  id           String   @id @default(cuid())
+  question     String
+  answer       String
+  category     String   @default("Umum")
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model PromotionBanner {
+  id           String   @id @default(cuid())
+  title        String
+  subtitle     String?
+  imageUrl     String
+  linkUrl      String?
+  buttonText   String?
+  badgeText    String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model Article {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String
+  coverImage     String?
+  category       String    @default("Kuliner & Resep")
+  tags           String?
+  status         String    @default("PUBLISHED")
+  authorName     String?   @default("Super Admin")
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime? @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+

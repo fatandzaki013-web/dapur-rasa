@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #4A0E4E;
+  --color-secondary: #4B95FF;
+  --color-bg: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-accent: #FAF5FF;
+  --color-text: #0F172A;
+  --color-success: #15803D;
+  --color-error: #B91C1C;
+}
+
+body {
+  background-color: #FFFFFF;
+  color: #0F172A;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom scrollbar matching Shofi Frozen theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #4A0E4E;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5C1261;
+}
+
+/* Sleek scrollbar for Admin Sidebar (matching screenshot) */
+.sidebar-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 9999px;
+}
+.sidebar-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Utilities for dynamic theme colors */
+.bg-theme-primary { background-color: var(--color-primary); }
+.text-theme-primary { color: var(--color-primary); }
+.border-theme-primary { border-color: var(--color-primary); }
+
+.bg-theme-secondary { background-color: var(--color-secondary); }
+.text-theme-secondary { color: var(--color-secondary); }
+.border-theme-secondary { border-color: var(--color-secondary); }
+
+.bg-theme-surface { background-color: var(--color-surface); }
+.bg-theme-bg { background-color: var(--color-bg); }
+.bg-theme-accent { background-color: var(--color-accent); }
+.text-theme-text { color: var(--color-text); }
