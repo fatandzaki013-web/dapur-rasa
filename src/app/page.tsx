@@ -195,174 +195,179 @@ export default function HomePage() {
       />
 
 
-      {/* MAIN CONTAINER (Matching Shofi Frozen exact -mt-20 pt-4 md:pt-6 pb-12 space-y-12) */}
-      <main className="flex-1 -mt-20 pt-4 md:pt-6 pb-12 space-y-12 bg-white">
+      {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
+      <main className="flex-1 pt-[72px] sm:pt-24 pb-14 space-y-8 sm:space-y-12 bg-gray-50/40">
         {/* ============================================================== */}
-        {/* SECTION 1: HERO SLIDER CAROUSEL (Full Width Shofi Frozen Style) */}
+        {/* SECTION 1: HERO SLIDER CAROUSEL (App-Style Responsive Banner)   */}
         {/* ============================================================== */}
-        <section
-          className="relative w-full overflow-hidden bg-gray-100"
-          style={{ touchAction: "pan-y" }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
           <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-sm sm:shadow-md bg-gray-900"
+            style={{ touchAction: "pan-y" }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
           >
-            {heroSlides.map((slide, idx) => (
-              <div key={slide.id} className="w-full shrink-0 relative">
-                {/* Desktop Aspect Ratio 16:9 */}
-                <div className="hidden md:block relative w-full aspect-16/9 overflow-hidden bg-gray-900">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt={slide.title}
-                    src={slide.desktopImg}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Dark Gradient Overlay for Typography Clarity */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent flex items-center">
-                    <div className="mx-auto max-w-7xl px-8 lg:px-12 w-full">
-                      <div className="max-w-xl space-y-4 text-white">
-                        <span className="inline-block px-3 py-1 rounded-full bg-[#4A0E4E] text-white text-xs font-extrabold tracking-wide uppercase shadow-sm">
-                          {slide.badge}
-                        </span>
-                        <h1 className="text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight">
-                          {slide.title}
-                        </h1>
-                        <p className="text-sm lg:text-base text-gray-200 leading-relaxed">
-                          {slide.subtitle}
-                        </p>
-                        <div className="pt-2">
-                          <Link
-                            href={slide.buttonLink || "/produk"}
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-sm shadow-md transition-all active:scale-95"
-                          >
-                            <span>{slide.buttonText || "Belanja Sekarang"}</span>
-                            <ChevronRight className="w-4 h-4" />
-                          </Link>
+            <div
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            >
+              {heroSlides.map((slide) => (
+                <div key={slide.id} className="w-full shrink-0 relative">
+                  {/* Desktop Aspect Ratio 16:9 */}
+                  <div className="hidden md:block relative w-full aspect-16/9 overflow-hidden bg-gray-900">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt={slide.title}
+                      src={slide.desktopImg}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Dark Gradient Overlay for Typography Clarity */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent flex items-center">
+                      <div className="mx-auto max-w-7xl px-8 lg:px-12 w-full">
+                        <div className="max-w-xl space-y-4 text-white">
+                          <span className="inline-block px-3 py-1 rounded-full bg-[#4A0E4E] text-white text-xs font-extrabold tracking-wide uppercase shadow-sm">
+                            {slide.badge}
+                          </span>
+                          <h1 className="text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                            {slide.title}
+                          </h1>
+                          <p className="text-sm lg:text-base text-gray-200 leading-relaxed">
+                            {slide.subtitle}
+                          </p>
+                          <div className="pt-2">
+                            <Link
+                              href={slide.buttonLink || "/produk"}
+                              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-sm shadow-md transition-all active:scale-95"
+                            >
+                              <span>{slide.buttonText || "Belanja Sekarang"}</span>
+                              <ChevronRight className="w-4 h-4" />
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Mobile Aspect Ratio 1:1 */}
-                <div className="block md:hidden relative w-full aspect-square overflow-hidden bg-gray-900">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt={slide.title}
-                    src={slide.mobileImg}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-6 text-white space-y-2">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[10px] font-bold tracking-wide uppercase self-start">
-                      {slide.badge}
-                    </span>
-                    <h2 className="text-xl font-bold tracking-tight leading-snug">
-                      {slide.title}
-                    </h2>
-                    <p className="text-xs text-gray-300 line-clamp-2">
-                      {slide.subtitle}
-                    </p>
-                    <div className="pt-1">
-                      <Link
-                        href={slide.buttonLink || "/produk"}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#4A0E4E] text-white font-bold text-xs shadow-sm"
-                      >
-                        <span>{slide.buttonText || "Belanja Sekarang"}</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </Link>
+                  {/* Mobile Aspect Ratio 16:10 - Clean, Beautiful, Doesn't hijack viewport */}
+                  <div className="block md:hidden relative w-full aspect-[16/10] overflow-hidden bg-gray-900">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt={slide.title}
+                      src={slide.mobileImg}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-4 text-white space-y-1.5">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[9.5px] font-bold tracking-wide uppercase self-start shadow-sm">
+                        {slide.badge}
+                      </span>
+                      <h2 className="text-base sm:text-xl font-extrabold tracking-tight leading-snug line-clamp-2">
+                        {slide.title}
+                      </h2>
+                      <p className="text-[11px] sm:text-xs text-gray-200 line-clamp-1">
+                        {slide.subtitle}
+                      </p>
+                      <div className="pt-1">
+                        <Link
+                          href={slide.buttonLink || "/produk"}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-xs shadow-sm active:scale-95 transition"
+                        >
+                          <span>{slide.buttonText || "Belanja Sekarang"}</span>
+                          <ChevronRight className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Bottom Gradient Fade */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent pointer-events-none z-10" />
+            {/* Prev Navigation Button */}
+            <button
+              type="button"
+              onClick={() =>
+                setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
+              }
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              aria-label="Slide sebelumnya"
+            >
+              <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
+            </button>
 
-          {/* Prev Navigation Button */}
-          <button
-            type="button"
-            onClick={() =>
-              setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-            }
-            className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-sm cursor-pointer"
-            aria-label="Slide sebelumnya"
-          >
-            <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 text-gray-700" />
-          </button>
+            {/* Next Navigation Button */}
+            <button
+              type="button"
+              onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              aria-label="Slide berikutnya"
+            >
+              <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
+            </button>
 
-          {/* Next Navigation Button */}
-          <button
-            type="button"
-            onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-            className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/80 hover:bg-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-sm cursor-pointer"
-            aria-label="Slide berikutnya"
-          >
-            <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-gray-700" />
-          </button>
-
-          {/* Dots Indicator */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {heroSlides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setActiveSlide(i)}
-                className={`rounded-full transition-all duration-300 cursor-pointer ${
-                  activeSlide === i
-                    ? "bg-white w-8 h-2.5 shadow-sm"
-                    : "bg-white/50 hover:bg-white/70 w-2.5 h-2.5"
-                }`}
-                aria-label={`Ke slide ${i + 1}`}
-              />
-            ))}
+            {/* Dots Indicator */}
+            <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+              {heroSlides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveSlide(i)}
+                  className={`rounded-full transition-all duration-300 cursor-pointer ${
+                    activeSlide === i
+                      ? "bg-white w-6 sm:w-8 h-2 sm:h-2.5 shadow-sm"
+                      : "bg-white/50 hover:bg-white/70 w-2 sm:w-2.5 h-2 sm:h-2.5"
+                  }`}
+                  aria-label={`Ke slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 2: 3 FITUR UNGGULAN (Shofi Frozen Trust Badges Style)  */}
+        {/* SECTION 2: 3 FITUR UNGGULAN (Trust Badges Mobile-Optimized)     */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
             {/* Fitur 1: Ambil di Toko / Antar Griya Cileungsi 5 */}
-            <div className="bg-purple-50/70 border border-purple-100/60 p-6 rounded-2xl shadow-sm flex items-start gap-4 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-purple-100">
-                <MapPin className="w-6 h-6 text-[#4A0E4E]" />
+            <div className="bg-purple-50/70 border border-purple-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-purple-100">
+                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#4A0E4E]" />
               </div>
-              <div className="space-y-1">
-                <h3 className="font-bold text-gray-900">Ambil Sendiri / Antar Griya Cileungsi 5</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Pilih kue favorit Anda, tentukan mau diambil sendiri di dapur atau diantar langsung ke alamat rumah khusus area Perum Griya Cileungsi 5.
+              <div className="space-y-0.5 sm:space-y-1">
+                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
+                  Ambil Sendiri / Antar Griya Cileungsi 5
+                </h3>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                  Pilih kue favorit Anda, ambil langsung di dapur atau diantar khusus area Perum Griya Cileungsi 5.
                 </p>
               </div>
             </div>
 
             {/* Fitur 2: 100% Halal & Higienis */}
-            <div className="bg-emerald-50/70 border border-emerald-100/60 p-6 rounded-2xl shadow-sm flex items-start gap-4 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-emerald-100">
-                <ShieldCheck className="w-6 h-6 text-[#15803D]" />
+            <div className="bg-emerald-50/70 border border-emerald-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#15803D]" />
               </div>
-              <div className="space-y-1">
-                <h3 className="font-bold text-gray-900">100% Halal &amp; Higienis</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Seluruh olahan kue dan camilan dibuat higienis dengan bahan segar berkualitas tanpa bahan pengawet berbahaya.
+              <div className="space-y-0.5 sm:space-y-1">
+                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
+                  100% Halal &amp; Higienis
+                </h3>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                  Seluruh olahan kue dibuat higienis dengan bahan segar berkualitas tanpa bahan pengawet berbahaya.
                 </p>
               </div>
             </div>
 
             {/* Fitur 3: Kualitas & Harga Terbaik */}
-            <div className="bg-amber-50/70 border border-amber-100/60 p-6 rounded-2xl shadow-sm flex items-start gap-4 hover:shadow-md transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-amber-100">
-                <Sparkles className="w-6 h-6 text-amber-500" />
+            <div className="bg-amber-50/70 border border-amber-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
+              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
               </div>
-              <div className="space-y-1">
-                <h3 className="font-bold text-gray-900">Kualitas &amp; Rasa Terbaik</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
-                  Dibuat setiap hari secara fresh dengan resep autentik rumahan untuk cita rasa istimewa dengan harga terjangkau.
+              <div className="space-y-0.5 sm:space-y-1">
+                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
+                  Kualitas &amp; Rasa Terbaik
+                </h3>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                  Dibuat fresh setiap hari dengan resep autentik rumahan untuk cita rasa istimewa terjangkau.
                 </p>
               </div>
             </div>
@@ -370,38 +375,38 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: KATEGORI PRODUK (Shofi Frozen Circular Style)       */}
+        {/* SECTION 3: KATEGORI PRODUK (Balanced 5-Column Grid on Mobile)  */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-4 space-y-6">
-          <div className="flex items-end justify-between">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                 Kategori Produk
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Pilih kategori kue &amp; camilan favorit Anda
               </p>
             </div>
             <Link
-              className="text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-1"
+              className="text-xs sm:text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-0.5 shrink-0"
               href="/produk"
             >
-              <span>Lihat Semua Kategori</span>
-              <ChevronRight className="w-4 h-4" />
+              <span>Lihat Semua</span>
+              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-10 gap-3">
+          <div className="grid grid-cols-5 md:grid-cols-10 gap-2 sm:gap-3">
             {categoryCircles.map((cat) => (
               <Link
                 key={cat.name}
-                className="group flex flex-col items-center gap-2"
+                className="group flex flex-col items-center gap-1.5"
                 href={`/produk?category=${cat.slug}`}
               >
-                <div className="w-16 h-16 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-3xl group-hover:scale-105 group-hover:border-[#4A0E4E]/30 group-hover:shadow-md transition-all duration-300">
+                <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-105 group-hover:border-[#4A0E4E]/40 group-hover:shadow-sm transition-all duration-300">
                   {cat.emoji}
                 </div>
-                <p className="font-bold text-[10px] sm:text-xs text-gray-700 text-center leading-tight line-clamp-2 px-1">
+                <p className="font-bold text-[9.5px] sm:text-xs text-gray-700 text-center leading-tight line-clamp-1 sm:line-clamp-2 px-0.5">
                   {cat.name}
                 </p>
               </Link>
@@ -410,28 +415,28 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 4: PRODUK POPULER (Shofi Frozen Product Card Style)    */}
+        {/* SECTION 4: PRODUK POPULER (Compact 2-Col Mobile Grid)          */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-4 space-y-6">
-          <div className="flex items-end justify-between">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                 Produk Populer
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 Paling banyak dicari oleh pelanggan kami
               </p>
             </div>
             <Link
-              className="text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-1"
+              className="text-xs sm:text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-0.5 shrink-0"
               href="/produk"
             >
               <span>Lihat Selengkapnya</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
             {products.map((prod) => {
               const currentPrice = prod.price;
               const primaryImage =
@@ -441,7 +446,7 @@ export default function HomePage() {
               return (
                 <article
                   key={prod.id}
-                  className="group relative flex h-full flex-col overflow-hidden border border-slate-200/80 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-sky-200 hover:shadow-xl hover:shadow-sky-900/10 rounded-3xl"
+                  className="group relative flex h-full flex-col overflow-hidden border border-slate-200/80 bg-white shadow-2xs transition duration-300 hover:-translate-y-1 hover:border-purple-200 hover:shadow-md rounded-2xl sm:rounded-3xl"
                 >
                   {/* Photo with zoom effect */}
                   <Link
@@ -457,19 +462,19 @@ export default function HomePage() {
                     />
 
                     {/* Badge Overlay */}
-                    <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-1.5 p-2.5">
+                    <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-1 p-2 sm:p-2.5">
                       <div className="flex flex-col gap-1">
                         {prod.isAvailable ? (
-                          <span className="rounded-full bg-emerald-600/90 text-white px-2 py-0.5 text-[9px] font-extrabold uppercase shadow-sm">
+                          <span className="rounded-full bg-emerald-600/90 text-white px-1.5 sm:px-2 py-0.5 text-[8.5px] sm:text-[9px] font-extrabold uppercase shadow-xs">
                             Tersedia
                           </span>
                         ) : (
-                          <span className="rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-extrabold uppercase shadow-sm">
-                            Tidak Tersedia
+                          <span className="rounded-full bg-red-600/90 text-white px-1.5 sm:px-2 py-0.5 text-[8.5px] sm:text-[9px] font-extrabold uppercase shadow-xs">
+                            Habis
                           </span>
                         )}
                         {prod.isBestSeller && (
-                          <span className="rounded-full bg-white/95 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-[#4A0E4E] shadow-sm">
+                          <span className="rounded-full bg-white/95 px-1.5 sm:px-2 py-0.5 text-[8.5px] sm:text-[9px] font-extrabold uppercase tracking-wide text-[#4A0E4E] shadow-xs">
                             Best seller
                           </span>
                         )}
@@ -478,29 +483,29 @@ export default function HomePage() {
                   </Link>
 
                   {/* Body Info */}
-                  <div className="flex flex-1 flex-col p-3.5 sm:p-4">
-                    <div className="mb-2 flex items-center justify-between gap-2">
-                      <span className="truncate rounded-full bg-sky-50 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-sky-700">
+                  <div className="flex flex-1 flex-col p-2.5 sm:p-4">
+                    <div className="mb-1 sm:mb-2 flex items-center justify-between gap-1">
+                      <span className="truncate rounded-full bg-purple-50 px-1.5 sm:px-2 py-0.5 sm:py-1 text-[9px] sm:text-[10px] font-bold uppercase tracking-wide text-[#4A0E4E]">
                         {prod.category?.name || "Kue"}
                       </span>
-                      <span className="shrink-0 text-[11px] font-medium text-slate-400">
-                        50 ulasan
+                      <span className="shrink-0 text-[10px] sm:text-[11px] font-medium text-slate-400">
+                        50+ ulasan
                       </span>
                     </div>
 
-                    <Link className="min-h-[42px]" href={`/produk/${prod.slug}`} prefetch={true}>
-                      <h3 className="line-clamp-2 text-sm font-extrabold leading-snug text-slate-900 transition group-hover:text-[#4A0E4E] sm:text-[15px]">
+                    <Link className="min-h-[34px] sm:min-h-[42px]" href={`/produk/${prod.slug}`} prefetch={true}>
+                      <h3 className="line-clamp-2 text-xs sm:text-[15px] font-extrabold leading-tight sm:leading-snug text-slate-900 transition group-hover:text-[#4A0E4E]">
                         {prod.name}
                       </h3>
                     </Link>
 
                     {/* Price and Stock Status */}
-                    <div className="mt-3 flex items-end justify-between gap-3">
+                    <div className="mt-2 sm:mt-3 flex items-end justify-between gap-1">
                       <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                        <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-slate-400">
                           Harga Satuan
                         </p>
-                        <p className="text-base font-black text-[#4A0E4E] sm:text-lg">
+                        <p className="text-xs sm:text-lg font-black text-[#4A0E4E]">
                           {formatPrice(currentPrice)}
                         </p>
                       </div>
@@ -512,34 +517,35 @@ export default function HomePage() {
                         </span>
                       ) : (
                         <span className="hidden sm:inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-[10px] font-bold text-red-700">
-                          <span>Tidak Tersedia</span>
+                          <span>Habis</span>
                         </span>
                       )}
                     </div>
 
                     {/* Action Buttons: Add to Cart + Quick View */}
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-2.5 sm:mt-4 flex gap-1.5 sm:gap-2">
                       <button
                         type="button"
                         disabled={!prod.isAvailable}
                         onClick={() => handleQuickAdd(prod)}
-                        className={`inline-flex items-center justify-center font-medium transition-colors px-3 py-1.5 text-sm flex-1 h-9 rounded-lg shadow-sm ${
+                        className={`inline-flex items-center justify-center font-medium transition-colors px-2 sm:px-3 py-1.5 text-xs sm:text-sm flex-1 h-8 sm:h-9 rounded-xl shadow-xs ${
                           !prod.isAvailable
                             ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                             : "bg-[#4A0E4E] text-white hover:bg-[#5C1261] cursor-pointer active:scale-95"
                         }`}
                         title={!prod.isAvailable ? "Produk Tidak Tersedia" : "Tambah ke Keranjang"}
                       >
-                        <ShoppingCart className="h-4 w-4" />
+                        <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                        <span className="text-[11px] sm:text-xs font-bold">{!prod.isAvailable ? "Habis" : "+ Keranjang"}</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setQuickViewProduct(prod as any)}
-                        className="inline-flex items-center justify-center font-medium transition-colors border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-sm h-9 w-9 p-0 rounded-lg shadow-2xs cursor-pointer active:scale-95"
+                        className="inline-flex items-center justify-center font-medium transition-colors border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 text-xs sm:text-sm h-8 w-8 sm:h-9 sm:w-9 p-0 rounded-xl shadow-2xs cursor-pointer active:scale-95 shrink-0"
                         title="Lihat Cepat (Quick View)"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                       </button>
                     </div>
                   </div>
@@ -550,96 +556,96 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 5: CARA BELANJA MUDAH (Shofi Frozen 4 Steps Style)     */}
+        {/* SECTION 5: CARA BELANJA MUDAH (2x2 Grid on Mobile)             */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-4 py-6 border-t border-gray-100">
-          <div className="text-center space-y-2 mb-10">
-            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 py-4 sm:py-6 border-t border-gray-100">
+          <div className="text-center space-y-1 sm:space-y-2 mb-6 sm:mb-10">
+            <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
               Cara Belanja Mudah
             </h2>
-            <p className="text-sm text-gray-500 max-w-md mx-auto">
-              Pesan secara online dan ambil belanjaan Anda langsung di outlet kami atau dikirim via kurir
+            <p className="text-xs sm:text-sm text-gray-500 max-w-md mx-auto">
+              Pesan secara online dan ambil belanjaan langsung di dapur kami atau dikirim via kurir
             </p>
           </div>
 
-          <div className="bg-white rounded-3xl border border-gray-100 p-8 md:p-10 shadow-sm relative">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-4 sm:p-8 md:p-10 shadow-xs relative">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 relative">
               {/* Step 1 */}
-              <div className="flex flex-col items-center text-center space-y-3 relative group">
+              <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-gray-50/60 border border-gray-100/80 space-y-2 relative group hover:border-purple-200 transition">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl bg-[#4A0E4E]/10 flex items-center justify-center text-[#4A0E4E] shadow-sm group-hover:bg-[#4A0E4E] group-hover:text-white transition-all duration-300">
-                    <ShoppingBag className="w-7 h-7" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#4A0E4E]/10 flex items-center justify-center text-[#4A0E4E] shadow-2xs group-hover:bg-[#4A0E4E] group-hover:text-white transition-all duration-300">
+                    <ShoppingBag className="w-5 h-5 sm:w-7 sm:h-7" />
                   </div>
-                  <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-[#4A0E4E] text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#4A0E4E] text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-xs">
                     1
                   </span>
                 </div>
-                <h3 className="font-extrabold text-gray-800 text-sm">Pilih Produk</h3>
-                <p className="text-xs text-gray-500 leading-relaxed px-4">
-                  Pilih aneka kue rumahan dan camilan berkualitas dari katalog kami.
+                <h3 className="font-extrabold text-gray-800 text-xs sm:text-sm">Pilih Produk</h3>
+                <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed px-1">
+                  Pilih aneka kue rumahan dan camilan berkualitas dari katalog.
                 </p>
               </div>
 
-              {/* Connecting Chevron 1 */}
-              <div className="hidden md:flex items-center justify-center absolute top-5 left-[21%] w-[8%] text-gray-300 pointer-events-none">
+              {/* Connecting Chevron 1 (Desktop Only) */}
+              <div className="hidden md:flex items-center justify-center absolute top-7 left-[21%] w-[8%] text-gray-300 pointer-events-none">
                 <ChevronRight className="w-6 h-6" />
               </div>
 
               {/* Step 2 */}
-              <div className="flex flex-col items-center text-center space-y-3 relative group">
+              <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-gray-50/60 border border-gray-100/80 space-y-2 relative group hover:border-sky-200 transition">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl bg-[#4B95FF]/10 flex items-center justify-center text-[#4B95FF] shadow-sm group-hover:bg-[#4B95FF] group-hover:text-white transition-all duration-300">
-                    <ShoppingCart className="w-7 h-7" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#4B95FF]/10 flex items-center justify-center text-[#4B95FF] shadow-2xs group-hover:bg-[#4B95FF] group-hover:text-white transition-all duration-300">
+                    <ShoppingCart className="w-5 h-5 sm:w-7 sm:h-7" />
                   </div>
-                  <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-[#4B95FF] text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#4B95FF] text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-xs">
                     2
                   </span>
                 </div>
-                <h3 className="font-extrabold text-gray-800 text-sm">Keranjang Belanja</h3>
-                <p className="text-xs text-gray-500 leading-relaxed px-4">
-                  Masukkan pilihan kue Anda ke dalam keranjang belanja digital.
+                <h3 className="font-extrabold text-gray-800 text-xs sm:text-sm">Keranjang Belanja</h3>
+                <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed px-1">
+                  Masukkan pilihan kue Anda ke dalam keranjang belanja.
                 </p>
               </div>
 
-              {/* Connecting Chevron 2 */}
-              <div className="hidden md:flex items-center justify-center absolute top-5 left-[46%] w-[8%] text-gray-300 pointer-events-none">
+              {/* Connecting Chevron 2 (Desktop Only) */}
+              <div className="hidden md:flex items-center justify-center absolute top-7 left-[46%] w-[8%] text-gray-300 pointer-events-none">
                 <ChevronRight className="w-6 h-6" />
               </div>
 
               {/* Step 3 */}
-              <div className="flex flex-col items-center text-center space-y-3 relative group">
+              <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-gray-50/60 border border-gray-100/80 space-y-2 relative group hover:border-emerald-200 transition">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl bg-emerald-600/10 flex items-center justify-center text-emerald-600 shadow-sm group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
-                    <Phone className="w-7 h-7" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-emerald-600/10 flex items-center justify-center text-emerald-600 shadow-2xs group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                    <Phone className="w-5 h-5 sm:w-7 sm:h-7" />
                   </div>
-                  <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-xs">
                     3
                   </span>
                 </div>
-                <h3 className="font-extrabold text-gray-800 text-sm">Kirim WA &amp; Sertakan Alamat</h3>
-                <p className="text-xs text-gray-500 leading-relaxed px-4">
-                  Kirim pesanan ke WA toko dan sertakan alamat pengantaran lengkap Anda atau konfirmasi jam pengambilan di dapur.
+                <h3 className="font-extrabold text-gray-800 text-xs sm:text-sm">Kirim WA &amp; Alamat</h3>
+                <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed px-1">
+                  Kirim ke WA toko dan sertakan alamat pengantaran atau jam ambil.
                 </p>
               </div>
 
-              {/* Connecting Chevron 3 */}
-              <div className="hidden md:flex items-center justify-center absolute top-5 left-[71%] w-[8%] text-gray-300 pointer-events-none">
+              {/* Connecting Chevron 3 (Desktop Only) */}
+              <div className="hidden md:flex items-center justify-center absolute top-7 left-[71%] w-[8%] text-gray-300 pointer-events-none">
                 <ChevronRight className="w-6 h-6" />
               </div>
 
               {/* Step 4 */}
-              <div className="flex flex-col items-center text-center space-y-3 relative group">
+              <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-gray-50/60 border border-gray-100/80 space-y-2 relative group hover:border-amber-200 transition">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
-                    <Store className="w-7 h-7" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-2xs group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                    <Store className="w-5 h-5 sm:w-7 sm:h-7" />
                   </div>
-                  <span className="absolute -top-2 -left-2 w-6 h-6 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-xs">
                     4
                   </span>
                 </div>
-                <h3 className="font-extrabold text-gray-800 text-sm">Ambil / Terima di Griya Cileungsi 5</h3>
-                <p className="text-xs text-gray-500 leading-relaxed px-4">
-                  Ambil di dapur atau tunggu pengantaran ke rumah Anda di Perum Griya Cileungsi 5.
+                <h3 className="font-extrabold text-gray-800 text-xs sm:text-sm">Ambil / Antar</h3>
+                <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed px-1">
+                  Ambil di dapur atau terima kiriman di Griya Cileungsi 5.
                 </p>
               </div>
             </div>
