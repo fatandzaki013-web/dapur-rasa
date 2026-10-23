@@ -287,7 +287,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                         </div>
                       )}
                       <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 bg-emerald-100 text-emerald-800">
-                        {ord.fulfillmentType === "DELIVERY" ? "Bayar saat Diantar" : "Bayar saat Diambil"}
+                        {ord.paymentMethod || (ord.fulfillmentType === "DELIVERY" ? "Bayar saat Diantar" : "Bayar saat Diambil")}
                       </span>
                     </td>
                     <td className="py-3 px-4 text-stone-700">
@@ -358,7 +358,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                 </div>
                 <div className="mt-1">
                   <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                    {selectedOrder.fulfillmentType === "DELIVERY" ? "Bayar Tunai saat Diantar" : "Bayar Tunai saat Diambil"}
+                    {selectedOrder.paymentMethod || (selectedOrder.fulfillmentType === "DELIVERY" ? "Bayar saat Diantar" : "Bayar saat Diambil")}
                   </span>
                 </div>
                 {selectedOrder.deliveryAddress && (

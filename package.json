@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && prisma db push --accept-data-loss && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "seed": "node scripts/seed.mjs",
-    "test:e2e": "node scripts/test-e2e.mjs"
+    "test:e2e": "node scripts/test-e2e.mjs",
+    "db:sqlite": "node scripts/switch-db.mjs sqlite",
+    "db:postgres": "node scripts/switch-db.mjs postgresql"
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",

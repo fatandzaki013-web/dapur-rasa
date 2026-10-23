@@ -15,6 +15,10 @@ export async function POST(req: NextRequest) {
       items,
       isSnackBoxPackage = false,
       snackBoxQuantity = 0,
+      paymentMethod = "COD",
+      occasion,
+      packaging,
+      servingPreference,
     } = body;
 
     // 1. Validasi Data Pelanggan
@@ -144,6 +148,23 @@ export async function POST(req: NextRequest) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const orderCode = `DR-${dateStr}-${randomSuffix}`;
 
+    // Map label metode pembayaran
+    let paymentMethodLabel = "💵 Bayar Tunai saat Diterima (COD)";
+    if (paymentMethod === "TRANSFER_BANK" || paymentMethod?.includes("TRANSFER")) {
+      paymentMethodLabel = "🏦 Transfer Bank (BCA / Mandiri / BRI)";
+    } else if (paymentMethod === "QRIS_EWALLET" || paymentMethod?.includes("QRIS")) {
+      paymentMethodLabel = "📱 QRIS / E-Wallet (GoPay, OVO, ShopeePay, Dana)";
+    }
+
+    // Kompilasi catatan & preferensi ke dalam database
+    const extraDetailsParts: string[] = [];
+    if (occasion) extraDetailsParts.push(`Keperluan: ${occasion}`);
+    if (packaging) extraDetailsParts.push(`Kemasan: ${packaging}`);
+    if (servingPreference) extraDetailsParts.push(`Preferensi: ${servingPreference}`);
+    if (notes && notes.trim()) extraDetailsParts.push(`Catatan: ${notes.trim()}`);
+
+    const compiledNotes = extraDetailsParts.join(" | ") || null;
+
     // 5. Simpan Pesanan ke Database
     const order = await prisma.order.create({
       data: {
@@ -154,8 +175,8 @@ export async function POST(req: NextRequest) {
         deliveryAddress: type === "DELIVERY" ? deliveryAddress.trim() : null,
         scheduleDate: scheduleDate || null,
         scheduleTime: scheduleTime || null,
-        notes: notes ? notes.trim() : null,
-        paymentMethod: type === "DELIVERY" ? "BAYAR_SAAT_DIANTAR" : "BAYAR_SAAT_DIAMBIL",
+        notes: compiledNotes,
+        paymentMethod: paymentMethodLabel,
         status: "MENUNGGU_KONFIRMASI",
         paymentStatus: "BELUM_DIVERIFIKASI",
         subtotal: verifiedSubtotal,
@@ -178,7 +199,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Format Pesan WhatsApp Terstruktur
+    // 6. Format Pesan WhatsApp Terstruktur & Informatif
     const itemsListText = verifiedOrderItems
       .map(
         (it) =>
@@ -204,14 +225,19 @@ export async function POST(req: NextRequest) {
 
     const deliveryDetailText =
       type === "DELIVERY"
-        ? `• Pilihan: *Diantar ke Alamat Rumah*\n• Alamat Lengkap: *${deliveryAddress.trim()}* (Khusus Griya Cileungsi 5)`
-        : `• Pilihan: *Ambil Sendiri di Dapur Toko*\n• Lokasi Dapur: *Perum Griya Cileungsi 5*`;
+        ? `• Metode Pengambilan: *Diantar ke Alamat Rumah*\n• Alamat Lengkap: *${deliveryAddress.trim()}* (Khusus Griya Cileungsi 5)`
+        : `• Metode Pengambilan: *Ambil Sendiri di Dapur Toko*\n• Lokasi Dapur: *Perum Griya Cileungsi 5*`;
+
+    const occasionText = occasion ? `• Keperluan Acara: *${occasion}*\n` : "";
+    const packagingText = packaging ? `• Pilihan Kemasan: *${packaging}*\n` : "";
+    const servingText = servingPreference ? `• Preferensi Kue: *${servingPreference}*\n` : "";
+    const notesText = notes && notes.trim() ? `• Catatan Khusus: *${notes.trim()}*\n` : "";
 
     const waMessage = `Halo ${settings?.brandName || "Dapur Rasa"}, saya ingin memesan kue rumahan.
 
-*RINCIAN PESANAN:*
+*RINCIAN PEMESAN:*
 • No. Referensi: *${orderCode}*
-• Nama Pemesan: ${customerName.trim()}
+• Nama Pemesan: *${customerName.trim()}*
 • No. WhatsApp: ${cleanPhone}
 
 *DAFTAR PESANAN KUE:*
@@ -223,11 +249,12 @@ ${itemsListText}
 • *TOTAL TAGIHAN: Rp ${totalAmount.toLocaleString("id-ID")}*
 ----------------------------
 
-*PENGAMBILAN / PENGANTARAN:*
+*PILIHAN & KETERANGAN PEMESANAN:*
 ${deliveryDetailText}${packageBoxText}
 • Waktu / Jadwal: ${scheduleText}
-${notes ? `• Catatan Khusus: ${notes.trim()}\n` : ""}
-Mohon konfirmasi pesanan saya. Terima kasih banyak!`;
+• Metode Pembayaran: *${paymentMethodLabel}*
+${occasionText}${packagingText}${servingText}${notesText}
+Mohon konfirmasi ketersediaan dan pesanan saya. Terima kasih banyak!`;
 
     // Pastikan nomor WhatsApp internasional valid (6285888159765)
     let formattedWa = storeWa;
@@ -249,6 +276,11 @@ Mohon konfirmasi pesanan saya. Terima kasih banyak!`;
       totalAmount,
       fulfillmentType: type,
       deliveryAddress: type === "DELIVERY" ? deliveryAddress.trim() : null,
+      paymentMethodLabel,
+      occasion: occasion || null,
+      packaging: packaging || null,
+      servingPreference: servingPreference || null,
+      notes: notes?.trim() || null,
       whatsappUrl,
       order,
     });

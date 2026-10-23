@@ -253,31 +253,79 @@ node scripts/test-e2e.mjs
 
 ---
 
-## 7. Panduan Deployment Produksi
+## 7. Panduan Deployment Produksi & Persistensi Data Online
 
-### Environment Variables Wajib
-Buat file `.env` pada server produksi dengan konfigurasi berikut:
-```env
-# Database URL (SQLite untuk VPS/single server, atau PostgreSQL untuk arsitektur serverless)
-DATABASE_URL="file:./dev.db"
+Agar penambahan dan pengeditan produk serta data pesanan **tetap tersimpan permanen (tidak hilang)** setelah website di-online-kan:
 
-# Secret Key untuk Enkripsi Token JWT Admin
-JWT_SECRET="ganti-dengan-string-acak-panjang-dan-rahasia-minimal-32-karakter"
+### A. Pilihan Hosting 1: VPS, Railway, Render, atau Docker (Menggunakan SQLite Persisten)
+Jika Anda men-deploy ke VPS (Ubuntu), Railway, atau Render:
+1. Pastikan folder data di-mount ke **Persistent Volume** (misal `/data`).
+2. Atur Environment Variable di dashboard hosting:
+   ```env
+   DATABASE_URL="file:/data/dev.db"
+   JWT_SECRET="masukkan-kunci-rahasia-acak-minimal-32-karakter"
+   NODE_ENV="production"
+   ```
+3. Setiap kali produk ditambahkan atau diubah, data tersimpan di volume permanen tersebut.
 
-# Environment
-NODE_ENV="production"
-```
+### B. Pilihan Hosting 2: Vercel / Serverless (Menggunakan Cloud PostgreSQL)
+Karena Vercel bersifat *serverless* (file system bersifat sementara/read-only), gunakan database PostgreSQL gratis (seperti **Supabase** atau **Neon.tech**):
+1. Buat database gratis di [Supabase](https://supabase.com) atau [Neon](https://neon.tech).
+2. Ubah konfigurasi Prisma ke PostgreSQL dengan satu perintah:
+   ```bash
+   npm run db:postgres
+   ```
+   *(Untuk kembali ke SQLite lokal kapan saja: `npm run db:sqlite`)*
+3. Di dashboard Vercel (Project Settings -> Environment Variables), masukkan:
+   ```env
+   DATABASE_URL="postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres?sslmode=require"
+   JWT_SECRET="masukkan-kunci-rahasia-acak-minimal-32-karakter"
+   ```
+4. Sinkronisasikan tabel ke database cloud:
+   ```bash
+   npx prisma db push
+   npm run seed
+   ```
 
-### Langkah Build Produksi
-```bash
-npm run build
-npm start
-```
-Aplikasi akan berjalan pada port 3000 dengan performa tinggi dan halaman statis teroptimasi.
+### C. Penyimpanan Foto Produk yang Diunggah
+Sistem upload telah dilengkapi fitur **Dual-Mode Persistence**:
+- Pada server VPS / lokal: Foto disimpan ke `/public/uploads/`.
+- Pada serverless (seperti Vercel): Sistem otomatis mengonversi foto menjadi **Base64 Data URI** yang tersimpan langsung di database. Foto tidak akan pernah hilang meskipun serverless function restart.
+- Admin juga dapat menempelkan URL gambar langsung (dari CDN / link eksternal).
 
 ---
 
-## 8. Konfigurasi yang Wajib Diisi Pemilik Sebelum Peluncuran
+## 8. Fitur Pilihan Checkout & Integrasi WhatsApp Terstruktur
+
+Pada halaman Checkout (`/checkout`), pembeli kini diberikan opsi lengkap yang langsung tersusun rapi saat diarahkan ke WhatsApp toko:
+1. **Pilihan Metode Pembayaran**:
+   - 💵 **COD / Bayar Tunai saat Diterima** (Tunai di dapur toko atau saat kurir tiba).
+   - 🏦 **Transfer Bank** (BCA / Mandiri / BRI).
+   - 📱 **QRIS / E-Wallet** (GoPay, OVO, ShopeePay, Dana).
+2. **Pilihan Keperluan / Jenis Acara**:
+   - Santap Pribadi / Keluarga
+   - Acara Arisan / Pengajian / Syukuran
+   - Rapat Kantor / Seminar / Gathering
+   - Pesta Ulang Tahun / Hajatan
+   - Pesanan Rutin / Konsinyasi
+3. **Pilihan Kemasan**:
+   - Kemasan Standar (Mika / Dus Rapi)
+   - Paket Snack Box Satuan (Per Box Siap Santap)
+   - Dus Cantik Hampers (+ Pita & Kartu Ucapan)
+   - Wadah Tampah / Nampan Tradisional
+4. **Preferensi Sajian**:
+   - Siap Santap Fresh / Baru Matang
+   - Frozen / Setengah Matang (Untuk Stok Goreng Sendiri)
+   - Extra Cabai Rawit Hijau (Gratis)
+   - Tanpa Cabai Rawit / Pisahkan Saus
+5. **Catatan Khusus**:
+   - Kolom catatan bebas untuk permintaan jam tiba, kartu ucapan, patokan alamat, dll.
+
+Saat pembeli menekan tombol *"Kirim Pesanan via WhatsApp"*, seluruh rincian pesanan, pilihan cara bayar, keperluan acara, dan preferensi kemasan otomatis disusun menjadi pesan WhatsApp yang rapi dan nomor referensi pesanan tersimpan di sistem.
+
+---
+
+## 9. Konfigurasi yang Wajib Diisi Pemilik Sebelum Peluncuran
 
 Sebelum website dibuka untuk umum, pemilik usaha wajib masuk ke `/admin/settings` dan melengkapi:
 1. **Nomor WhatsApp Toko**: Masukkan nomor WhatsApp aktif tempat menerima pesanan (format: `628xxxxxxxxxx`).

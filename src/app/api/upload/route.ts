@@ -46,20 +46,34 @@ export async function POST(req: NextRequest) {
     const safeExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"].includes(ext) ? ext : ".jpg";
     const filename = `img_${Date.now()}_${Math.random().toString(36).substring(2, 8)}${safeExt}`;
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, filename);
+    try {
+      // 1. Coba simpan ke filesystem public/uploads (cocok untuk VPS / Docker / Railway dengan persistent volume)
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      await fs.mkdir(uploadDir, { recursive: true });
+      const filePath = path.join(uploadDir, filename);
+      await fs.writeFile(filePath, buffer);
 
-    await fs.writeFile(filePath, buffer);
-
-    const publicUrl = `/uploads/${filename}`;
-
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      filename,
-      size: file.size,
-    });
+      const publicUrl = `/uploads/${filename}`;
+      return NextResponse.json({
+        success: true,
+        url: publicUrl,
+        filename,
+        size: file.size,
+      });
+    } catch (fsErr) {
+      // 2. Fallback untuk lingkungan read-only (seperti serverless Vercel / Netlify tanpa persistent volume)
+      // Simpan sebagai Data URI base64 agar foto tetap tersimpan langsung di database dan tidak hilang saat online
+      console.warn("Penyimpanan file lokal tidak tersedia atau read-only, beralih ke Base64 Data URI:", fsErr);
+      const mimeType = file.type || "image/jpeg";
+      const base64Url = `data:${mimeType};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({
+        success: true,
+        url: base64Url,
+        filename,
+        size: file.size,
+        isBase64: true,
+      });
+    }
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Gagal mengunggah file. Silakan coba lagi." }, { status: 500 });
