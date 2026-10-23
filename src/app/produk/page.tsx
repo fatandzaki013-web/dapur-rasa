@@ -16,25 +16,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  shortDescription?: string;
-  description?: string;
-  price: number;
-  promoPrice?: number | null;
-  unit: string;
-  stock: number;
-  isAvailable: boolean;
-  isBestSeller: boolean;
-  isFeatured: boolean;
-  isNew: boolean;
-  images: Array<{ url: string; alt?: string; isPrimary?: boolean }>;
-  category: { id: string; name: string; slug: string };
-  variants: Array<{ id: string; name: string; priceAdjustment: number; stock: number }>;
-}
+import { DEFAULT_PRODUCTS, ProductItem as Product } from "@/lib/constants";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -44,8 +26,8 @@ function ProductsContent() {
   const { categories, formatPrice } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortOption, setSortOption] = useState("order");

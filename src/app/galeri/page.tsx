@@ -13,27 +13,13 @@ import {
   ShoppingBag,
 } from "lucide-react";
 
-interface GalleryItem {
-  id: string;
-  title: string;
-  imageUrl: string;
-  caption?: string | null;
-  categoryTag?: string | null;
-  altText?: string | null;
-  productId?: string | null;
-  product?: {
-    id: string;
-    name: string;
-    slug: string;
-    price: number;
-  } | null;
-}
+import { DEFAULT_GALLERY_ITEMS, GalleryItem } from "@/lib/constants";
 
 export default function GalleryPage() {
-  const [items, setItems] = useState<GalleryItem[]>([]);
-  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>([]);
+  const [items, setItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
+  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
   const [selectedTag, setSelectedTag] = useState<string>("Semua");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // Fetch gallery items from public API

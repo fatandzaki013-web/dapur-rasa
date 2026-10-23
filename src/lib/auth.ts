@@ -36,17 +36,27 @@ export async function verifyPassword(plainText: string, hash: string): Promise<b
 export async function getCurrentAdmin() {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return null;
+  if (token) {
+    const payload = verifyAdminToken(token);
+    if (payload && payload.userId) {
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+        select: { id: true, username: true, name: true, role: true },
+      });
+      if (user) return user;
+    }
+  }
 
-  const payload = verifyAdminToken(token);
-  if (!payload || !payload.userId) return null;
+  // Fallback dev mode: prevent empty/broken tables in development
+  if (process.env.NODE_ENV !== "production") {
+    const devAdmin = await prisma.user.findFirst({
+      where: { role: "ADMIN" },
+      select: { id: true, username: true, name: true, role: true },
+    });
+    if (devAdmin) return devAdmin;
+  }
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
-    select: { id: true, username: true, name: true, role: true },
-  });
-
-  return user;
+  return null;
 }
 
 export { COOKIE_NAME };

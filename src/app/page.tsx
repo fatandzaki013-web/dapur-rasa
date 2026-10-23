@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
@@ -20,27 +20,17 @@ import {
   Phone,
   LayoutDashboard,
   UtensilsCrossed,
+  Image as ImageIcon,
+  X,
+  ExternalLink,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
-
-interface ProductItem {
-  id: string;
-  name: string;
-  slug: string;
-  shortDescription?: string;
-  description?: string;
-  price: number;
-  promoPrice?: number | null;
-  unit: string;
-  stock: number;
-  isAvailable: boolean;
-  isBestSeller: boolean;
-  isFeatured: boolean;
-  isNew: boolean;
-  images: Array<{ url: string; alt?: string; isPrimary?: boolean }>;
-  category: { id: string; name: string; slug: string };
-  variants: Array<{ id: string; name: string; priceAdjustment: number; stock: number }>;
-}
+import {
+  DEFAULT_PRODUCTS,
+  DEFAULT_GALLERY_ITEMS,
+  ProductItem,
+  GalleryItem,
+} from "@/lib/constants";
 
 interface HeroSlide {
   id: string | number;
@@ -57,7 +47,11 @@ export default function HomePage() {
   const { formatPrice, sections } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
-  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>(DEFAULT_PRODUCTS);
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
+  const [selectedGalleryTag, setSelectedGalleryTag] = useState<string>("Semua");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
   const [activeSlide, setActiveSlide] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null);
@@ -145,15 +139,44 @@ export default function HomePage() {
     { name: "Paket Hemat", slug: "paket-hemat", emoji: "🎁" },
   ];
 
-  // Fetch all products
+  // Fetch all products & gallery items
   useEffect(() => {
     fetch("/api/public/products")
       .then((res) => res.json())
       .then((data) => {
-        if (data.products) setProducts(data.products);
+        if (data.products && data.products.length > 0) setProducts(data.products);
       })
       .catch((e) => console.error("Error fetching products:", e));
+
+    fetch("/api/public/gallery")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.items && data.items.length > 0) setGalleryItems(data.items);
+      })
+      .catch((e) => console.error("Error fetching gallery:", e));
   }, []);
+
+  // Filter gallery items by selected tag
+  const filteredGalleryItems = useMemo(() => {
+    if (selectedGalleryTag === "Semua") return galleryItems;
+    return galleryItems.filter((item) => item.categoryTag === selectedGalleryTag);
+  }, [galleryItems, selectedGalleryTag]);
+
+  // Unique gallery tags
+  const galleryTags = useMemo(() => {
+    const rawTags = galleryItems.map((i) => i.categoryTag).filter(Boolean) as string[];
+    return ["Semua", ...Array.from(new Set(rawTags))];
+  }, [galleryItems]);
+
+  const handlePrevLightbox = () => {
+    if (lightboxIndex === null || filteredGalleryItems.length === 0) return;
+    setLightboxIndex((prev) => (prev! - 1 + filteredGalleryItems.length) % filteredGalleryItems.length);
+  };
+
+  const handleNextLightbox = () => {
+    if (lightboxIndex === null || filteredGalleryItems.length === 0) return;
+    setLightboxIndex((prev) => (prev! + 1) % filteredGalleryItems.length);
+  };
 
   // Auto slide effect
   useEffect(() => {
@@ -556,7 +579,98 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 5: CARA BELANJA MUDAH (2x2 Grid on Mobile)             */}
+        {/* SECTION 5: GALERI FOTO KUE & CAMILAN (Visual Showcase Dapur Rasa) */}
+        {/* ============================================================== */}
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#4A0E4E] mb-1">
+                <ImageIcon className="w-3.5 h-3.5 text-[#4A0E4E]" />
+                <span>Koleksi Visual Toko</span>
+              </div>
+              <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+                Galeri Foto Kue &amp; Camilan
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-500">
+                Foto asli olahan aneka pastel renyah, risol mayo lumer, kue basah, dan snack box Dapur Rasa
+              </p>
+            </div>
+            <Link
+              className="text-xs sm:text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-0.5 shrink-0 self-start sm:self-auto"
+              href="/galeri"
+            >
+              <span>Buka Galeri Lengkap</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Gallery Category Filter Pills */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
+            {galleryTags.map((tag) => {
+              const isSelected = selectedGalleryTag === tag;
+              return (
+                <button
+                  key={tag as string}
+                  onClick={() => setSelectedGalleryTag(tag as string)}
+                  className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    isSelected
+                      ? "bg-[#4A0E4E] text-white shadow-xs"
+                      : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"
+                  }`}
+                >
+                  {tag}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Gallery Grid (2 Columns on Mobile, 3 on Tablet, 4 on Desktop) */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+            {filteredGalleryItems.map((item, idx) => (
+              <div
+                key={item.id}
+                onClick={() => setLightboxIndex(idx)}
+                className="group relative flex flex-col overflow-hidden bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 cursor-pointer"
+              >
+                {/* Photo with zoom effect */}
+                <div className="relative aspect-square overflow-hidden bg-gray-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={item.altText || item.title}
+                    src={item.imageUrl}
+                    className="w-full h-full object-cover transition duration-500 group-hover:scale-108"
+                  />
+                  {item.categoryTag && (
+                    <span className="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-full bg-white/95 backdrop-blur-xs px-2 sm:px-2.5 py-0.5 text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wide text-[#4A0E4E] shadow-xs">
+                      {item.categoryTag}
+                    </span>
+                  )}
+                  <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="px-3 py-1.5 rounded-xl bg-white/95 text-gray-900 text-xs font-bold shadow-md flex items-center gap-1.5 backdrop-blur-xs">
+                      <Eye className="w-3.5 h-3.5 text-[#4A0E4E]" />
+                      <span>Lihat Foto</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Details */}
+                <div className="p-2.5 sm:p-3.5 flex flex-col justify-between flex-1 bg-white">
+                  <h3 className="font-extrabold text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-1 leading-snug">
+                    {item.title}
+                  </h3>
+                  {item.caption && (
+                    <p className="text-[10px] sm:text-xs text-gray-500 line-clamp-1 sm:line-clamp-2 mt-0.5 leading-relaxed">
+                      {item.caption}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* SECTION 6: CARA BELANJA MUDAH (2x2 Grid on Mobile)             */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6 py-4 sm:py-6 border-t border-gray-100">
           <div className="text-center space-y-1 sm:space-y-2 mb-6 sm:mb-10">
@@ -637,7 +751,7 @@ export default function HomePage() {
               <div className="flex flex-col items-center text-center p-3 sm:p-4 rounded-xl bg-gray-50/60 border border-gray-100/80 space-y-2 relative group hover:border-amber-200 transition">
                 <div className="relative">
                   <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shadow-2xs group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
-                    <Store className="w-5 h-5 sm:w-7 sm:h-7" />
+                    <Store className="w-7 h-7" />
                   </div>
                   <span className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-500 text-white text-[10px] sm:text-xs font-bold flex items-center justify-center shadow-xs">
                     4
@@ -652,6 +766,68 @@ export default function HomePage() {
           </div>
         </section>
       </main>
+
+      {/* Homepage Gallery Lightbox Modal */}
+      {lightboxIndex !== null && filteredGalleryItems[lightboxIndex] && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+          {/* Close button */}
+          <button
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-5 right-5 text-white/80 hover:text-white p-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-20 cursor-pointer"
+            aria-label="Tutup"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Prev Button */}
+          <button
+            onClick={handlePrevLightbox}
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-20 cursor-pointer"
+            aria-label="Sebelumnya"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          {/* Next Button */}
+          <button
+            onClick={handleNextLightbox}
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-2.5 sm:p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors z-20 cursor-pointer"
+            aria-label="Selanjutnya"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+
+          {/* Content */}
+          <div className="max-w-3xl w-full max-h-[85vh] flex flex-col items-center bg-gray-900/90 rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+            <div className="relative w-full max-h-[60vh] flex items-center justify-center bg-black">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={filteredGalleryItems[lightboxIndex].imageUrl}
+                alt={filteredGalleryItems[lightboxIndex].title}
+                className="max-h-[60vh] w-auto max-w-full object-contain"
+              />
+            </div>
+            <div className="p-4 sm:p-6 text-white w-full space-y-1.5 bg-gray-900">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#4A0E4E] text-white">
+                  {filteredGalleryItems[lightboxIndex].categoryTag || "Koleksi Dapur Rasa"}
+                </span>
+                <span className="text-xs text-gray-400 font-medium">
+                  {lightboxIndex + 1} / {filteredGalleryItems.length}
+                </span>
+              </div>
+              <h3 className="text-base sm:text-xl font-bold">
+                {filteredGalleryItems[lightboxIndex].title}
+              </h3>
+              {filteredGalleryItems[lightboxIndex].caption && (
+                <p className="text-xs sm:text-sm text-gray-300">
+                  {filteredGalleryItems[lightboxIndex].caption}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
