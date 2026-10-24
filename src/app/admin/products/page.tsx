@@ -254,7 +254,7 @@ export default function AdminProductsPage() {
     setSlug(p.slug);
     setShortDescription(p.shortDescription || "");
     setDescription(p.description);
-    setCategoryId(p.categoryId);
+    setCategoryId(p.categoryId || p.category?.id || (categories.length > 0 ? categories[0].id : ""));
     setPrice(p.price);
     setUnit(p.unit);
     setStock(p.stock);
@@ -340,7 +340,7 @@ export default function AdminProductsPage() {
 
     const payload = {
       name: name.trim(),
-      slug: slug.trim(),
+      slug: slug ? slug.trim() : (name ? name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "") : undefined),
       shortDescription: shortDescription.trim() || null,
       description: description.trim(),
       categoryId,

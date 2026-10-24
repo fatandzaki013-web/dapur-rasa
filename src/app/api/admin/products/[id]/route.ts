@@ -92,11 +92,11 @@ export async function PUT(
     const updated = await prisma.product.update({
       where: { id },
       data: {
-        name: name !== undefined ? name.trim() : existingProduct.name,
-        slug: slug !== undefined ? slug.trim() : existingProduct.slug,
+        name: name && name.trim() ? name.trim() : existingProduct.name,
+        slug: slug && slug.trim() ? slug.trim() : existingProduct.slug,
         shortDescription: shortDescription !== undefined ? shortDescription?.trim() : existingProduct.shortDescription,
         description: description !== undefined ? description.trim() : existingProduct.description,
-        price: price !== undefined ? Number(price) : existingProduct.price,
+        price: price !== undefined && !isNaN(Number(price)) ? Number(price) : existingProduct.price,
         promoPrice: promoPrice !== undefined ? (promoPrice ? Number(promoPrice) : null) : existingProduct.promoPrice,
         sku: sku !== undefined ? sku?.trim() : existingProduct.sku,
         unit: unit !== undefined ? unit.trim() : existingProduct.unit,
@@ -108,7 +108,7 @@ export async function PUT(
         isNew: isNew !== undefined ? Boolean(isNew) : existingProduct.isNew,
         showOnHome: showOnHome !== undefined ? Boolean(showOnHome) : existingProduct.showOnHome,
         displayOrder: displayOrder !== undefined ? Number(displayOrder) : existingProduct.displayOrder,
-        categoryId: categoryId !== undefined ? categoryId : existingProduct.categoryId,
+        categoryId: categoryId && categoryId.trim() ? categoryId.trim() : existingProduct.categoryId,
         ingredients: ingredients !== undefined ? ingredients?.trim() : existingProduct.ingredients,
         allergens: allergens !== undefined ? allergens?.trim() : existingProduct.allergens,
         storageGuide: storageGuide !== undefined ? storageGuide?.trim() : existingProduct.storageGuide,
