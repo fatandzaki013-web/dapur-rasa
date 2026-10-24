@@ -3,15 +3,21 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { BookOpen, Calendar, User, ArrowRight, Sparkles, Tag } from "lucide-react";
+import { BookOpen, Calendar, User, ArrowRight, Sparkles } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function PublicArticlesPage() {
-  const articles = await (prisma as any).article.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
-  });
+  let articles: any[] = [];
+  try {
+    articles = await (prisma as any).article.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    });
+  } catch (error) {
+    console.warn("PublicArticlesPage fetch warning:", error);
+  }
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] flex flex-col font-sans text-slate-800">

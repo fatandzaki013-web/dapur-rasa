@@ -8,14 +8,13 @@ import {
   Calendar,
   User,
   ArrowLeft,
-  Share2,
   Tag,
-  BookOpen,
   ShoppingBag,
   Clock,
 } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function ArticleDetailPage({
   params,
@@ -23,23 +22,31 @@ export default async function ArticleDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await (prisma as any).article.findUnique({
-    where: { slug },
-  });
+  let article: any = null;
+  let relatedArticles: any[] = [];
+
+  try {
+    article = await (prisma as any).article.findUnique({
+      where: { slug },
+    });
+
+    if (article) {
+      relatedArticles = await (prisma as any).article.findMany({
+        where: {
+          status: "PUBLISHED",
+          id: { not: article.id },
+        },
+        take: 3,
+        orderBy: { publishedAt: "desc" },
+      });
+    }
+  } catch (error) {
+    console.warn("ArticleDetailPage fetch error:", error);
+  }
 
   if (!article || article.status !== "PUBLISHED") {
     notFound();
   }
-
-  // Related articles
-  const relatedArticles = await (prisma as any).article.findMany({
-    where: {
-      status: "PUBLISHED",
-      id: { not: article.id },
-    },
-    take: 3,
-    orderBy: { publishedAt: "desc" },
-  });
 
   // Calculate estimated reading time
   const wordCount = (article.content || "").split(/\s+/).length;
