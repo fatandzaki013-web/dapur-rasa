@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(
   req: NextRequest,
@@ -92,10 +96,16 @@ export async function PUT(
       },
     });
 
+    revalidatePath("/admin/orders");
+    revalidatePath(`/admin/orders/${id}`);
+
     return NextResponse.json({ success: true, order: updated });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Order PUT error:", error);
-    return NextResponse.json({ error: "Gagal memperbarui pesanan." }, { status: 500 });
+    return NextResponse.json(
+      { error: error?.message || "Gagal memperbarui status pesanan." },
+      { status: 500 }
+    );
   }
 }
 
@@ -109,8 +119,14 @@ export async function DELETE(
 
     const { id } = await params;
     await prisma.order.delete({ where: { id } });
+
+    revalidatePath("/admin/orders");
+
     return NextResponse.json({ success: true, message: "Pesanan berhasil dihapus." });
-  } catch (error) {
-    return NextResponse.json({ error: "Gagal menghapus pesanan." }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error?.message || "Gagal menghapus pesanan." },
+      { status: 500 }
+    );
   }
 }
