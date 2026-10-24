@@ -7,7 +7,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
-const prisma = new PrismaClient();
+const databaseUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.POSTGRES_URL;
+
+const prisma = new PrismaClient({
+  datasources: databaseUrl ? { db: { url: databaseUrl } } : undefined,
+});
 
 async function checkAndSeed() {
   try {
@@ -15,7 +22,7 @@ async function checkAndSeed() {
     console.log(`[SEED CHECK] Jumlah produk saat ini: ${productCount}`);
     if (productCount === 0) {
       console.log("[SEED CHECK] Database kosong. Menjalankan inisialisasi data produk & admin awal...");
-      execSync("node scripts/seed.mjs", { stdio: "inherit", cwd: rootDir });
+      execSync("node scripts/seed.mjs", { stdio: "inherit", cwd: rootDir, env: process.env });
     } else {
       console.log("[SEED CHECK] Database sudah memiliki data produk. Seeding dilewati.");
     }
