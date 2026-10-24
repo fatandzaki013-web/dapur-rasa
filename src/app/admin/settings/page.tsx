@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { Save, CheckCircle, AlertCircle, Palette, Settings, RotateCcw } from "lucide-react";
 
 export default function AdminSettingsPage() {
@@ -335,6 +336,20 @@ export default function AdminSettingsPage() {
       ) : (
         <form onSubmit={handleSaveTheme} className="space-y-6 text-xs">
           <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
+            <div className="bg-gradient-to-r from-amber-500/10 to-amber-500/5 p-4 rounded-2xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+              <div>
+                <span className="font-bold text-amber-900 block text-xs">Studio Kustomisasi Warna & Live Simulator</span>
+                <span className="text-[11px] text-amber-800">Ubah palet warna dengan preset 1-klik dan simulator beranda toko secara realtime.</span>
+              </div>
+              <Link
+                href="/admin/theme"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs shrink-0 transition"
+              >
+                <Palette className="w-3.5 h-3.5" />
+                <span>Buka Studio Tema</span>
+              </Link>
+            </div>
+
             <div className="flex items-center justify-between border-b pb-2">
               <div>
                 <h2 className="font-heading font-bold text-base text-stone-900">

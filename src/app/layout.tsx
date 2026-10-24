@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
+import DynamicTheme from "@/components/DynamicTheme";
 
 export const metadata: Metadata = {
   title: "Dapur Rasa — Frozen Food & Kue Rumahan Berkualitas",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen flex flex-col bg-white text-gray-900">
         <StoreProvider>
           <CartProvider>
+            <DynamicTheme />
             <Navbar />
             <div className="flex-1 flex flex-col">{children}</div>
             <Footer />

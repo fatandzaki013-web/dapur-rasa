@@ -120,6 +120,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     refreshStoreData();
+    const handleThemeUpdate = () => {
+      refreshStoreData();
+    };
+    window.addEventListener("theme-updated", handleThemeUpdate);
+    return () => window.removeEventListener("theme-updated", handleThemeUpdate);
   }, [refreshStoreData]);
 
   const formatPrice = (amount: number) => {

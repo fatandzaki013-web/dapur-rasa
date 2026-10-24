@@ -69,6 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     pathname.startsWith("/admin/content") ||
     pathname.startsWith("/admin/articles") ||
     pathname.startsWith("/admin/homepage") ||
+    pathname.startsWith("/admin/theme") ||
     pathname.startsWith("/admin/testimonials-faq");
 
   const [isDataMasterOpen, setIsDataMasterOpen] = useState<boolean>(isMasterPath || true);
@@ -165,7 +166,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 3. Konten & Tampilan Web (Artikel Kuliner, Banner Slider Beranda, Testimoni & FAQ)
   const kontenItems = [
     { label: "Artikel & Tips Kuliner", href: "/admin/content/articles", icon: BookOpen },
-    { label: "Tampilan Beranda (Banner)", href: "/admin/homepage", icon: Palette },
+    { label: "Warna & Tema Website", href: "/admin/theme", icon: Palette },
+    { label: "Tampilan Beranda (Banner)", href: "/admin/homepage", icon: Layers },
     { label: "Testimoni & FAQ", href: "/admin/testimonials-faq", icon: MessageSquareQuote },
   ];
 

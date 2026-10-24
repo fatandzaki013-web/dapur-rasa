@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   try {
@@ -69,6 +71,15 @@ export async function PUT(req: NextRequest) {
         buttonShape: buttonShape || "rounded-lg",
       },
     });
+
+    // Revalidate public and admin paths for instant refresh
+    revalidatePath("/", "layout");
+    revalidatePath("/");
+    revalidatePath("/produk");
+    revalidatePath("/galeri");
+    revalidatePath("/artikel");
+    revalidatePath("/admin/theme");
+    revalidatePath("/admin/settings");
 
     return NextResponse.json({ success: true, theme });
   } catch (error) {
