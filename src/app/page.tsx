@@ -141,14 +141,14 @@ export default function HomePage() {
 
   // Fetch all products & gallery items
   useEffect(() => {
-    fetch("/api/public/products")
+    fetch("/api/public/products", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data.products && data.products.length > 0) setProducts(data.products);
       })
       .catch((e) => console.error("Error fetching products:", e));
 
-    fetch("/api/public/gallery")
+    fetch("/api/public/gallery", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data.items && data.items.length > 0) setGalleryItems(data.items);

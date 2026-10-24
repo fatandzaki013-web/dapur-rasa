@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -68,10 +71,19 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      products,
-      total: products.length,
-    });
+    return NextResponse.json(
+      {
+        products,
+        total: products.length,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error) {
     console.error("Products API error:", error);
     return NextResponse.json({ error: "Gagal memuat produk." }, { status: 500 });

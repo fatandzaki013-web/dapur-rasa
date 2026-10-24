@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -41,10 +44,17 @@ export async function GET(
       },
     });
 
-    return NextResponse.json({
-      product,
-      relatedProducts,
-    });
+    return NextResponse.json(
+      {
+        product,
+        relatedProducts,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
   } catch (error) {
     console.error("Product detail API error:", error);
     return NextResponse.json({ error: "Gagal memuat detail produk." }, { status: 500 });

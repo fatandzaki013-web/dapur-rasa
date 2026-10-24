@@ -113,7 +113,7 @@ export default function AdminProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("/api/admin/products");
+      const res = await fetch("/api/admin/products", { cache: "no-store" });
       const data = await res.json();
       if (data.products) setProducts(data.products);
     } catch (e) {
@@ -144,6 +144,48 @@ export default function AdminProductsPage() {
     });
     return () => clearTimeout(timer);
   }, []);
+
+  const handleExportBackup = async () => {
+    try {
+      const res = await fetch("/api/admin/products/backup");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal export data");
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `dapur-rasa-katalog-kue-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("File backup produk (JSON) berhasil diunduh.");
+    } catch (err: any) {
+      alert("Gagal backup: " + err.message);
+    }
+  };
+
+  const handleImportBackup = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const res = await fetch("/api/admin/products/backup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal mengimpor produk");
+      showToast(data.message || "Produk berhasil diimpor.");
+      fetchProducts();
+    } catch (err: any) {
+      alert("Gagal impor produk: " + err.message);
+    } finally {
+      e.target.value = "";
+    }
+  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

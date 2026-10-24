@@ -90,7 +90,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const refreshStoreData = useCallback(async () => {
     try {
-      const res = await fetch("/api/public/bootstrap");
+      const res = await fetch("/api/public/bootstrap", { cache: "no-store" });
       if (res.ok) {
         const data = await res.json();
         setSettings(data.settings);

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
-
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,10 +20,17 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ products });
-  } catch (error) {
+    return NextResponse.json(
+      { products },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
+  } catch (error: any) {
     console.error("Admin products GET error:", error);
-    return NextResponse.json({ error: "Gagal memuat produk." }, { status: 500 });
+    return NextResponse.json({ error: "Gagal memuat produk: " + (error?.message || "Kesalahan database.") }, { status: 500 });
   }
 }
 
@@ -144,19 +153,37 @@ export async function POST(req: NextRequest) {
     });
 
     // Record initial stock log
-    await prisma.stockLog.create({
-      data: {
-        productId: newProduct.id,
-        changeAmount: initialStock,
-        previousStock: 0,
-        newStock: initialStock,
-        reason: "Stok awal produk baru",
-      },
-    });
+    try {
+      await prisma.stockLog.create({
+        data: {
+          productId: newProduct.id,
+          changeAmount: initialStock,
+          previousStock: 0,
+          newStock: initialStock,
+          reason: "Stok awal produk baru",
+        },
+      });
+    } catch (logErr) {
+      console.warn("Stock log error:", logErr);
+    }
+
+    // Segera bersihkan cache halaman publik agar produk baru langsung tampil saat online
+    try {
+      revalidatePath("/");
+      revalidatePath("/produk");
+      revalidatePath(`/produk/${newProduct.slug}`);
+      revalidatePath("/admin/products");
+    } catch (e) {}
 
     return NextResponse.json({ success: true, product: newProduct });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin products POST error:", error);
-    return NextResponse.json({ error: "Gagal membuat produk." }, { status: 500 });
+    const msg = error?.message || "";
+    const isReadOnly = msg.includes("readonly") || msg.includes("EROFS") || msg.includes("unable to open database file");
+    const errorText = isReadOnly
+      ? "Database bersifat Read-Only di hosting online ini (Vercel serverless). Untuk menyimpan produk baru secara permanen di cloud, hubungkan database PostgreSQL (seperti Supabase / Neon) pada DATABASE_URL di dashboard hosting."
+      : (msg || "Gagal membuat produk.");
+
+    return NextResponse.json({ error: errorText }, { status: 500 });
   }
 }

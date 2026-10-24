@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET(
   req: NextRequest,
@@ -23,8 +27,8 @@ export async function GET(
     if (!product) return NextResponse.json({ error: "Produk tidak ditemukan." }, { status: 404 });
 
     return NextResponse.json({ product });
-  } catch (error) {
-    return NextResponse.json({ error: "Gagal memuat produk." }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: "Gagal memuat produk: " + error?.message }, { status: 500 });
   }
 }
 
@@ -118,15 +122,17 @@ export async function PUT(
 
     // Stock change log
     if (stockDiff !== 0) {
-      await prisma.stockLog.create({
-        data: {
-          productId: id,
-          changeAmount: stockDiff,
-          previousStock: existingProduct.stock,
-          newStock,
-          reason: body.stockReason || "Penyesuaian manual admin dari form produk",
-        },
-      });
+      try {
+        await prisma.stockLog.create({
+          data: {
+            productId: id,
+            changeAmount: stockDiff,
+            previousStock: existingProduct.stock,
+            newStock,
+            reason: body.stockReason || "Penyesuaian manual admin dari form produk",
+          },
+        });
+      } catch (logErr) {}
     }
 
     // Update images if provided
@@ -172,10 +178,24 @@ export async function PUT(
       },
     });
 
+    // Revalidasi cache halaman agar perubahan harga/produk langsung terlihat online
+    try {
+      revalidatePath("/");
+      revalidatePath("/produk");
+      revalidatePath(`/produk/${result?.slug}`);
+      revalidatePath("/admin/products");
+    } catch (e) {}
+
     return NextResponse.json({ success: true, product: result });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin products PUT error:", error);
-    return NextResponse.json({ error: "Gagal memperbarui produk." }, { status: 500 });
+    const msg = error?.message || "";
+    const isReadOnly = msg.includes("readonly") || msg.includes("EROFS") || msg.includes("unable to open database file");
+    const errorText = isReadOnly
+      ? "Database bersifat Read-Only di hosting online ini (Vercel serverless). Untuk menyimpan perubahan harga / produk secara permanen di cloud, hubungkan database PostgreSQL (seperti Supabase / Neon) pada DATABASE_URL di dashboard hosting."
+      : (msg || "Gagal memperbarui produk.");
+
+    return NextResponse.json({ error: errorText }, { status: 500 });
   }
 }
 
@@ -192,11 +212,17 @@ export async function DELETE(
     // Check if product is part of order items to preserve historical records safely
     const orderItemCount = await prisma.orderItem.count({ where: { productId: id } });
     if (orderItemCount > 0) {
-      // Instead of hard deleting and breaking historical orders, archive the product
       await prisma.product.update({
         where: { id },
         data: { isAvailable: false, showOnHome: false },
       });
+
+      try {
+        revalidatePath("/");
+        revalidatePath("/produk");
+        revalidatePath("/admin/products");
+      } catch (e) {}
+
       return NextResponse.json({
         success: true,
         message: "Produk memiliki riwayat pesanan sehingga diarsipkan (dinonaktifkan) untuk menjaga integritas data pesanan.",
@@ -205,9 +231,22 @@ export async function DELETE(
     }
 
     await prisma.product.delete({ where: { id } });
+
+    try {
+      revalidatePath("/");
+      revalidatePath("/produk");
+      revalidatePath("/admin/products");
+    } catch (e) {}
+
     return NextResponse.json({ success: true, message: "Produk berhasil dihapus." });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin products DELETE error:", error);
-    return NextResponse.json({ error: "Gagal menghapus produk." }, { status: 500 });
+    const msg = error?.message || "";
+    const isReadOnly = msg.includes("readonly") || msg.includes("EROFS") || msg.includes("unable to open database file");
+    const errorText = isReadOnly
+      ? "Database bersifat Read-Only di hosting online ini (Vercel serverless). Hubungkan database PostgreSQL (Supabase / Neon) pada DATABASE_URL."
+      : (msg || "Gagal menghapus produk.");
+
+    return NextResponse.json({ error: errorText }, { status: 500 });
   }
 }

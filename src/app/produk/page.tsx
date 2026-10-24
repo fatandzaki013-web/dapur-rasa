@@ -60,7 +60,7 @@ function ProductsContent() {
     if (sortOption !== "order") params.set("sort", sortOption);
     if (onlyAvailable) params.set("available", "true");
 
-    fetch(`/api/public/products?${params.toString()}`)
+    fetch(`/api/public/products?${params.toString()}`, { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (data.products) setProducts(data.products);

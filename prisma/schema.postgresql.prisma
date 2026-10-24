@@ -50,20 +50,20 @@ model Product {
   showOnHome       Boolean          @default(true)
   displayOrder     Int              @default(0)
   categoryId       String
-  category         Category         @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  ingredients      String?
-  allergens        String?
-  storageGuide     String?
-  shelfLife        String?
-  weightGrams      Float?
-  piecesPerPack    Int?             @default(1)
-  seoTitle         String?
-  seoDesc          String?
+  category         Category         @relation(fields: [categoryId], references: [id])
   images           ProductImage[]
   variants         ProductVariant[]
   orderItems       OrderItem[]
   galleryItems     GalleryItem[]
   stockLogs        StockLog[]
+  seoTitle         String?
+  seoDesc          String?
+  ingredients      String?
+  allergens        String?
+  storageGuide     String?
+  shelfLife        String?
+  weightGrams      Int?
+  piecesPerPack    Int?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 }
@@ -88,14 +88,16 @@ model ProductVariant {
   stock           Int      @default(10)
   isAvailable     Boolean  @default(true)
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model GalleryItem {
   id           String   @id @default(cuid())
   title        String
-  category     String   @default("Kue Basah")
   imageUrl     String
   caption      String?
+  categoryTag  String?
+  altText      String?
   productId    String?
   product      Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   isPublished  Boolean  @default(true)
@@ -157,11 +159,11 @@ model StoreSetting {
   tagline            String   @default("Kue & Camilan Rumahan Kualitas Premium")
   logoUrl            String?
   faviconUrl         String?
-  whatsappNumber     String   @default("6285888159765")
-  address            String?  @default("Perum Griya Cileungsi 5, Cileungsi, Bogor")
-  operationalHours   String   @default("Senin - Minggu: 06:00 - 18:00 WIB")
+  whatsappNumber     String   @default("6281234567890")
+  address            String?  @default("Jl. Mawar Melati No. 12, Jakarta")
+  operationalHours   String   @default("Senin - Sabtu: 08:00 - 18:00 WIB")
   fulfillmentOptions String   @default("PICKUP,DELIVERY")
-  defaultShippingFee Float    @default(10000)
+  defaultShippingFee Float    @default(15000)
   minOrderAmount     Float    @default(0)
   currency           String   @default("IDR")
   timezone           String   @default("Asia/Jakarta")
@@ -210,32 +212,17 @@ model HomepageSection {
   updatedAt           DateTime @updatedAt
 }
 
-model Article {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  content     String
-  excerpt     String?
-  coverImage  String?
-  category    String   @default("Resep & Tips")
-  isPublished Boolean  @default(true)
-  publishedAt DateTime @default(now())
-  authorName  String   @default("Admin Dapur Rasa")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
 model Testimonial {
-  id           String   @id @default(cuid())
-  customerName String
-  customerRole String?  @default("Pelanggan Setia")
-  rating       Int      @default(5)
-  reviewText   String
-  avatarUrl    String?
-  isFeatured   Boolean  @default(true)
-  displayOrder Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String   @id @default(cuid())
+  customerName   String
+  comment        String
+  rating         Int      @default(5)
+  avatarUrl      String?
+  eventOrProduct String?
+  isApproved     Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  isSample       Boolean  @default(true)
+  createdAt      DateTime @default(now())
 }
 
 model FaqItem {
@@ -244,18 +231,37 @@ model FaqItem {
   answer       String
   category     String   @default("Umum")
   displayOrder Int      @default(0)
-  isPublished  Boolean  @default(true)
+  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }
 
-model PromotionalPopup {
-  id          String   @id @default("default")
-  isEnabled   Boolean  @default(false)
-  title       String?  @default("Promo Spesial Hari Ini!")
-  description String?
-  imageUrl    String?
-  buttonText  String?  @default("Lihat Promo")
-  buttonLink  String?  @default("/produk")
-  updatedAt   DateTime @updatedAt
+model PromotionBanner {
+  id           String   @id @default(cuid())
+  title        String
+  subtitle     String?
+  imageUrl     String
+  linkUrl      String?
+  buttonText   String?
+  badgeText    String?
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}
+
+model Article {
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String?
+  content        String
+  coverImage     String?
+  category       String    @default("Kuliner & Resep")
+  tags           String?
+  status         String    @default("PUBLISHED")
+  authorName     String?   @default("Super Admin")
+  seoTitle       String?
+  seoDescription String?
+  publishedAt    DateTime? @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }

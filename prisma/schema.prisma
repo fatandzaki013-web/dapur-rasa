@@ -55,6 +55,7 @@ model Product {
   variants         ProductVariant[]
   orderItems       OrderItem[]
   galleryItems     GalleryItem[]
+  stockLogs        StockLog[]
   seoTitle         String?
   seoDesc          String?
   ingredients      String?
@@ -144,6 +145,7 @@ model OrderItem {
 model StockLog {
   id            String   @id @default(cuid())
   productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   changeAmount  Int
   previousStock Int
   newStock      Int
@@ -263,4 +265,3 @@ model Article {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 }
-
