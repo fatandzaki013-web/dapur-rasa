@@ -42,7 +42,18 @@ export default function DynamicTheme() {
         --color-text: ${text};
       }
 
-      body {
+      /* Global Background Overrides (Enforces the chosen background on the whole web) */
+      html,
+      body,
+      main,
+      #main-content,
+      .bg-theme-bg,
+      .bg-gray-50,
+      .bg-gray-50\\/40,
+      .bg-gray-50\\/50,
+      .bg-slate-50,
+      .bg-stone-50,
+      .bg-white\\/90 {
         background-color: ${bg} !important;
         color: ${text} !important;
       }

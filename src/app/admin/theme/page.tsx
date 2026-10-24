@@ -14,6 +14,8 @@ import {
   Eye,
   Check,
   UtensilsCrossed,
+  ShieldCheck,
+  Flame,
 } from "lucide-react";
 
 interface ThemePreset {
@@ -25,6 +27,13 @@ interface ThemePreset {
   surface: string;
   accent: string;
   text: string;
+}
+
+interface BackgroundSwatch {
+  name: string;
+  hex: string;
+  desc: string;
+  isDark?: boolean;
 }
 
 const THEME_PRESETS: ThemePreset[] = [
@@ -89,6 +98,26 @@ const THEME_PRESETS: ThemePreset[] = [
     text: "#0F172A",
   },
   {
+    name: "Honey & Butter Cream",
+    desc: "Kuning keemasan manis hangat yang menggugah selera",
+    primary: "#78350F",
+    secondary: "#D97706",
+    bg: "#FFFBEB",
+    surface: "#FFFFFF",
+    accent: "#FEF3C7",
+    text: "#1C1917",
+  },
+  {
+    name: "Minimalist Pure White",
+    desc: "Tampilan bersih serba putih dengan aksen charcoal",
+    primary: "#18181B",
+    secondary: "#52525B",
+    bg: "#FFFFFF",
+    surface: "#FAFAFA",
+    accent: "#F4F4F5",
+    text: "#09090B",
+  },
+  {
     name: "Luxury Midnight Gold",
     desc: "Hitam mewah eksklusif berpadu sentuhan emas",
     primary: "#18181B",
@@ -98,6 +127,21 @@ const THEME_PRESETS: ThemePreset[] = [
     accent: "#FEF3C7",
     text: "#09090B",
   },
+];
+
+const QUICK_BACKGROUND_SWATCHES: BackgroundSwatch[] = [
+  { name: "Warm Cream", hex: "#FAF5EF", desc: "Krim hangat roti klasik" },
+  { name: "Pure White", hex: "#FFFFFF", desc: "Putih bersih minimalis" },
+  { name: "Soft Cloud", hex: "#F9FAFB", desc: "Abu-abu sangat lembut" },
+  { name: "Matcha Pale", hex: "#F4F8F4", desc: "Hijau teh lembut segar" },
+  { name: "Butter Warm", hex: "#FFFBEB", desc: "Kuning mentega lembut" },
+  { name: "Blush Velvet", hex: "#FFF1F2", desc: "Merah muda manis elegan" },
+  { name: "Soft Lavender", hex: "#FAF5FF", desc: "Ungu muda modern" },
+  { name: "Ice Sky Blue", hex: "#F0F9FF", desc: "Biru langit segar" },
+  { name: "Fresh Mint", hex: "#F0FDF4", desc: "Hijau mint sejuk" },
+  { name: "Warm Peach", hex: "#FFF7ED", desc: "Peach hangat ramah" },
+  { name: "Slate Cool", hex: "#F8FAFC", desc: "Abu slate profesional" },
+  { name: "Luxury Dark", hex: "#18181B", desc: "Mode gelap eksklusif", isDark: true },
 ];
 
 export default function AdminThemePage() {
@@ -139,7 +183,7 @@ export default function AdminThemePage() {
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 4000);
+    setTimeout(() => setToastMessage(null), 4500);
   };
 
   const applyPreset = (preset: ThemePreset) => {
@@ -149,7 +193,7 @@ export default function AdminThemePage() {
     setSurfaceColor(preset.surface);
     setAccentColor(preset.accent);
     setTextColor(preset.text);
-    showToast(`Preset "${preset.name}" dipilih! Klik Simpan untuk menerapkan.`);
+    showToast(`Preset "${preset.name}" dipilih! Klik "Terapkan & Simpan Warna" untuk mengaktifkan ke Vercel.`);
   };
 
   const handleSaveTheme = async (e: React.FormEvent) => {
@@ -186,7 +230,7 @@ export default function AdminThemePage() {
         window.dispatchEvent(new Event("theme-updated"));
       }
 
-      showToast("Tema warna berhasil disimpan dan diterapkan ke seluruh website!");
+      showToast("Tema warna dan latar belakang berhasil disimpan dan aktif di website!");
     } catch (err: any) {
       setErrorMessage(err.message || "Gagal menyimpan tema.");
     } finally {
@@ -210,7 +254,7 @@ export default function AdminThemePage() {
             target="_blank"
             className="ml-2 px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-[11px] inline-flex items-center gap-1 transition"
           >
-            <span>Lihat Web</span>
+            <span>Buka Web</span>
             <ExternalLink className="w-3 h-3" />
           </Link>
         </div>
@@ -224,10 +268,10 @@ export default function AdminThemePage() {
             <span>Kustomisasi Tampilan Web</span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 font-heading">
-            Warna &amp; Tema Website Utama
+            Warna &amp; Latar Belakang Website Utama
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Ubah palet warna website toko secara langsung. Warna yang Anda pilih di sini akan langsung mengubah tampilan tombol, navbar, banner, dan seluruh halaman beranda toko Anda.
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+            Sesuaikan palet warna toko dan warna background seluruh halaman web secara leluasa. Perubahan otomatis tersimpan ke database Neon dan langsung terupdate di link Vercel Anda.
           </p>
         </div>
 
@@ -238,7 +282,7 @@ export default function AdminThemePage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition-all"
           >
             <Eye className="w-3.5 h-3.5 text-slate-500" />
-            <span>Pratinjau Web Utama</span>
+            <span>Lihat Web Live</span>
             <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
           </Link>
         </div>
@@ -278,7 +322,7 @@ export default function AdminThemePage() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 {THEME_PRESETS.map((p) => {
                   const isSelected =
                     primaryColor.toLowerCase() === p.primary.toLowerCase() &&
@@ -288,48 +332,48 @@ export default function AdminThemePage() {
                       key={p.name}
                       type="button"
                       onClick={() => applyPreset(p)}
-                      className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${
+                      className={`text-left p-3 rounded-2xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2 ${
                         isSelected
                           ? "border-amber-600 bg-amber-50/40 shadow-xs ring-2 ring-amber-500/20"
                           : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/80"
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
-                        <span className="font-bold text-xs text-slate-900 leading-snug">
+                        <span className="font-bold text-xs text-slate-900 leading-snug line-clamp-1">
                           {p.name}
                         </span>
                         {isSelected && (
-                          <span className="w-4 h-4 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0">
-                            <Check className="w-2.5 h-2.5 stroke-[3]" />
+                          <span className="w-3.5 h-3.5 rounded-full bg-amber-600 text-white flex items-center justify-center shrink-0">
+                            <Check className="w-2 h-2 stroke-[3]" />
                           </span>
                         )}
                       </div>
 
-                      <p className="text-[10.5px] text-slate-500 leading-tight">
+                      <p className="text-[10px] text-slate-500 leading-tight line-clamp-2">
                         {p.desc}
                       </p>
 
-                      {/* Color dots */}
-                      <div className="flex items-center gap-1.5 pt-1">
+                      {/* Color dots preview */}
+                      <div className="flex items-center gap-1 pt-1">
                         <span
-                          className="w-5 h-5 rounded-full border border-black/10 shadow-2xs"
+                          className="w-4 h-4 rounded-full border border-black/15 shadow-2xs"
                           style={{ backgroundColor: p.primary }}
-                          title="Primary"
+                          title="Brand Primary"
                         />
                         <span
-                          className="w-5 h-5 rounded-full border border-black/10 shadow-2xs"
+                          className="w-4 h-4 rounded-full border border-black/15 shadow-2xs"
                           style={{ backgroundColor: p.secondary }}
                           title="Secondary"
                         />
                         <span
-                          className="w-5 h-5 rounded-full border border-black/10 shadow-2xs"
+                          className="w-4 h-4 rounded-full border border-black/15 shadow-2xs"
                           style={{ backgroundColor: p.bg }}
                           title="Background"
                         />
                         <span
-                          className="w-5 h-5 rounded-full border border-black/10 shadow-2xs"
-                          style={{ backgroundColor: p.accent }}
-                          title="Accent"
+                          className="w-4 h-4 rounded-full border border-black/15 shadow-2xs"
+                          style={{ backgroundColor: p.surface }}
+                          title="Surface Card"
                         />
                       </div>
                     </button>
@@ -338,17 +382,104 @@ export default function AdminThemePage() {
               </div>
             </div>
 
-            {/* 2. Color Pickers Manual */}
-            <form onSubmit={handleSaveTheme} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
+            {/* 2. Color Pickers Manual & Background Swatches */}
+            <form onSubmit={handleSaveTheme} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-3">
                 <h2 className="font-bold text-sm text-slate-900">
-                  Pengaturan Palet Warna Manual
+                  Pengaturan Palet &amp; Background Manual
                 </h2>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  Sesuaikan warna secara presisi menggunakan Color Picker atau kode HEX.
+                  Sesuaikan warna secara presisi menggunakan Color Picker, tombol pilihan cepat, atau masukkan kode HEX custom Anda.
                 </p>
               </div>
 
+              {/* FITUR UTAMA: BACKGROUND COLOR CUSTOMIZER */}
+              <div className="p-4 rounded-2xl border-2 border-amber-300/80 bg-amber-50/25 space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 text-[10.5px] font-extrabold uppercase tracking-wide mb-1">
+                      <Sparkles className="w-3 h-3 text-amber-700" />
+                      <span>Fitur Latar Belakang Website (Background)</span>
+                    </div>
+                    <h3 className="text-xs font-bold text-slate-900">
+                      Warna Background Seluruh Halaman Toko
+                    </h3>
+                    <p className="text-[10.5px] text-slate-500">
+                      Warna ini menjadi dasar seluruh halaman beranda, katalog produk, dan area utama website.
+                    </p>
+                  </div>
+
+                  {/* Manual picker for background */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <input
+                      type="color"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="w-10 h-10 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white shadow-2xs"
+                      title="Klik untuk memilih warna background custom"
+                    />
+                    <input
+                      type="text"
+                      value={backgroundColor}
+                      onChange={(e) => setBackgroundColor(e.target.value)}
+                      className="w-28 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-bold text-slate-800 bg-white"
+                      placeholder="#FAF5EF"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick Swatches Buttons */}
+                <div className="space-y-1.5 pt-1 border-t border-amber-200/60">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10.5px] font-bold text-slate-700">
+                      Pilihan Cepat Warna Background Populer:
+                    </span>
+                    <span className="text-[10px] text-amber-800 font-medium">
+                      Klik salah satu untuk langsung mencoba
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {QUICK_BACKGROUND_SWATCHES.map((swatch) => {
+                      const isSelected = backgroundColor.toLowerCase() === swatch.hex.toLowerCase();
+                      return (
+                        <button
+                          key={swatch.name}
+                          type="button"
+                          onClick={() => setBackgroundColor(swatch.hex)}
+                          className={`p-2 rounded-xl border text-left flex items-center gap-2 transition cursor-pointer ${
+                            isSelected
+                              ? "border-amber-600 bg-white shadow-xs ring-2 ring-amber-500/30"
+                              : "border-slate-200 bg-white/90 hover:bg-white hover:border-slate-300"
+                          }`}
+                        >
+                          <span
+                            className="w-5 h-5 rounded-lg border border-black/15 shrink-0 shadow-2xs flex items-center justify-center"
+                            style={{ backgroundColor: swatch.hex }}
+                          >
+                            {isSelected && (
+                              <Check
+                                className={`w-3 h-3 stroke-[3] ${
+                                  swatch.isDark ? "text-white" : "text-amber-800"
+                                }`}
+                              />
+                            )}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[10.5px] font-bold text-slate-900 truncate">
+                              {swatch.name}
+                            </div>
+                            <div className="text-[9px] font-mono text-slate-400">
+                              {swatch.hex}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* OTHER PALETTE CONTROLS */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Primary Color */}
                 <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-1.5">
@@ -356,7 +487,7 @@ export default function AdminThemePage() {
                     Warna Utama (Brand Primary)
                   </label>
                   <p className="text-[10px] text-slate-500">
-                    Warna tombol belanja, logo toko, teks judul utama, dan badge terlaris.
+                    Warna tombol belanja, banner hero, logo toko, dan elemen utama.
                   </p>
                   <div className="flex items-center gap-2 pt-1">
                     <input
@@ -381,7 +512,7 @@ export default function AdminThemePage() {
                     Warna Sekunder (Secondary)
                   </label>
                   <p className="text-[10px] text-slate-500">
-                    Warna aksen kedua, ikon sorotan, dan elemen dekoratif pelengkap.
+                    Warna badge diskon, aksen sorotan, dan ikon pendukung.
                   </p>
                   <div className="flex items-center gap-2 pt-1">
                     <input
@@ -400,38 +531,13 @@ export default function AdminThemePage() {
                   </div>
                 </div>
 
-                {/* Background Color */}
-                <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-1.5">
-                  <label className="block text-xs font-bold text-slate-800">
-                    Latar Belakang Web (Background)
-                  </label>
-                  <p className="text-[10px] text-slate-500">
-                    Warna dasar seluruh halaman web toko pelanggan.
-                  </p>
-                  <div className="flex items-center gap-2 pt-1">
-                    <input
-                      type="color"
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="w-10 h-10 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white"
-                    />
-                    <input
-                      type="text"
-                      value={backgroundColor}
-                      onChange={(e) => setBackgroundColor(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-semibold text-slate-800 bg-white"
-                      placeholder="#FAF5EF"
-                    />
-                  </div>
-                </div>
-
                 {/* Surface / Card Color */}
                 <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-1.5">
                   <label className="block text-xs font-bold text-slate-800">
                     Warna Kartu &amp; Navbar (Surface)
                   </label>
                   <p className="text-[10px] text-slate-500">
-                    Warna latar belakang kartu produk, navbar atas, dan modal.
+                    Warna latar belakang kartu produk, navbar melayang, dan keranjang.
                   </p>
                   <div className="flex items-center gap-2 pt-1">
                     <input
@@ -476,12 +582,12 @@ export default function AdminThemePage() {
                 </div>
 
                 {/* Text Color */}
-                <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+                <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-1.5 sm:col-span-2">
                   <label className="block text-xs font-bold text-slate-800">
                     Warna Teks Utama (Typography)
                   </label>
                   <p className="text-[10px] text-slate-500">
-                    Warna tulisan paragraf, deskripsi produk, dan label keterangan.
+                    Warna tulisan paragraf, deskripsi produk, judul kartu, dan label toko.
                   </p>
                   <div className="flex items-center gap-2 pt-1">
                     <input
@@ -494,7 +600,7 @@ export default function AdminThemePage() {
                       type="text"
                       value={textColor}
                       onChange={(e) => setTextColor(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-semibold text-slate-800 bg-white"
+                      className="w-36 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-semibold text-slate-800 bg-white"
                       placeholder="#211A16"
                     />
                   </div>
@@ -517,7 +623,7 @@ export default function AdminThemePage() {
                   className="px-6 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md hover:shadow-lg transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
-                  <span>{isSaving ? "Menerapkan ke Web..." : "Terapkan & Simpan Warna"}</span>
+                  <span>{isSaving ? "Menerapkan ke Vercel..." : "Terapkan & Simpan Warna"}</span>
                 </button>
               </div>
             </form>
@@ -533,12 +639,21 @@ export default function AdminThemePage() {
                     Live Simulator Beranda Toko
                   </h3>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">Realtime Preview</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] text-slate-400 font-medium">Latar:</span>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border border-slate-200 bg-white shadow-2xs">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full border border-black/15"
+                      style={{ backgroundColor }}
+                    />
+                    <span>{backgroundColor}</span>
+                  </span>
+                </div>
               </div>
 
-              {/* Simulator Screen Container */}
+              {/* Simulator Screen Container with the dynamic background color */}
               <div
-                className="rounded-2xl p-3 border border-slate-200 transition-colors duration-300 space-y-3 shadow-inner"
+                className="rounded-2xl p-3.5 border border-slate-200 transition-colors duration-300 space-y-3 shadow-inner"
                 style={{ backgroundColor }}
               >
                 {/* 1. Mini Navbar */}
@@ -582,7 +697,7 @@ export default function AdminThemePage() {
 
                 {/* 2. Mini Hero Banner */}
                 <div
-                  className="rounded-xl p-3.5 shadow-sm text-white relative overflow-hidden flex flex-col justify-between gap-3"
+                  className="rounded-xl p-3.5 shadow-sm text-white relative overflow-hidden flex flex-col justify-between gap-3 transition-colors"
                   style={{ backgroundColor: primaryColor }}
                 >
                   <div className="space-y-1">
@@ -611,20 +726,36 @@ export default function AdminThemePage() {
                   </div>
                 </div>
 
-                {/* 3. Mini Product Card */}
+                {/* 3. Mini Category Pills Row */}
+                <div className="flex items-center gap-1.5 overflow-hidden">
+                  {["Pastel", "Risol Mayo", "Sosis Solo", "Brownies"].map((c, idx) => (
+                    <span
+                      key={c}
+                      className="px-2 py-1 rounded-lg text-[8.5px] font-bold border border-black/5 whitespace-nowrap shadow-2xs"
+                      style={{
+                        backgroundColor: idx === 0 ? accentColor : surfaceColor,
+                        color: idx === 0 ? primaryColor : textColor,
+                      }}
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+
+                {/* 4. Mini Product Card 1 */}
                 <div
-                  className="rounded-xl p-2.5 shadow-xs border border-black/5 flex items-center gap-3"
+                  className="rounded-xl p-2.5 shadow-xs border border-black/5 flex items-center gap-3 transition-colors"
                   style={{ backgroundColor: surfaceColor }}
                 >
                   <div
-                    className="w-16 h-16 rounded-lg bg-cover bg-center shrink-0 border border-black/5"
+                    className="w-14 h-14 rounded-lg bg-cover bg-center shrink-0 border border-black/5"
                     style={{
                       backgroundImage:
                         "url('https://images.unsplash.com/photo-1626074353765-517a681e40be?w=200&auto=format&fit=crop&q=80')",
                     }}
                   />
 
-                  <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex-1 min-w-0 space-y-0.5">
                     <span
                       className="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold"
                       style={{
@@ -656,11 +787,77 @@ export default function AdminThemePage() {
                     + Beli
                   </button>
                 </div>
+
+                {/* 5. Mini Product Card 2 */}
+                <div
+                  className="rounded-xl p-2.5 shadow-xs border border-black/5 flex items-center gap-3 transition-colors"
+                  style={{ backgroundColor: surfaceColor }}
+                >
+                  <div
+                    className="w-14 h-14 rounded-lg bg-cover bg-center shrink-0 border border-black/5"
+                    style={{
+                      backgroundImage:
+                        "url('https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&auto=format&fit=crop&q=80')",
+                    }}
+                  />
+
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <span
+                      className="inline-block px-1.5 py-0.5 rounded text-[8px] font-bold"
+                      style={{
+                        backgroundColor: accentColor,
+                        color: primaryColor,
+                      }}
+                    >
+                      Fudgy
+                    </span>
+                    <div
+                      className="text-[11px] font-bold truncate leading-tight"
+                      style={{ color: textColor }}
+                    >
+                      Brownies Panggang Cokelat
+                    </div>
+                    <div
+                      className="text-xs font-extrabold"
+                      style={{ color: primaryColor }}
+                    >
+                      Rp 45.000
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className="px-2.5 py-1.5 rounded-lg text-white text-[10px] font-bold shadow-2xs shrink-0 cursor-default"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    + Beli
+                  </button>
+                </div>
+
+                {/* 6. Mini Trust Badge */}
+                <div
+                  className="rounded-xl p-2 shadow-2xs border border-black/5 flex items-center justify-between text-[8.5px] font-semibold"
+                  style={{ backgroundColor: surfaceColor, color: textColor }}
+                >
+                  <div className="flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>100% Halal &amp; Higienis</span>
+                  </div>
+                  <div className="flex items-center gap-1 text-amber-600">
+                    <Flame className="w-3.5 h-3.5" />
+                    <span>Fresh Tiap Hari</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-amber-50 p-3 rounded-2xl border border-amber-200/60 text-[11px] text-amber-900 leading-relaxed">
-                <span className="font-bold">Tips Tampilan:</span> Saat Anda menekan tombol{" "}
-                <span className="font-bold">Terapkan &amp; Simpan</span>, palet ini langsung aktif di seluruh website live Anda.
+              <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200/60 text-[11px] text-amber-900 leading-relaxed space-y-1">
+                <div className="font-bold flex items-center gap-1 text-amber-950">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Sinkronisasi Otomatis ke Vercel</span>
+                </div>
+                <p>
+                  Saat Anda menekan tombol <span className="font-bold">Terapkan &amp; Simpan Warna</span>, tema dan warna background akan tersimpan ke database Neon dan langsung terupdate di seluruh halaman publik tanpa perlu deploy ulang.
+                </p>
               </div>
             </div>
           </div>

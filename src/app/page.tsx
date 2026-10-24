@@ -219,7 +219,7 @@ export default function HomePage() {
 
 
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
-      <main className="flex-1 pt-[72px] sm:pt-24 pb-14 space-y-8 sm:space-y-12 bg-gray-50/40">
+      <main className="flex-1 pt-[72px] sm:pt-24 pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
         {/* SECTION 1: HERO SLIDER CAROUSEL (App-Style Responsive Banner)   */}
         {/* ============================================================== */}
