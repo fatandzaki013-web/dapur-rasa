@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureInitialData } from "@/lib/ensure-seed";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -55,7 +56,7 @@ export async function GET(req: NextRequest) {
     else if (sort === "newest") orderBy = [{ createdAt: "desc" }];
     else if (sort === "name-asc") orderBy = [{ name: "asc" }];
 
-    const products = await prisma.product.findMany({
+    let products = await prisma.product.findMany({
       where,
       orderBy,
       include: {
@@ -70,6 +71,26 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+
+    // Jika produk kosong dan tidak sedang filter pencarian, pastikan data awal diimpor
+    if (products.length === 0 && !search.trim()) {
+      await ensureInitialData();
+      products = await prisma.product.findMany({
+        where,
+        orderBy,
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+          images: {
+            orderBy: { displayOrder: "asc" },
+          },
+          variants: {
+            where: { isAvailable: true },
+          },
+        },
+      });
+    }
 
     return NextResponse.json(
       {
