@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma db push --accept-data-loss && node scripts/seed-if-empty.mjs && next build",
+    "build": "node scripts/build-safe.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
