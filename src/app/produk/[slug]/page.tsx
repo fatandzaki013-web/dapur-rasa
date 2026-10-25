@@ -501,21 +501,21 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
           <h2 className="text-2xl font-bold font-heading text-stone-900 mb-6">
             Kue Pilihan Lainnya dalam Kategori Ini
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-6">
             {relatedProducts.map((rel) => (
               <Link
                 key={rel.id}
                 href={`/produk/${rel.slug}`}
                 prefetch={true}
-                className="group bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-lg transition-all"
+                className="group bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
               >
-                <div className="aspect-4/3 bg-stone-100 overflow-hidden relative">
+                <div className="aspect-[4/3] sm:aspect-square bg-stone-100 overflow-hidden relative">
                   {rel.images?.[0]?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={rel.images[0].url}
                       alt={rel.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover sm:group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
@@ -523,11 +523,11 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                     </div>
                   )}
                 </div>
-                <div className="p-4">
-                  <h4 className="font-heading font-bold text-stone-900 text-sm group-hover:text-theme-primary transition-colors line-clamp-1">
+                <div className="p-2.5 sm:p-4">
+                  <h4 className="font-bold text-stone-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition-colors line-clamp-1 leading-tight">
                     {rel.name}
                   </h4>
-                  <div className="text-xs font-bold text-stone-900 mt-1">
+                  <div className="text-xs sm:text-base font-extrabold text-[#4A0E4E] mt-1 font-mono leading-none">
                     {formatPrice(rel.promoPrice && rel.promoPrice > 0 ? rel.promoPrice : rel.price)}
                   </div>
                 </div>
