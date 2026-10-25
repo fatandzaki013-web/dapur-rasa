@@ -48,13 +48,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // Validasi ketentuan pengantaran paket box: minimal harus > 50 box
-      if (isSnackBoxPackage && Number(snackBoxQuantity) <= 50) {
-        return NextResponse.json(
-          { error: "Untuk pengantaran paket box acara, jumlah pesanan minimal harus lebih dari 50 box." },
-          { status: 400 }
-        );
-      }
+      // Paket box disesuaikan fleksibel tanpa batasan minimum
     }
 
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -64,7 +58,7 @@ export async function POST(req: NextRequest) {
     // 2. Ambil Konfigurasi Toko untuk Ongkir & Nomor WA Toko (Nomor WA resmi: 085888159765)
     const settings = await prisma.storeSetting.findUnique({ where: { id: "default" } });
     const storeWa = settings?.whatsappNumber?.replace(/[^0-9]/g, "") || "6285888159765";
-    const shippingFee = type === "DELIVERY" ? (settings?.defaultShippingFee ?? 10000) : 0;
+    const shippingFee = 0; // Free Ongkir untuk area Griya Cileungsi 5
 
     // 3. Re-validasi Harga, Varian, dan Ketersediaan Stok dari Database
     let verifiedSubtotal = 0;
@@ -209,7 +203,7 @@ export async function POST(req: NextRequest) {
 
     const shippingText =
       type === "DELIVERY"
-        ? `Rp ${shippingFee.toLocaleString("id-ID")} (Pengantaran Area Perum Griya Cileungsi 5)`
+        ? "GRATIS (Free Ongkir Griya Cileungsi 5) / Luar Area Cek Jarak Kurir"
         : "Gratis (Ambil Sendiri di Dapur Toko)";
 
     const scheduleText =

@@ -4,6 +4,7 @@ import React, { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
+import ProductLikeButton from "@/components/ProductLikeButton";
 import {
   ShoppingBag,
   Phone,
@@ -225,6 +226,9 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                 Foto Produk
               </div>
             )}
+
+            {/* Like Button */}
+            <ProductLikeButton product={product} size="lg" className="absolute top-4 right-4 z-20" />
 
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">

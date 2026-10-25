@@ -4,7 +4,19 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
-import { UtensilsCrossed, Clock, MapPin, PhoneCall, ChevronRight, ShieldCheck } from "lucide-react";
+import {
+  UtensilsCrossed,
+  Clock,
+  MapPin,
+  PhoneCall,
+  ChevronRight,
+  ShieldCheck,
+  Truck,
+  Heart,
+  Wallet,
+  Sparkles,
+  Award,
+} from "lucide-react";
 import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
 
 export default function Footer() {
@@ -24,7 +36,8 @@ export default function Footer() {
   }
 
   const brandName = settings?.brandName || "Dapur Rasa";
-  const whatsappNum = (settings?.whatsappNumber || "6281234567890").replace(/[^0-9]/g, "");
+  const address = settings?.address || "Perumahan Griya Cileungsi 5, Cileungsi, Jawa Barat";
+  const whatsappNum = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +49,57 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-gray-300 border-t border-gray-800 pt-16 pb-8 mt-auto">
-      <div className="mx-auto max-w-7xl px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-        {/* Kolom 1: Brand & Bio */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-14 pb-8 mt-auto">
+      {/* Top Value Badges Bar */}
+      <div className="mx-auto max-w-7xl px-4 pb-10 border-b border-slate-800/80">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="w-10 h-10 rounded-xl bg-purple-950/60 text-purple-400 flex items-center justify-center shrink-0 border border-purple-800/40">
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white leading-snug">100% Halal &amp; Higienis</h4>
+              <p className="text-[10.5px] text-slate-400">Dibuat dari bahan segar berkualitas</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="w-10 h-10 rounded-xl bg-emerald-950/60 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-800/40">
+              <Truck className="w-5 h-5 text-emerald-400" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white leading-snug">Free Ongkir Griya Cileungsi 5</h4>
+              <p className="text-[10.5px] text-slate-400">Diantar hangat langsung ke rumah</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="w-10 h-10 rounded-xl bg-amber-950/60 text-amber-400 flex items-center justify-center shrink-0 border border-amber-800/40">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white leading-snug">Fresh Tiap Hari</h4>
+              <p className="text-[10.5px] text-slate-400">Resep autentik rumahan autentik</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
+            <div className="w-10 h-10 rounded-xl bg-blue-950/60 text-blue-400 flex items-center justify-center shrink-0 border border-blue-800/40">
+              <Wallet className="w-5 h-5 text-blue-400" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-white leading-snug">Bisa Bayar COD</h4>
+              <p className="text-[10.5px] text-slate-400">Tunai saat terima kue di rumah</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main 4-Column Footer */}
+      <div className="mx-auto max-w-7xl px-4 grid grid-cols-1 md:grid-cols-12 gap-8 py-12">
+        {/* Kolom 1: Brand & Socials (4 cols) */}
+        <div className="md:col-span-4 space-y-4">
+          <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-md">
               {settings?.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -55,22 +114,27 @@ export default function Footer() {
                 </div>
               )}
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">
-              {brandName}
-            </span>
+            <div>
+              <span className="text-xl font-extrabold text-white tracking-tight block">
+                {brandName}
+              </span>
+              <span className="text-[9.5px] text-amber-400 uppercase tracking-widest font-bold">
+                Kue Rumahan &amp; Frozen Food
+              </span>
+            </div>
           </div>
 
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Toko online kue rumahan &amp; camilan premium berkualitas. Menyajikan aneka pastel renyah, risol mayo lumer, kue basah, brownies, dan paket snack box higienis untuk keluarga dan acara Anda.
+          <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+            Dapur spesialis aneka pastel crispy, risol mayo lumer, kue basah tradisional, brownies panggang fudgy, dan pesanan snack box higienis untuk arisan, rapat, dan momen istimewa keluarga.
           </p>
 
           {/* Social Icons */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex items-center gap-2.5 pt-1">
             <a
               href={settings?.instagramUrl || "https://instagram.com"}
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-gray-400 transition-all shadow-sm"
+              className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
               aria-label="Instagram"
             >
               <InstagramIcon className="w-4 h-4 fill-current" />
@@ -79,7 +143,7 @@ export default function Footer() {
               href={settings?.facebookUrl || "https://facebook.com"}
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-gray-400 transition-all shadow-sm"
+              className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
               aria-label="Facebook"
             >
               <FacebookIcon className="w-4 h-4 fill-current" />
@@ -88,7 +152,7 @@ export default function Footer() {
               href={settings?.tiktokUrl || "https://tiktok.com"}
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-gray-400 transition-all shadow-sm"
+              className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
               aria-label="TikTok"
             >
               <TikTokIcon className="w-4 h-4 fill-current" />
@@ -97,7 +161,7 @@ export default function Footer() {
               href={`https://wa.me/${whatsappNum}`}
               target="_blank"
               rel="noreferrer"
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-gray-400 transition-all shadow-sm"
+              className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
               aria-label="WhatsApp"
             >
               <WhatsAppIcon className="w-4 h-4 fill-current" />
@@ -105,111 +169,136 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Kolom 2: Informasi Toko */}
-        <div className="space-y-4">
-          <h4 className="text-white font-bold text-sm tracking-wide uppercase">
-            Informasi Toko
+        {/* Kolom 2: Navigasi Menu & Info (3 cols) */}
+        <div className="md:col-span-3 space-y-3">
+          <h4 className="text-white font-bold text-xs tracking-wider uppercase border-b border-slate-800/80 pb-2">
+            Pilihan Menu &amp; Layanan
           </h4>
-          <div className="space-y-3 text-sm text-gray-400">
-            <div className="flex items-start gap-2.5">
-              <Clock className="w-4 h-4 text-[#4B95FF] mt-0.5 shrink-0" />
+          <ul className="space-y-2 text-xs text-slate-400">
+            <li>
+              <Link href="/produk" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Katalog Lengkap Kue</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/produk?category=pastel" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Pastel Crispy Berlapis</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/produk?category=risol" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Risol Mayo Smoked Beef &amp; Keju</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/produk?category=frozen-food" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Frozen Food Siap Goreng</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/testimoni" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Ulasan &amp; Testimoni Pelanggan</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/galeri" className="hover:text-amber-400 transition-colors flex items-center gap-1.5">
+                <ChevronRight className="w-3 h-3 text-slate-600" />
+                <span>Galeri Foto Koleksi Kue</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Kolom 3: Lokasi & Jam Operasional (3 cols) */}
+        <div className="md:col-span-3 space-y-3">
+          <h4 className="text-white font-bold text-xs tracking-wider uppercase border-b border-slate-800/80 pb-2">
+            Dapur &amp; Pengantaran
+          </h4>
+          <div className="space-y-2.5 text-xs text-slate-400">
+            <div className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-gray-300">Jam Operasional</p>
-                <p>{settings?.operationalHours || "Setiap Hari: 08:00 - 20:00 WIB"}</p>
+                <p className="font-bold text-slate-200">Alamat Dapur Toko</p>
+                <p className="leading-relaxed text-[11.5px]">{address}</p>
               </div>
             </div>
-            <div className="flex items-start gap-2.5">
-              <MapPin className="w-4 h-4 text-[#4B95FF] mt-0.5 shrink-0" />
+
+            <div className="flex items-start gap-2">
+              <Truck className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-gray-300">Lokasi Outlet / Dapur</p>
-                <p>{settings?.address || "Jl. Mawar Melati No. 12, Kebayoran Baru, Jakarta Selatan"}</p>
+                <p className="font-bold text-slate-200">Area Pengantaran</p>
+                <p className="leading-relaxed text-[11.5px]">
+                  <strong>Gratis Ongkir</strong> area Perum Griya Cileungsi 5 &amp; sekitarnya via kurir.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <Clock className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-slate-200">Jam Operasional</p>
+                <p className="leading-relaxed text-[11.5px]">
+                  {settings?.operationalHours || "Setiap Hari: 08:00 - 20:00 WIB"}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Kolom 3: Layanan Pelanggan */}
-        <div className="space-y-4">
-          <h4 className="text-white font-bold text-sm tracking-wide uppercase">
-            Layanan Pelanggan
+        {/* Kolom 4: Pesan Cepat WhatsApp & Admin (2 cols) */}
+        <div className="md:col-span-2 space-y-3">
+          <h4 className="text-white font-bold text-xs tracking-wider uppercase border-b border-slate-800/80 pb-2">
+            Pemesanan Langsung
           </h4>
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Punya pertanyaan atau ingin memesan kue dalam jumlah besar untuk snack box acara? Hubungi admin toko kami.
+          <p className="text-[11px] text-slate-400 leading-relaxed">
+            Ingin memesan partai besar atau konsultasi paket snack box? Chat langsung ke WhatsApp admin kami.
           </p>
-          <div className="pt-2 space-y-2">
-            <a
-              href={`https://wa.me/${whatsappNum}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow-md transition-all text-sm"
-            >
-              <PhoneCall className="w-4 h-4" />
-              <span>WhatsApp Admin</span>
-            </a>
-            <p className="text-xs text-gray-400">
-              Hubungi: <span className="font-semibold text-gray-300">+{whatsappNum}</span>
-            </p>
-          </div>
-        </div>
 
-        {/* Kolom 4: Newsletter Promo */}
-        <div className="space-y-4">
-          <h4 className="text-white font-bold text-sm tracking-wide uppercase">
-            Dapatkan Promo Terbaru!
-          </h4>
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Subscribe email Anda untuk dapatkan info promo &amp; diskon kue lezat setiap minggu.
-          </p>
-          <form onSubmit={handleSubscribe} className="relative max-w-sm">
-            <input
-              type="email"
-              value={subscribeEmail}
-              onChange={(e) => setSubscribeEmail(e.target.value)}
-              placeholder="Masukkan email Anda"
-              required
-              className="w-full h-10 pl-4 pr-12 rounded-full bg-gray-800/80 border border-gray-700/80 focus:outline-none focus:border-[#4B95FF] text-xs text-white placeholder-gray-500"
-            />
-            <button
-              type="submit"
-              className="absolute right-1 top-1 w-8 h-8 rounded-full bg-[#4A0E4E] hover:bg-[#5C1261] text-white flex items-center justify-center transition shadow-md cursor-pointer"
-              aria-label="Subscribe"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </form>
-          {isSubscribed && (
-            <p className="text-xs text-emerald-400 font-medium animate-fadeIn">
-              Terima kasih! Email Anda telah terdaftar.
-            </p>
-          )}
+          <a
+            href={`https://wa.me/${whatsappNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin konsultasi pesanan kue...")}`}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+          >
+            <PhoneCall className="w-3.5 h-3.5" />
+            <span>Chat WhatsApp</span>
+          </a>
 
-          {/* Quick Admin Access Link in footer */}
+          {/* Quick Admin Access Link */}
           <div className="pt-2">
             <Link
-              href="/admin"
-              className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-amber-300 transition-colors"
+              href="/admin/login"
+              className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 hover:text-amber-400 transition-colors"
             >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>Portal Dashboard Admin Toko</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
+              <span>Portal Dashboard Admin</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="mx-auto max-w-7xl px-4 border-t border-gray-800/80 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+      {/* Bottom Bar: Copyright & Policy */}
+      <div className="mx-auto max-w-7xl px-4 border-t border-slate-900 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-3">
         <p>
-          &copy; {currentYear} {brandName}. Hak Cipta Dilindungi.
+          &copy; {currentYear} <strong>{brandName}</strong>. Seluruh Hak Cipta Dilindungi.
         </p>
         <div className="flex gap-4">
-          <Link className="hover:text-white transition-colors" href="/kebijakan">
-            Privasi
+          <Link className="hover:text-slate-300 transition-colors" href="/kebijakan">
+            Kebijakan Privasi
           </Link>
-          <Link className="hover:text-white transition-colors" href="/kebijakan">
+          <Link className="hover:text-slate-300 transition-colors" href="/kebijakan">
             Syarat &amp; Ketentuan
           </Link>
-          <Link className="hover:text-white transition-colors" href="/kebijakan">
-            Kebijakan Pengembalian
+          <Link className="hover:text-slate-300 transition-colors" href="/testimoni">
+            Testimoni
+          </Link>
+          <Link className="hover:text-slate-300 transition-colors" href="/kontak">
+            Hubungi Kami
           </Link>
         </div>
       </div>

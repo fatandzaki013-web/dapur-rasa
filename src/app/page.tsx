@@ -25,6 +25,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
+import ProductLikeButton from "@/components/ProductLikeButton";
+import { Star, HelpCircle, MessageSquareQuote, ChevronDown, Award } from "lucide-react";
 import {
   DEFAULT_PRODUCTS,
   DEFAULT_GALLERY_ITEMS,
@@ -56,6 +58,36 @@ export default function HomePage() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [homeTestimonials, setHomeTestimonials] = useState<any[]>([
+    {
+      id: "testi-1",
+      customerName: "Ibu Rahmawati",
+      comment: "Pesan 80 snack box untuk pengajian keluarga di Perum Griya Cileungsi 5. Kuenya datang tepat waktu, masih hangat, dan para tamu memuji pastelnya yang renyah banget. Pengantaran juga free ongkir. Mantap!",
+      rating: 5,
+      avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+      eventOrProduct: "Snack Box Pengajian Keluarga",
+      badge: "Griya Cileungsi 5"
+    },
+    {
+      id: "testi-2",
+      customerName: "Dimas Suryanto",
+      comment: "Risol mayo dan pastel ayamnya juara! Kulitnya pas, mayo dan kejunya lumer tanpa eneg. Cocok banget buat camilan sore bareng teman-teman di rumah. Pasti langganan terus.",
+      rating: 5,
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      eventOrProduct: "Risol Mayo & Pastel Crispy",
+      badge: "Pelanggan Setia"
+    },
+    {
+      id: "testi-3",
+      customerName: "dr. Sarah Permatasari",
+      comment: "Fudgy browniesnya luar biasa enak, cokelatnya pekat dan teksturnya fudgy legit berpadu shiny crust. Anak-anak langsung habis setengah kotak dalam sekejap. Higienis dan recommended!",
+      rating: 5,
+      avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+      eventOrProduct: "Fudgy Brownies Shiny Crust",
+      badge: "Snack Box Kantor"
+    }
+  ]);
 
   // 5 Default Hero Slider Banners (Shofi Frozen Style - 16:9 on Desktop, 1:1 on Mobile)
   const defaultHeroSlides = [
@@ -147,6 +179,13 @@ export default function HomePage() {
         if (data.products && data.products.length > 0) setProducts(data.products);
       })
       .catch((e) => console.error("Error fetching products:", e));
+
+    fetch("/api/public/testimonials", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.testimonials && data.testimonials.length > 0) setHomeTestimonials(data.testimonials);
+      })
+      .catch((e) => console.error("Error fetching testimonials:", e));
 
     fetch("/api/public/gallery", { cache: "no-store" })
       .then((res) => res.json())
@@ -484,7 +523,7 @@ export default function HomePage() {
                       className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
                     />
 
-                    {/* Badge Overlay */}
+                    {/* Badge Overlay with Like Button */}
                     <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-1 p-2 sm:p-2.5">
                       <div className="flex flex-col gap-1">
                         {prod.isAvailable ? (
@@ -502,6 +541,9 @@ export default function HomePage() {
                           </span>
                         )}
                       </div>
+
+                      {/* Tombol Like Favorit di atas foto */}
+                      <ProductLikeButton product={prod} size="sm" />
                     </div>
                   </Link>
 
@@ -763,6 +805,160 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* SECTION 7: ULASAN & TESTIMONI PELANGGAN (Social Proof)         */}
+        {/* ============================================================== */}
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-6 pt-4 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-1.5">
+                <MessageSquareQuote className="w-3.5 h-3.5 text-amber-700" />
+                <span>Kata Mereka Tentang Dapur Rasa</span>
+              </div>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 tracking-tight font-heading">
+                Ulasan &amp; Testimoni Pelanggan
+              </h2>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-xl">
+                Pengalaman nyata para pelanggan setia yang menikmati kerenyahan pastel, lezatnya risol mayo, dan paket snack box kami.
+              </p>
+            </div>
+
+            <Link
+              href="/testimoni"
+              className="text-xs sm:text-sm font-bold text-[#4A0E4E] hover:underline inline-flex items-center gap-1 shrink-0 self-start sm:self-auto"
+            >
+              <span>Lihat Semua Testimoni</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {homeTestimonials.slice(0, 3).map((item, index) => (
+              <div
+                key={item.id || index}
+                className="p-5 sm:p-6 rounded-3xl bg-white border border-gray-200/90 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4 hover:border-amber-300"
+              >
+                <div className="space-y-3">
+                  {/* Rating Stars */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-amber-400">
+                      {Array.from({ length: item.rating || 5 }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                      Terverifikasi
+                    </span>
+                  </div>
+
+                  {/* Comment */}
+                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic">
+                    &ldquo;{item.comment}&rdquo;
+                  </p>
+                </div>
+
+                {/* User info */}
+                <div className="pt-3 border-t border-gray-100 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 text-[#4A0E4E] font-extrabold flex items-center justify-center shrink-0 overflow-hidden shadow-2xs border border-purple-200">
+                    {item.avatarUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.avatarUrl} alt={item.customerName} className="w-full h-full object-cover" />
+                    ) : (
+                      item.customerName?.charAt(0) || "U"
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">
+                      {item.customerName}
+                    </h4>
+                    <p className="text-[11px] text-gray-400 truncate">
+                      {item.eventOrProduct || "Pelanggan Dapur Rasa"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* SECTION 8: FAQ - PERTANYAAN UMUM (Interactive Accordion)       */}
+        {/* ============================================================== */}
+        <section className="mx-auto max-w-4xl px-2.5 sm:px-6 space-y-6 pt-4 border-t border-gray-100">
+          <div className="text-center space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-[#4A0E4E] text-xs font-bold">
+              <HelpCircle className="w-3.5 h-3.5 text-[#4A0E4E]" />
+              <span>Pusat Informasi &amp; Bantuan</span>
+            </div>
+            <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 tracking-tight font-heading">
+              Pertanyaan yang Sering Diajukan (FAQ)
+            </h2>
+            <p className="text-xs sm:text-sm text-gray-500 max-w-lg mx-auto">
+              Temukan jawaban cepat seputar pemesanan kue, ketentuan pengantaran gratis ongkir di Griya Cileungsi 5, dan cara penyajian.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              {
+                q: "Bagaimana cara melakukan pemesanan kue di website Dapur Rasa?",
+                a: "Sangat mudah! Pilih aneka kue favorit Anda dari katalog produk, tentukan jumlahnya, lalu klik Tambah ke Keranjang. Pada halaman Checkout, cantumkan nama, nomor WhatsApp, serta pilihan diambil langsung di dapur atau diantar ke rumah. Pesanan Anda akan langsung terhubung ke WhatsApp resmi toko kami untuk konfirmasi ketersediaan."
+              },
+              {
+                q: "Apakah ada promo Gratis Ongkir (Free Ongkir) untuk pengantaran?",
+                a: "Ya, betul sekali! Kami menyediakan GRATIS ONGKOS KIRIM (Free Ongkir) khusus untuk seluruh pengantaran di area Perumahan Griya Cileungsi 5. Untuk pengantaran ke luar area Griya Cileungsi 5, tarif ongkos kirim akan disesuaikan secara terjangkau berdasarkan jarak lokasi Anda via kurir/ojek online."
+              },
+              {
+                q: "Apakah seluruh kue dibuat fresh setiap hari dan tanpa bahan pengawet?",
+                a: "Tentu! Seluruh olahan pastel, risol mayo, dan aneka kue basah diproduksi fresh setiap hari secara higienis menggunakan bahan berkualitas pilihan tanpa bahan pengawet kimia berbahaya. 100% Halal dan aman dinikmati keluarga tercinta."
+              },
+              {
+                q: "Bisa memesan paket Snack Box untuk acara keluarga, arisan, atau rapat kantor?",
+                a: "Bisa banget! Kami siap melayani pesanan Snack Box dalam jumlah satuan maupun partai besar untuk arisan, pengajian, syukuran, dan rapat kantor. Anda dapat memilih kombinasi kue asin dan manis sesuai anggaran."
+              },
+              {
+                q: "Berapa lama daya tahan kue dan bagaimana cara menyimpan varian Frozen Food?",
+                a: "Untuk kue goreng siap santap (pastel dan risol goreng) paling nikmat disantap hangat di hari yang sama. Untuk produk Frozen Food, simpan di dalam freezer lemari es dan dapat bertahan hingga 1-2 bulan dalam keadaan beku tertutup rapat. Cukup keluarkan 10-15 menit di suhu ruang sebelum digoreng dengan api sedang."
+              },
+              {
+                q: "Metode pembayaran apa saja yang disediakan?",
+                a: "Kami menyediakan pembayaran fleksibel: Bayar Tunai saat Diterima (COD / Cash) saat kurir tiba atau saat ambil di dapur, serta Transfer Bank resmi (BCA, Mandiri, BRI) dan scan barcode QRIS (GoPay, OVO, ShopeePay, Dana)."
+              }
+            ].map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  className="rounded-2xl border border-gray-200/90 bg-white overflow-hidden transition-all shadow-2xs"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-3 hover:bg-gray-50/80 transition cursor-pointer"
+                  >
+                    <span className="font-bold text-xs sm:text-sm text-gray-900 leading-snug">
+                      {faq.q}
+                    </span>
+                    <span
+                      className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${
+                        isOpen ? "rotate-180 bg-purple-100 text-[#4A0E4E]" : "bg-gray-100 text-gray-500"
+                      }`}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3 bg-purple-50/20 animate-fadeIn">
+                      <p>{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
       </main>

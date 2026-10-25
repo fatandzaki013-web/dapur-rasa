@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
+import ProductLikeButton from "@/components/ProductLikeButton";
 
 export interface QuickViewProduct {
   id: string;
@@ -91,7 +92,8 @@ export default function ProductQuickViewModal({
 
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 sm:gap-8 items-start">
           {/* Photo */}
-          <div className="sm:col-span-5 aspect-square rounded-2xl overflow-hidden bg-stone-100 border border-stone-200">
+          <div className="sm:col-span-5 aspect-square rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 relative">
+            <ProductLikeButton product={product} className="absolute top-3 right-3 z-10" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={primaryImage}

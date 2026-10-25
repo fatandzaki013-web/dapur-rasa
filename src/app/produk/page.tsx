@@ -16,6 +16,7 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
+import ProductLikeButton from "@/components/ProductLikeButton";
 import { DEFAULT_PRODUCTS, ProductItem as Product } from "@/lib/constants";
 
 function ProductsContent() {
@@ -280,6 +281,9 @@ function ProductsContent() {
                       className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-500"
                     />
                   </Link>
+
+                  {/* Tombol Like di atas gambar produk */}
+                  <ProductLikeButton product={prod} className="absolute top-3 right-3 z-10" />
 
                   {/* Badges */}
                   <div className="absolute top-3 left-3 flex flex-col gap-1.5">

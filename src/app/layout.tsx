@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
+import WishlistDrawer from "@/components/WishlistDrawer";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -80,13 +82,16 @@ export default async function RootLayout({
       </head>
       <body className="antialiased min-h-screen flex flex-col bg-theme-bg text-gray-900 transition-colors duration-300" style={{ backgroundColor: bg }}>
         <StoreProvider>
-          <CartProvider>
-            <DynamicTheme />
-            <Navbar />
-            <div className="flex-1 flex flex-col bg-theme-bg" style={{ backgroundColor: bg }}>{children}</div>
-            <Footer />
-            <CartDrawer />
-          </CartProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <DynamicTheme />
+              <Navbar />
+              <div className="flex-1 flex flex-col bg-theme-bg" style={{ backgroundColor: bg }}>{children}</div>
+              <Footer />
+              <CartDrawer />
+              <WishlistDrawer />
+            </CartProvider>
+          </WishlistProvider>
         </StoreProvider>
       </body>
     </html>

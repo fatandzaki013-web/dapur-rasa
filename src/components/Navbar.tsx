@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import {
   ShoppingCart,
   Heart,
@@ -22,6 +23,7 @@ export default function Navbar() {
   const router = useRouter();
   const { settings } = useStore();
   const { totalItems, setIsCartOpen } = useCart();
+  const { totalWishlist, setIsWishlistOpen } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -149,14 +151,25 @@ export default function Navbar() {
               <LayoutDashboard className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
             </Link>
 
-            {/* Wishlist Link */}
-            <Link
-              href="/produk"
-              className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#4A0E4E]/10 w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#4A0E4E]"
-              title="Katalog Produk"
+            {/* Wishlist Button */}
+            <button
+              type="button"
+              onClick={() => setIsWishlistOpen(true)}
+              className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#4A0E4E]/10 relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#4A0E4E] cursor-pointer"
+              aria-label="Produk disukai"
+              title="Produk Favorit / Disukai"
             >
-              <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
-            </Link>
+              <Heart
+                className={`h-4 w-4 sm:h-[18px] sm:w-[18px] transition-transform ${
+                  totalWishlist > 0 ? "fill-rose-500 text-rose-500 scale-105" : ""
+                }`}
+              />
+              {totalWishlist > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
+                  {totalWishlist}
+                </span>
+              )}
+            </button>
 
             {/* Cart Button */}
             <button
@@ -164,6 +177,7 @@ export default function Navbar() {
               onClick={() => setIsCartOpen(true)}
               className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#4A0E4E]/10 relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#4A0E4E] cursor-pointer"
               aria-label="Buka keranjang"
+              title="Keranjang Belanja"
             >
               <ShoppingCart className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
               {totalItems > 0 && (
@@ -227,6 +241,33 @@ export default function Navbar() {
                 </Link>
               );
             })}
+          </div>
+
+          {/* Quick Access Favorit & Keranjang */}
+          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setIsWishlistOpen(true);
+              }}
+              className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 transition cursor-pointer"
+            >
+              <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
+              <span>Disukai ({totalWishlist})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setIsCartOpen(true);
+              }}
+              className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-purple-50 text-[#4A0E4E] hover:bg-purple-100 transition cursor-pointer"
+            >
+              <ShoppingCart className="w-3.5 h-3.5" />
+              <span>Keranjang ({totalItems})</span>
+            </button>
           </div>
 
           {/* Quick Actions Footer */}
