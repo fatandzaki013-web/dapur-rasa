@@ -67,10 +67,6 @@ export default function ProductDetailPage({
   const [isLoading, setIsLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
 
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
-    cached?.product?.variants?.[0]?.id || null
-  );
   const [quantity, setQuantity] = useState(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -91,9 +87,6 @@ export default function ProductDetailPage({
         });
         setProduct(data.product);
         setRelatedProducts(data.relatedProducts || []);
-        if (data.product.variants && data.product.variants.length > 0) {
-          setSelectedVariantId((prev) => prev || data.product.variants[0].id);
-        }
       })
       .catch((e) => {
         if (!productDetailCache.has(slug)) {
@@ -145,16 +138,14 @@ export default function ProductDetailPage({
     );
   }
 
-  // Calculate pricing based on selected variant
-  const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId) || null;
-  const basePrice = product.price;
-  const unitPrice = basePrice + (selectedVariant?.priceAdjustment || 0);
+  // Pricing & Stock (Direct price without variant)
+  const unitPrice = product.price;
   const totalPrice = unitPrice * quantity;
   const isOutOfStock = product.stock <= 0 || !product.isAvailable;
-  const availableStock = selectedVariant ? Math.min(product.stock, selectedVariant.stock) : product.stock;
+  const availableStock = product.stock;
 
   const handleAddToCart = () => {
-    const res = addItem(product, selectedVariant, quantity);
+    const res = addItem(product, null, quantity);
     showToast(res.message);
     if (res.success) {
       setIsCartOpen(true);
@@ -170,7 +161,7 @@ export default function ProductDetailPage({
     const message = `Halo ${settings?.brandName || "Dapur Rasa"}, saya ingin memesan langsung:
 
 • Produk: *${product.name}*
-${selectedVariant ? `• Varian: ${selectedVariant.name}\n` : ""}• Jumlah: ${quantity} ${product.unit}
+• Jumlah: ${quantity} ${product.unit}
 • Estimasi Total: Rp ${totalPrice.toLocaleString("id-ID")}
 
 Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
@@ -179,7 +170,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
   };
 
   const images = product.images && product.images.length > 0 ? product.images : [{ id: "placeholder", url: "", alt: product.name, isPrimary: true }];
-  const currentImageUrl = images[selectedImageIndex]?.url;
+  const currentImageUrl = images[0]?.url || "";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-16">
@@ -214,9 +205,8 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
 
       {/* Main Product Layout: Desain Estetis Sesuai Halaman Tentang Kami */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left: Image Gallery */}
-        <div className="lg:col-span-6 space-y-3 sm:space-y-4">
-          {/* Main Image: Persis Seperti Tampilan Gambar di Fitur Tentang Kami (rounded-3xl, aspect-4/3, border-4 border-white, shadow-xl, object-cover) */}
+        {/* Left: 1 Single Image (Sesuai Fitur Tentang Kami: rounded-3xl, aspect-4/3, border-4 border-white, shadow-xl, object-cover) */}
+        <div className="lg:col-span-6">
           <div
             onClick={() => setIsLightboxOpen(true)}
             className="rounded-3xl overflow-hidden aspect-4/3 bg-stone-100 shadow-xl border-4 border-white relative group cursor-zoom-in w-full"
@@ -284,26 +274,6 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               </div>
             ) : null}
           </div>
-
-          {/* Thumbnails */}
-          {images.length > 1 && (
-            <div className="flex items-center gap-2.5 overflow-x-auto pb-1 pt-0.5 scrollbar-none">
-              {images.map((img, idx) => (
-                <button
-                  key={img.id || idx}
-                  onClick={() => setSelectedImageIndex(idx)}
-                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
-                    selectedImageIndex === idx
-                      ? "border-[#4A0E4E] shadow-md scale-95"
-                      : "border-stone-200 opacity-70 hover:opacity-100"
-                  }`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.url} alt={img.alt || product.name} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Right: Product Info & Actions */}
@@ -350,38 +320,6 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             <p className="text-xs sm:text-sm text-stone-600 leading-relaxed break-words">
               {product.shortDescription}
             </p>
-          )}
-
-          {/* Variant Selector */}
-          {product.variants && product.variants.length > 0 && (
-            <div className="space-y-2">
-              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
-                Pilih Varian / Rasa:
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {product.variants.map((variant) => {
-                  const isSelected = selectedVariantId === variant.id;
-                  return (
-                    <button
-                      key={variant.id}
-                      onClick={() => setSelectedVariantId(variant.id)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        isSelected
-                          ? "border-[#4A0E4E] bg-purple-50/60 shadow-xs ring-1 ring-[#4A0E4E]"
-                          : "border-stone-200 hover:border-stone-300 bg-white"
-                      }`}
-                    >
-                      <div className="text-xs font-bold text-stone-900 break-words">{variant.name}</div>
-                      {variant.priceAdjustment !== 0 && (
-                        <div className="text-[10px] sm:text-[11px] text-[#4A0E4E] font-semibold mt-0.5">
-                          {variant.priceAdjustment > 0 ? `+${formatPrice(variant.priceAdjustment)}` : formatPrice(variant.priceAdjustment)}
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           )}
 
           {/* Quantity Selector */}

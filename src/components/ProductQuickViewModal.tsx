@@ -47,21 +47,16 @@ export default function ProductQuickViewModal({
   const { formatPrice } = useStore();
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
-    product?.variants && product.variants.length > 0 ? product.variants[0].id : null
-  );
 
   if (!product) return null;
 
-  const selectedVariant = product.variants?.find((v) => v.id === selectedVariantId) || null;
-  const basePrice = product.price;
-  const unitPrice = basePrice + (selectedVariant?.priceAdjustment || 0);
+  const unitPrice = product.price;
   const totalPrice = unitPrice * quantity;
   const isOutOfStock = !product.isAvailable || product.stock <= 0;
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
-    const res = addItem(product, selectedVariant, quantity);
+    const res = addItem(product, null, quantity);
     if (onAddedToCart) onAddedToCart(res.message);
     if (res.success) {
       setIsCartOpen(true);
@@ -130,30 +125,6 @@ export default function ProductQuickViewModal({
               </span>
               <span className="text-xs text-stone-500">/{product.unit}</span>
             </div>
-
-            {/* Variant selector if available */}
-            {product.variants && product.variants.length > 0 && (
-              <div className="space-y-1">
-                <span className="text-[11px] font-semibold text-stone-700 block">Pilihan Varian:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {product.variants.map((v) => (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => setSelectedVariantId(v.id)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                        selectedVariantId === v.id
-                          ? "bg-[#4A0E4E] text-white border-[#4A0E4E]"
-                          : "bg-white text-stone-700 border-stone-200 hover:border-stone-400"
-                      }`}
-                    >
-                      {v.name}
-                      {v.priceAdjustment > 0 && ` (+${formatPrice(v.priceAdjustment)})`}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Quantity Stepper */}
             <div className="flex items-center gap-3 pt-0.5">
