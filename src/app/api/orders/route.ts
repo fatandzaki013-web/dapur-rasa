@@ -193,62 +193,34 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Format Pesan WhatsApp Terstruktur & Informatif
+    // 6. Format Pesan WhatsApp Singkat, Padat & Jelas
     const itemsListText = verifiedOrderItems
       .map(
         (it) =>
-          `• ${it.productName}${it.variantName ? ` (${it.variantName})` : ""} × ${it.quantity} = Rp ${it.subtotal.toLocaleString("id-ID")}`
+          `• ${it.productName}${it.variantName ? ` (${it.variantName})` : ""} (${it.quantity}x) = Rp ${it.subtotal.toLocaleString("id-ID")}`
       )
       .join("\n");
 
-    const shippingText =
+    const deliverySummary =
       type === "DELIVERY"
-        ? "GRATIS (Free Ongkir Griya Cileungsi 5) / Luar Area Cek Jarak Kurir"
-        : "Gratis (Ambil Sendiri di Dapur Toko)";
+        ? `Diantar ke ${deliveryAddress.trim()} (Free Ongkir Griya Cileungsi 5)`
+        : "Ambil di Dapur Toko (Griya Cileungsi 5)";
 
-    const scheduleText =
-      scheduleDate && scheduleTime
-        ? `${scheduleDate} pukul ${scheduleTime}`
-        : scheduleDate
-        ? scheduleDate
-        : "Segera / Sesuai kesepakatan";
-
-    const packageBoxText = isSnackBoxPackage
-      ? `\n• Paket Box Acara: *Ya (${snackBoxQuantity || totalItemsCount} Box)*`
+    const notesSummary = notes && notes.trim() ? `\n📝 *Catatan:* ${notes.trim()}` : "";
+    const scheduleSummary = scheduleDate
+      ? `\n⏰ *Waktu:* ${scheduleDate}${scheduleTime ? ` jam ${scheduleTime}` : ""}`
       : "";
 
-    const deliveryDetailText =
-      type === "DELIVERY"
-        ? `• Metode Pengambilan: *Diantar ke Alamat Rumah*\n• Alamat Lengkap: *${deliveryAddress.trim()}* (Khusus Griya Cileungsi 5)`
-        : `• Metode Pengambilan: *Ambil Sendiri di Dapur Toko*\n• Lokasi Dapur: *Perum Griya Cileungsi 5*`;
+    const waMessage = `Halo ${settings?.brandName || "Dapur Rasa"}, saya mau order:
 
-    const occasionText = occasion ? `• Keperluan Acara: *${occasion}*\n` : "";
-    const packagingText = packaging ? `• Pilihan Kemasan: *${packaging}*\n` : "";
-    const servingText = servingPreference ? `• Preferensi Kue: *${servingPreference}*\n` : "";
-    const notesText = notes && notes.trim() ? `• Catatan Khusus: *${notes.trim()}*\n` : "";
-
-    const waMessage = `Halo ${settings?.brandName || "Dapur Rasa"}, saya ingin memesan kue rumahan.
-
-*RINCIAN PEMESAN:*
-• No. Referensi: *${orderCode}*
-• Nama Pemesan: *${customerName.trim()}*
-• No. WhatsApp: ${cleanPhone}
-
-*DAFTAR PESANAN KUE:*
+📋 *Pesanan (${orderCode}):*
 ${itemsListText}
+*Total: Rp ${totalAmount.toLocaleString("id-ID")}* (${paymentMethodLabel})
 
-----------------------------
-• Subtotal: Rp ${verifiedSubtotal.toLocaleString("id-ID")}
-• Ongkos Kirim: ${shippingText}
-• *TOTAL TAGIHAN: Rp ${totalAmount.toLocaleString("id-ID")}*
-----------------------------
+📍 *Pengiriman:* ${deliverySummary}${scheduleSummary}${notesSummary}
+👤 *Pemesan:* ${customerName.trim()} (${cleanPhone})
 
-*PILIHAN & KETERANGAN PEMESANAN:*
-${deliveryDetailText}${packageBoxText}
-• Waktu / Jadwal: ${scheduleText}
-• Metode Pembayaran: *${paymentMethodLabel}*
-${occasionText}${packagingText}${servingText}${notesText}
-Mohon konfirmasi ketersediaan dan pesanan saya. Terima kasih banyak!`;
+Mohon segera diproses ya, terima kasih!`;
 
     // Pastikan nomor WhatsApp internasional valid (6285888159765)
     let formattedWa = storeWa;
@@ -258,7 +230,7 @@ Mohon konfirmasi ketersediaan dan pesanan saya. Terima kasih banyak!`;
       formattedWa = "62" + formattedWa;
     }
 
-    const whatsappUrl = `https://wa.me/${formattedWa}?text=${encodeURIComponent(waMessage)}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedWa}&text=${encodeURIComponent(waMessage)}`;
 
     return NextResponse.json({
       success: true,

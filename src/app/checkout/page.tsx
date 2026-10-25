@@ -220,7 +220,8 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
       });
 
       if (data.whatsappUrl) {
-        window.open(data.whatsappUrl, "_blank");
+        // Direct navigation opens WhatsApp app roomchat immediately with prefilled message
+        window.location.href = data.whatsappUrl;
       }
     } catch (err: any) {
       setErrorMessage(err.message || "Terjadi kesalahan saat memproses pesanan.");

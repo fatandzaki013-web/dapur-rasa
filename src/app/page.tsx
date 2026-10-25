@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
 import ProductLikeButton from "@/components/ProductLikeButton";
+import CustomerFeedbackModal from "@/components/CustomerFeedbackModal";
 import { Star, HelpCircle, MessageSquareQuote, ChevronDown, Award } from "lucide-react";
 import {
   DEFAULT_PRODUCTS,
@@ -57,6 +58,7 @@ export default function HomePage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [homeTestimonials, setHomeTestimonials] = useState<any[]>([
@@ -826,13 +828,23 @@ export default function HomePage() {
               </p>
             </div>
 
-            <Link
-              href="/testimoni"
-              className="text-xs sm:text-sm font-bold text-[#4A0E4E] hover:underline inline-flex items-center gap-1 shrink-0 self-start sm:self-auto"
-            >
-              <span>Lihat Semua Testimoni</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
+              <button
+                type="button"
+                onClick={() => setIsFeedbackModalOpen(true)}
+                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
+              >
+                <MessageSquareQuote className="w-3.5 h-3.5" />
+                <span>+ Tulis Ulasan / Saran</span>
+              </button>
+              <Link
+                href="/testimoni"
+                className="text-xs sm:text-sm font-bold text-[#4A0E4E] hover:underline inline-flex items-center gap-1 shrink-0"
+              >
+                <span>Lihat Semua</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
@@ -1024,6 +1036,16 @@ export default function HomePage() {
           </div>
         </div>
       )}
+      {/* Customer Feedback Modal */}
+      <CustomerFeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
+        onSuccess={(newFeedback) => {
+          setHomeTestimonials((prev) => [newFeedback, ...prev]);
+          setToastMessage("Terima kasih! Ulasan & saran Anda telah berhasil dikirim.");
+          setTimeout(() => setToastMessage(null), 4000);
+        }}
+      />
     </>
   );
 }
