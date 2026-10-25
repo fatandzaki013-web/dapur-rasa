@@ -87,14 +87,14 @@ export default function ProductQuickViewModal({
         </button>
 
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-6 items-start">
-          {/* Photo */}
-          <div className="sm:col-span-5 aspect-4/3 sm:aspect-square max-h-56 sm:max-h-none rounded-xl sm:rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 relative">
+          {/* Photo: Desain Mirip Fitur Tentang Kami (rounded-2xl, aspect-4/3, border-white, shadow, object-cover) */}
+          <div className="sm:col-span-5 aspect-4/3 rounded-2xl overflow-hidden bg-stone-100 shadow-md border-2 sm:border-4 border-white relative group">
             <ProductLikeButton product={product} className="absolute top-2.5 right-2.5 z-10" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={primaryImage}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
           </div>
 
