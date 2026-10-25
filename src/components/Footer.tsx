@@ -57,8 +57,8 @@ export default function Footer() {
               <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Free Ongkir Griya 5</h4>
-              <p className="text-[9px] sm:text-[10.5px] text-slate-400 truncate">Perum Griya Cileungsi 5</p>
+              <h4 className="text-[11px] sm:text-xs font-bold text-white leading-tight">Free Ongkir Griya Cileungsi 5</h4>
+              <p className="text-[9px] sm:text-[10.5px] text-slate-400 leading-tight">Diantar hangat ke rumah</p>
             </div>
           </div>
 

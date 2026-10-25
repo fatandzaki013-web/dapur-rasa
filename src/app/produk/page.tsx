@@ -221,14 +221,14 @@ function ProductsContent() {
         </div>
       </div>
 
-      {/* Grid Produk Responsif (Persis Galeri: 2 Kolom Kiri & Kanan Tanpa Geser Samping) */}
+      {/* Grid Produk Responsif (Persis Galeri: Foto Utuh, Judul Lengkap, Tombol + Keranjang Jelas) */}
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="min-w-0 bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-stone-200 animate-pulse space-y-2">
-              <div className="aspect-[4/3] bg-stone-200 rounded-lg" />
-              <div className="h-3 bg-stone-200 rounded w-3/4" />
-              <div className="h-2.5 bg-stone-200 rounded w-1/2" />
+            <div key={i} className="min-w-0 bg-white rounded-2xl p-2.5 sm:p-3.5 border border-stone-200 animate-pulse space-y-2">
+              <div className="aspect-square bg-stone-200 rounded-xl" />
+              <div className="h-3.5 bg-stone-200 rounded w-3/4" />
+              <div className="h-3 bg-stone-200 rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -255,7 +255,7 @@ function ProductsContent() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
           {products.map((prod) => {
             const currentPrice = prod.price;
             const isOutOfStock = !prod.isAvailable || prod.stock <= 0;
@@ -266,10 +266,10 @@ function ProductsContent() {
             return (
               <div
                 key={prod.id}
-                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-xl sm:rounded-2xl border border-stone-200/90 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 justify-between"
+                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-2xl border border-stone-200/90 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 justify-between"
               >
-                {/* Product Image: aspect-[4/3] ringkas agar muat 2 produk sejajar */}
-                <div className="relative aspect-[4/3] w-full bg-stone-100 overflow-hidden">
+                {/* Product Image: aspect-square agar foto kue utuh tidak terpotong */}
+                <div className="relative aspect-square w-full bg-stone-50 overflow-hidden">
                   <Link href={`/produk/${prod.slug}`} prefetch={true} className="block w-full h-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -281,78 +281,79 @@ function ProductsContent() {
                   </Link>
 
                   {/* Badges di pojok kiri atas */}
-                  <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                  <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
                     {prod.isAvailable ? (
-                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-600/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-600/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
                         Tersedia
                       </span>
                     ) : (
-                      <span className="px-1.5 py-0.5 rounded-md bg-red-600/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                      <span className="px-1.5 py-0.5 rounded-md bg-red-600/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
                         Habis
                       </span>
                     )}
                     {prod.isBestSeller && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
-                        Best
+                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                        Best Seller
                       </span>
                     )}
                   </div>
 
                   {/* Tombol Like di pojok kanan atas */}
-                  <div className="absolute top-1.5 right-1.5 z-10">
+                  <div className="absolute top-2 right-2 z-10">
                     <ProductLikeButton product={prod} size="sm" />
                   </div>
 
                   {!prod.isAvailable ? (
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-red-600 text-white font-bold text-[9px] sm:text-xs px-2 py-0.5 rounded-full shadow-lg">
+                      <span className="bg-red-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
                         Habis
                       </span>
                     </div>
                   ) : prod.stock <= 0 ? (
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-amber-600 text-white font-bold text-[9px] sm:text-xs px-2 py-0.5 rounded-full shadow-lg">
+                      <span className="bg-amber-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
                         Habis
                       </span>
                     </div>
                   ) : null}
                 </div>
 
-                {/* Info Card Kompak */}
-                <div className="p-2 sm:p-3 flex-1 flex flex-col justify-between space-y-1 sm:space-y-1.5 min-w-0 bg-white">
+                {/* Info Card: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
+                <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between space-y-1.5 min-w-0 bg-white">
                   <div className="min-w-0">
-                    <span className="text-[8px] sm:text-[9.5px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate block mb-0.5">
+                    <span className="text-[8.5px] sm:text-[9.5px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate block mb-0.5">
                       {prod.category?.name || "Kue"}
                     </span>
                     <Link
                       href={`/produk/${prod.slug}`}
                       prefetch={true}
-                      className="font-bold text-stone-900 text-[11.5px] sm:text-sm hover:text-[#4A0E4E] transition-colors truncate block leading-snug"
+                      className="font-bold text-stone-900 text-xs sm:text-sm hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px] block leading-snug"
                     >
                       {prod.name}
                     </Link>
                   </div>
 
                   {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                  <div className="pt-1 border-t border-stone-100 flex items-center justify-between gap-1 mt-auto min-w-0">
+                  <div className="pt-1.5 border-t border-stone-100 flex items-center justify-between gap-1.5 mt-auto min-w-0">
                     <div className="min-w-0">
-                      <div className="text-[11.5px] sm:text-sm font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
+                      <div className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
                         {formatPrice(currentPrice)}
                       </div>
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => handleQuickAdd(prod)}
                       disabled={isOutOfStock}
-                      className={`h-6 sm:h-7 px-1.5 sm:px-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-bold transition-all flex items-center gap-0.5 shadow-2xs shrink-0 ${
+                      className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
                         isOutOfStock
                           ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                          : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
+                          : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
                       }`}
-                      title={!prod.isAvailable ? "Habis" : "Tambah ke Keranjang"}
+                      title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
                     >
-                      <ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                      <span>{isOutOfStock ? "Habis" : "+"}</span>
+                      <ShoppingBag className="w-3 h-3" />
+                      <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
                     </button>
                   </div>
                 </div>

@@ -501,10 +501,11 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 2-Column Grid Persis Galeri: 2 Kolom Kiri-Kanan Muat Sempurna Tanpa Geser Samping */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
+          {/* 2-Column Grid Persis Galeri: Foto Penuh, Judul 2 Baris Lengkap, Tombol + Keranjang Jelas */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
             {products.map((prod) => {
               const currentPrice = prod.price;
+              const isOutOfStock = !prod.isAvailable || prod.stock <= 0;
               const primaryImage =
                 prod.images?.[0]?.url ||
                 "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80";
@@ -512,10 +513,10 @@ export default function HomePage() {
               return (
                 <article
                   key={prod.id}
-                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-slate-200/80 bg-white shadow-2xs transition-all duration-300 hover:border-purple-200 hover:shadow-md rounded-xl sm:rounded-2xl justify-between"
+                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-slate-200/90 bg-white shadow-2xs transition-all duration-300 hover:border-purple-200 hover:shadow-md rounded-2xl justify-between"
                 >
-                  {/* Photo: aspect-[4/3] ringkas agar pas 2 produk di 1 layar mobile */}
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                  {/* Photo: aspect-square agar foto kue utuh tidak kepotong atas/bawah */}
+                  <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
                     <Link
                       className="block w-full h-full"
                       href={`/produk/${prod.slug}`}
@@ -531,67 +532,67 @@ export default function HomePage() {
                     </Link>
 
                     {/* Badges pojok kiri atas */}
-                    <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                    <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
                       {prod.isAvailable ? (
-                        <span className="rounded-md bg-emerald-600/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold uppercase shadow-2xs">
+                        <span className="rounded-md bg-emerald-600/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase shadow-2xs">
                           Tersedia
                         </span>
                       ) : (
-                        <span className="rounded-md bg-red-600/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                        <span className="rounded-md bg-red-600/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
                           Habis
                         </span>
                       )}
                       {prod.isBestSeller && (
-                        <span className="rounded-md bg-amber-500/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wide shadow-2xs">
-                          Best
+                        <span className="rounded-md bg-amber-500/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-wide shadow-2xs">
+                          Best Seller
                         </span>
                       )}
                     </div>
 
                     {/* Tombol Like pojok kanan atas */}
-                    <div className="absolute top-1.5 right-1.5 z-10">
+                    <div className="absolute top-2 right-2 z-10">
                       <ProductLikeButton product={prod} size="sm" />
                     </div>
                   </div>
 
-                  {/* Body Info Kompak */}
-                  <div className="p-2 sm:p-3 flex flex-1 flex-col justify-between space-y-1 sm:space-y-1.5 min-w-0 bg-white">
+                  {/* Body Info: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
+                  <div className="p-2.5 sm:p-3.5 flex flex-1 flex-col justify-between space-y-1.5 min-w-0 bg-white">
                     <div className="min-w-0">
-                      <span className="text-[8px] sm:text-[9.5px] font-bold uppercase text-[#4A0E4E] tracking-wide block truncate mb-0.5">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold uppercase text-[#4A0E4E] tracking-wide block truncate mb-0.5">
                         {prod.category?.name || "Kue"}
                       </span>
-                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-tight min-w-0">
-                        <h3 className="font-extrabold text-[11.5px] sm:text-sm text-slate-900 group-hover:text-[#4A0E4E] transition-colors truncate">
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0">
+                        <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
                           {prod.name}
                         </h3>
                       </Link>
                     </div>
 
                     {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                    <div className="pt-1 border-t border-slate-100 flex items-center justify-between gap-1 mt-auto min-w-0">
+                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-1.5 mt-auto min-w-0">
                       <div className="min-w-0">
-                        <p className="text-[11.5px] sm:text-sm font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
+                        <p className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
                           {formatPrice(currentPrice)}
                         </p>
                       </div>
 
                       <button
                         type="button"
-                        disabled={!prod.isAvailable}
+                        disabled={isOutOfStock}
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           handleQuickAdd(prod);
                         }}
-                        className={`h-6 sm:h-7 px-1.5 sm:px-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-bold transition-all flex items-center gap-0.5 shadow-2xs shrink-0 ${
-                          !prod.isAvailable
+                        className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
+                          isOutOfStock
                             ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                            : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
+                            : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
                         }`}
-                        title={!prod.isAvailable ? "Habis" : "Tambah ke Keranjang"}
+                        title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
                       >
-                        <ShoppingCart className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                        <span>{!prod.isAvailable ? "Habis" : "+"}</span>
+                        <ShoppingCart className="w-3 h-3" />
+                        <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
                       </button>
                     </div>
                   </div>

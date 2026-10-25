@@ -237,7 +237,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
     const isDelivery = completedOrder.fulfillmentType === "DELIVERY";
 
     return (
-      <div className="max-w-2xl mx-auto px-4 py-16 space-y-8 animate-fadeIn">
+      <div className="max-w-2xl mx-auto px-4 pt-28 sm:pt-32 pb-16 space-y-8 animate-fadeIn">
         {/* Banner Sukses Atas */}
         <div className="text-center space-y-2">
           <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-md">
@@ -406,7 +406,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
   // ==============================================================
   if (items.length === 0) {
     return (
-      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4 animate-fadeIn">
+      <div className="max-w-xl mx-auto px-4 pt-28 sm:pt-32 pb-16 text-center space-y-4 animate-fadeIn">
         <div className="w-20 h-20 bg-purple-50 text-[#4A0E4E] rounded-full flex items-center justify-center mx-auto shadow-inner">
           <ShoppingBag className="w-10 h-10" />
         </div>
@@ -434,7 +434,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
   // VIEW: FORMULIR CHECKOUT RAPI & SEDERHANA (STREAMLINED)
   // ==============================================================
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12 animate-fadeIn">
+    <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-32 pb-16 animate-fadeIn">
       {/* Tombol Lanjutkan Belanja Cepat */}
       <div className="mb-4">
         <Link
