@@ -112,8 +112,8 @@ export default function ProductDetailPage({
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 animate-pulse space-y-8">
         <div className="h-6 bg-stone-200 rounded w-1/4" />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-6 aspect-square bg-stone-200 rounded-3xl" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-6 aspect-4/3 bg-stone-200 rounded-3xl" />
           <div className="lg:col-span-6 space-y-4">
             <div className="h-8 bg-stone-200 rounded w-3/4" />
             <div className="h-6 bg-stone-200 rounded w-1/3" />
@@ -182,7 +182,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
   const currentImageUrl = images[selectedImageIndex]?.url;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-14">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-14">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm font-medium flex items-center gap-2 animate-fadeIn border border-amber-600/30">
@@ -191,67 +191,67 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
         </div>
       )}
 
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-stone-500 mb-6">
-        <Link href="/" prefetch={true} className="hover:text-stone-900 transition-colors">
+      {/* Breadcrumb - Single line horizontal scrollable so it never clips or wraps */}
+      <nav className="flex items-center gap-1.5 text-[11px] sm:text-xs text-stone-500 mb-4 sm:mb-6 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
+        <Link href="/" prefetch={true} className="hover:text-stone-900 transition-colors shrink-0">
           Beranda
         </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <Link href="/produk" prefetch={true} className="hover:text-stone-900 transition-colors">
+        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
+        <Link href="/produk" prefetch={true} className="hover:text-stone-900 transition-colors shrink-0">
           Produk
         </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
+        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
         <Link
           href={`/produk?category=${product.category.slug}`}
           prefetch={true}
-          className="hover:text-stone-900 transition-colors"
+          className="hover:text-stone-900 transition-colors shrink-0"
         >
           {product.category.name}
         </Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-stone-900 font-medium truncate max-w-xs">{product.name}</span>
+        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
+        <span className="text-stone-900 font-semibold truncate max-w-[180px] sm:max-w-xs">{product.name}</span>
       </nav>
 
       {/* Main Product Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
         {/* Left: Image Gallery */}
-        <div className="lg:col-span-6 space-y-4">
-          {/* Main Image: Desain Cantik Seperti Halaman Tentang Kami (Utuh, Jelas & Bisa Diperbesar) */}
+        <div className="lg:col-span-6 space-y-3 sm:space-y-4">
+          {/* Main Image: Mengikuti proporsi Tentang Kami (aspect 4:3, pas tidak kegedean, utuh tidak kepotong & jernih) */}
           <div
             onClick={() => setIsLightboxOpen(true)}
-            className="relative rounded-3xl overflow-hidden aspect-square bg-stone-100 shadow-xl border-4 border-white group cursor-zoom-in"
+            className="relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-4/3 bg-stone-100 shadow-md sm:shadow-xl border-2 sm:border-4 border-white group cursor-zoom-in max-h-72 sm:max-h-96 lg:max-h-[460px] w-full"
           >
             {currentImageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={currentImageUrl}
                 alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-stone-400">
+              <div className="w-full h-full flex items-center justify-center text-stone-400 text-sm">
                 Foto Produk
               </div>
             )}
 
             {/* Like Button */}
             <div onClick={(e) => e.stopPropagation()}>
-              <ProductLikeButton product={product} size="lg" className="absolute top-4 right-4 z-20" />
+              <ProductLikeButton product={product} size="md" className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20" />
             </div>
 
             {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex flex-col gap-1.5 pointer-events-none">
               {product.isBestSeller && (
-                <span className="px-3 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-bold shadow-md">
+                <span className="px-2.5 py-1 rounded-lg sm:rounded-xl bg-amber-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Best Seller
                 </span>
               )}
               {product.isAvailable ? (
-                <span className="px-3 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md">
+                <span className="px-2.5 py-1 rounded-lg sm:rounded-xl bg-emerald-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Tersedia
                 </span>
               ) : (
-                <span className="px-3 py-1.5 rounded-xl bg-red-600 text-white text-xs font-bold shadow-md">
+                <span className="px-2.5 py-1 rounded-lg sm:rounded-xl bg-red-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Tidak Tersedia
                 </span>
               )}
@@ -264,21 +264,21 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                 e.stopPropagation();
                 setIsLightboxOpen(true);
               }}
-              className="absolute bottom-3 right-3 z-20 px-3 py-1.5 rounded-xl bg-stone-900/85 hover:bg-stone-900 text-white text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg transition active:scale-95 cursor-pointer"
+              className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 z-20 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg sm:rounded-xl bg-stone-900/80 hover:bg-stone-900 text-white text-[11px] sm:text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer"
             >
-              <Eye className="w-3.5 h-3.5 text-amber-300" />
-              <span>Perbesar Foto</span>
+              <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300" />
+              <span>Perbesar</span>
             </button>
 
             {!product.isAvailable ? (
               <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                <span className="bg-red-600 text-white font-bold text-sm px-5 py-2.5 rounded-full shadow-lg">
+                <span className="bg-red-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
                   Tidak Tersedia
                 </span>
               </div>
             ) : isOutOfStock ? (
               <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                <span className="bg-amber-600 text-white font-bold text-sm px-5 py-2.5 rounded-full shadow-lg">
+                <span className="bg-amber-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
                   Stok Habis
                 </span>
               </div>
@@ -287,14 +287,14 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex items-center gap-3 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 pt-0.5 scrollbar-none">
               {images.map((img, idx) => (
                 <button
                   key={img.id || idx}
                   onClick={() => setSelectedImageIndex(idx)}
-                  className={`w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                  className={`w-14 h-14 sm:w-18 sm:h-18 rounded-xl sm:rounded-2xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
                     selectedImageIndex === idx
-                      ? "border-amber-700 shadow-md scale-95"
+                      ? "border-[#4A0E4E] shadow-sm scale-95"
                       : "border-stone-200 opacity-70 hover:opacity-100"
                   }`}
                 >
@@ -307,67 +307,73 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
         </div>
 
         {/* Right: Product Info & Actions */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-4 sm:space-y-5">
           <div>
-            <div className="inline-block text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">
+            <div className="inline-block text-[11px] sm:text-xs font-bold text-[#4A0E4E] uppercase tracking-wider mb-1">
               {product.category.name}
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-heading">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-stone-900 font-heading leading-tight">
               {product.name}
             </h1>
             {product.sku && (
-              <span className="text-xs text-stone-400 mt-1 block">SKU: {product.sku}</span>
+              <span className="text-[11px] text-stone-400 mt-0.5 block">SKU: {product.sku}</span>
             )}
           </div>
 
-          {/* Price */}
-          <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 flex items-baseline gap-3">
-            <span className="text-3xl font-extrabold text-stone-900 font-heading">
-              {formatPrice(unitPrice)}
-            </span>
-            <span className="text-sm text-stone-500">/{product.unit}</span>
-            <span className="ml-auto text-xs font-bold px-3 py-1 rounded-full">
+          {/* Price Card with wrap so nothing ever clips */}
+          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-stone-50 border border-stone-200/90 flex flex-wrap items-center justify-between gap-2.5">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-2xl sm:text-3xl font-extrabold text-[#4A0E4E] font-heading">
+                {formatPrice(unitPrice)}
+              </span>
+              <span className="text-xs sm:text-sm text-stone-500 font-medium">/{product.unit}</span>
+            </div>
+            <div className="shrink-0">
               {!product.isAvailable ? (
-                <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full">Tidak Tersedia</span>
+                <span className="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-800">
+                  Tidak Tersedia
+                </span>
               ) : isOutOfStock ? (
-                <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full">Stok Habis</span>
+                <span className="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+                  Stok Habis
+                </span>
               ) : (
-                <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">
+                <span className="text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
                   Tersedia ({availableStock} {product.unit})
                 </span>
               )}
-            </span>
+            </div>
           </div>
 
           {/* Short Description */}
           {product.shortDescription && (
-            <p className="text-sm text-stone-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
               {product.shortDescription}
             </p>
           )}
 
           {/* Variant Selector */}
           {product.variants && product.variants.length > 0 && (
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
                 Pilih Varian / Rasa:
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2">
                 {product.variants.map((variant) => {
                   const isSelected = selectedVariantId === variant.id;
                   return (
                     <button
                       key={variant.id}
                       onClick={() => setSelectedVariantId(variant.id)}
-                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                         isSelected
-                          ? "border-amber-700 bg-amber-50/50 shadow-xs ring-1 ring-amber-700"
+                          ? "border-[#4A0E4E] bg-purple-50/60 shadow-xs ring-1 ring-[#4A0E4E]"
                           : "border-stone-200 hover:border-stone-300 bg-white"
                       }`}
                     >
-                      <div className="text-xs font-bold text-stone-900">{variant.name}</div>
+                      <div className="text-xs font-bold text-stone-900 truncate">{variant.name}</div>
                       {variant.priceAdjustment !== 0 && (
-                        <div className="text-[11px] text-stone-500">
+                        <div className="text-[10px] sm:text-[11px] text-[#4A0E4E] font-semibold mt-0.5">
                           {variant.priceAdjustment > 0 ? `+${formatPrice(variant.priceAdjustment)}` : formatPrice(variant.priceAdjustment)}
                         </div>
                       )}
@@ -379,52 +385,52 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
           )}
 
           {/* Quantity Selector */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <label className="block text-xs font-bold text-stone-800 uppercase tracking-wider">
               Jumlah Pesanan:
             </label>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border border-stone-300 rounded-xl bg-white overflow-hidden shadow-2xs">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <div className="flex items-center border border-stone-300 rounded-xl bg-white overflow-hidden shadow-2xs h-9 sm:h-10">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="p-2.5 hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer"
+                  className="px-2.5 sm:px-3 h-full hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer"
                   aria-label="Kurangi"
                 >
-                  <Minus className="w-4 h-4" />
+                  <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="px-4 text-sm font-bold text-stone-900 min-w-10 text-center">
+                <span className="px-3 text-xs sm:text-sm font-bold text-stone-900 min-w-8 text-center">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity((q) => Math.min(availableStock, q + 1))}
-                  className="p-2.5 hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer"
+                  className="px-2.5 sm:px-3 h-full hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer"
                   aria-label="Tambah"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               <div className="text-xs text-stone-500">
-                Total perkiraan: <strong className="text-stone-900 font-bold text-sm">{formatPrice(totalPrice)}</strong>
+                Total perkiraan: <strong className="text-stone-900 font-bold text-xs sm:text-sm">{formatPrice(totalPrice)}</strong>
               </div>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-2.5 shadow-md transition-all ${
+              className={`py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all ${
                 isOutOfStock
                   ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                  : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white hover:scale-[1.02] cursor-pointer"
+                  : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
               }`}
             >
-              <ShoppingBag className="w-5 h-5" />
+              <ShoppingBag className="w-4 h-4" />
               <span>
                 {!product.isAvailable
-                  ? "Produk Tidak Tersedia"
+                  ? "Tidak Tersedia"
                   : isOutOfStock
                   ? "Stok Habis"
                   : "Tambah ke Keranjang"}
@@ -434,82 +440,82 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             <button
               onClick={handleDirectWhatsApp}
               disabled={!product.isAvailable}
-              className={`py-4 px-6 rounded-2xl font-bold flex items-center justify-center gap-2.5 shadow-md transition-all ${
+              className={`py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-md transition-all ${
                 !product.isAvailable
                   ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                  : "bg-emerald-600 hover:bg-emerald-700 text-white hover:scale-[1.02] cursor-pointer"
+                  : "bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95 cursor-pointer"
               }`}
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="w-4 h-4" />
               <span>{!product.isAvailable ? "Tidak Tersedia" : "Pesan via WhatsApp"}</span>
             </button>
           </div>
 
           {/* Payment & Delivery Trust Badges */}
-          <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80 space-y-2 text-xs text-stone-600">
-            <div className="font-bold text-stone-900 flex items-center gap-1.5">
+          <div className="p-3 sm:p-4 bg-stone-50 rounded-xl sm:rounded-2xl border border-stone-200/80 space-y-2 text-xs text-stone-600">
+            <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>Pilihan Pengantaran &amp; Pembayaran:</span>
             </div>
-            <div className="flex flex-wrap gap-2 pt-0.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 text-[#4A0E4E] font-bold text-[11px] border border-purple-200">
-                Ambil di Dapur (Gratis Ongkir)
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 text-[#4A0E4E] font-bold text-[10px] sm:text-[11px] border border-purple-200/80">
+                Ambil di Dapur (Gratis)
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 font-bold text-[11px] border border-amber-200">
-                Diantar ke Perum Griya Cileungsi 5
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 font-bold text-[10px] sm:text-[11px] border border-amber-200/80">
+                Free Ongkir Griya Cileungsi 5
               </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[11px] border border-emerald-200">
-                Bayar saat Diterima (COD / Tunai)
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] sm:text-[11px] border border-emerald-200/80">
+                Bayar di Tempat (COD)
               </span>
             </div>
           </div>
 
           {/* Product Specifications & Details Card */}
-          <div className="pt-6 border-t border-stone-200 space-y-4">
-            <h3 className="font-heading font-bold text-lg text-stone-900">
+          <div className="pt-4 sm:pt-6 border-t border-stone-200 space-y-3 sm:space-y-4">
+            <h3 className="font-heading font-bold text-base sm:text-lg text-stone-900">
               Rincian & Informasi Produk
             </h3>
-            <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-line">
+            <p className="text-xs sm:text-sm text-stone-700 leading-relaxed whitespace-pre-line break-words">
               {product.description}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2">
+            <div className="grid grid-cols-2 gap-2 text-xs pt-1">
               {product.weightGrams && (
-                <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2.5">
-                  <Package className="w-4 h-4 text-stone-500" />
-                  <span>Berat: <strong>{product.weightGrams} gram</strong></span>
+                <div className="p-2 sm:p-2.5 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2 text-[11px] sm:text-xs">
+                  <Package className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+                  <span className="truncate">Berat: <strong>{product.weightGrams}g</strong></span>
                 </div>
               )}
               {product.piecesPerPack && (
-                <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2.5">
-                  <Sparkles className="w-4 h-4 text-stone-500" />
-                  <span>Isi per pack: <strong>{product.piecesPerPack} {product.unit}</strong></span>
+                <div className="p-2 sm:p-2.5 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2 text-[11px] sm:text-xs">
+                  <Sparkles className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+                  <span className="truncate">Isi: <strong>{product.piecesPerPack} {product.unit}</strong></span>
                 </div>
               )}
               {product.shelfLife && (
-                <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2.5">
-                  <Clock className="w-4 h-4 text-stone-500" />
-                  <span>Masa simpan: <strong>{product.shelfLife}</strong></span>
+                <div className="p-2 sm:p-2.5 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2 text-[11px] sm:text-xs">
+                  <Clock className="w-3.5 h-3.5 text-stone-500 shrink-0" />
+                  <span className="truncate">Simpan: <strong>{product.shelfLife}</strong></span>
                 </div>
               )}
               {product.allergens && (
-                <div className="p-3 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2.5">
-                  <ShieldCheck className="w-4 h-4 text-amber-600" />
-                  <span>Alergen: <strong>{product.allergens}</strong></span>
+                <div className="p-2 sm:p-2.5 bg-stone-50 rounded-xl border border-stone-200 flex items-center gap-2 text-[11px] sm:text-xs">
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span className="truncate">Alergen: <strong>{product.allergens}</strong></span>
                 </div>
               )}
             </div>
 
             {product.ingredients && (
-              <div className="p-4 bg-amber-50/50 rounded-2xl border border-amber-200/60 text-xs text-stone-700 space-y-1">
+              <div className="p-3 sm:p-4 bg-amber-50/50 rounded-xl sm:rounded-2xl border border-amber-200/60 text-xs text-stone-700 space-y-1 break-words">
                 <span className="font-bold text-amber-900 block">Komposisi Bahan:</span>
                 <p className="leading-relaxed">{product.ingredients}</p>
               </div>
             )}
 
             {product.storageGuide && (
-              <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 text-xs text-stone-700 space-y-1">
-                <span className="font-bold text-stone-900 block">Saran Penyimpanan & Penyajian:</span>
+              <div className="p-3 sm:p-4 bg-stone-50 rounded-xl sm:rounded-2xl border border-stone-200 text-xs text-stone-700 space-y-1 break-words">
+                <span className="font-bold text-stone-900 block">Saran Penyimpanan &amp; Penyajian:</span>
                 <p className="leading-relaxed">{product.storageGuide}</p>
               </div>
             )}
@@ -519,8 +525,8 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
 
       {/* Related Products Grid */}
       {relatedProducts.length > 0 && (
-        <div className="mt-20 pt-12 border-t border-stone-200">
-          <h2 className="text-2xl font-bold font-heading text-stone-900 mb-6">
+        <div className="mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-stone-200">
+          <h2 className="text-lg sm:text-2xl font-bold font-heading text-stone-900 mb-4 sm:mb-6">
             Kue Pilihan Lainnya dalam Kategori Ini
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-6">
@@ -531,7 +537,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                 prefetch={true}
                 className="group bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
               >
-                <div className="aspect-[4/3] sm:aspect-square bg-stone-100 overflow-hidden relative">
+                <div className="aspect-4/3 bg-stone-100 overflow-hidden relative">
                   {rel.images?.[0]?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -558,30 +564,38 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
           </div>
         </div>
       )}
+
       {/* Fullscreen Lightbox Zoom Modal */}
       {isLightboxOpen && currentImageUrl && (
         <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 animate-fadeIn"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-3 animate-fadeIn"
           onClick={() => setIsLightboxOpen(false)}
         >
-          <button
-            type="button"
-            onClick={() => setIsLightboxOpen(false)}
-            className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-50 cursor-pointer"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="w-full max-w-3xl flex items-center justify-between text-white pb-3 px-2">
+            <span className="text-xs sm:text-sm font-bold truncate pr-4">{product.name}</span>
+            <button
+              type="button"
+              onClick={() => setIsLightboxOpen(false)}
+              className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition shrink-0"
+              aria-label="Tutup"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <div
-            className="relative max-w-3xl max-h-[85vh] w-full flex items-center justify-center"
+            className="relative max-w-3xl max-h-[80vh] w-full flex items-center justify-center overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentImageUrl}
               alt={product.name}
-              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+              className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl"
             />
           </div>
+          <p className="text-white/60 text-[11px] sm:text-xs mt-3 text-center">
+            Sentuh / cubit layar untuk melihat detail foto kue
+          </p>
         </div>
       )}
     </div>
