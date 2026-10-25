@@ -14,7 +14,6 @@
 html {
   max-width: 100vw;
   overflow-x: hidden;
-  touch-action: pan-y;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -25,7 +24,6 @@ body {
   overflow-x: hidden;
   max-width: 100vw;
   width: 100%;
-  touch-action: pan-y;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {

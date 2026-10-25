@@ -17,6 +17,8 @@ import {
   Minus,
   AlertCircle,
   Package,
+  Eye,
+  X,
 } from "lucide-react";
 
 interface ProductDetail {
@@ -71,6 +73,7 @@ export default function ProductDetailPage({
   );
   const [quantity, setQuantity] = useState(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     if (!productDetailCache.has(slug)) {
@@ -213,13 +216,17 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
         {/* Left: Image Gallery */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="relative rounded-3xl overflow-hidden aspect-4/3 sm:aspect-square bg-stone-100 border border-stone-200/80 shadow-md">
+          {/* Main Image: Desain Cantik Seperti Halaman Tentang Kami (Utuh, Jelas & Bisa Diperbesar) */}
+          <div
+            onClick={() => setIsLightboxOpen(true)}
+            className="relative rounded-3xl overflow-hidden aspect-square bg-stone-100 shadow-xl border-4 border-white group cursor-zoom-in"
+          >
             {currentImageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={currentImageUrl}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-stone-400">
@@ -228,10 +235,12 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             )}
 
             {/* Like Button */}
-            <ProductLikeButton product={product} size="lg" className="absolute top-4 right-4 z-20" />
+            <div onClick={(e) => e.stopPropagation()}>
+              <ProductLikeButton product={product} size="lg" className="absolute top-4 right-4 z-20" />
+            </div>
 
             {/* Badges */}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
+            <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
               {product.isBestSeller && (
                 <span className="px-3 py-1.5 rounded-xl bg-amber-600 text-white text-xs font-bold shadow-md">
                   Best Seller
@@ -247,6 +256,19 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                 </span>
               )}
             </div>
+
+            {/* Tombol Perbesar Foto di Pojok Kanan Bawah */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLightboxOpen(true);
+              }}
+              className="absolute bottom-3 right-3 z-20 px-3 py-1.5 rounded-xl bg-stone-900/85 hover:bg-stone-900 text-white text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-lg transition active:scale-95 cursor-pointer"
+            >
+              <Eye className="w-3.5 h-3.5 text-amber-300" />
+              <span>Perbesar Foto</span>
+            </button>
 
             {!product.isAvailable ? (
               <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
@@ -533,6 +555,32 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      )}
+      {/* Fullscreen Lightbox Zoom Modal */}
+      {isLightboxOpen && currentImageUrl && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 animate-fadeIn"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center z-50 cursor-pointer"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div
+            className="relative max-w-3xl max-h-[85vh] w-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={currentImageUrl}
+              alt={product.name}
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl"
+            />
           </div>
         </div>
       )}
