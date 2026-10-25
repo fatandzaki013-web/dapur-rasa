@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
@@ -500,8 +503,8 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 2-Column Balanced Mobile Grid (Proporsional & Rapi seperti Galeri) */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+          {/* 2-Column Grid Persis Galeri: 2 Kolom Kiri-Kanan Muat Sempurna Tanpa Geser Samping */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
             {products.map((prod) => {
               const currentPrice = prod.price;
               const primaryImage =
@@ -511,10 +514,10 @@ export default function HomePage() {
               return (
                 <article
                   key={prod.id}
-                  className="group relative flex h-full flex-col overflow-hidden border border-slate-200/80 bg-white shadow-2xs transition-all duration-300 hover:border-purple-200 hover:shadow-md rounded-2xl sm:rounded-3xl justify-between"
+                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-slate-200/80 bg-white shadow-2xs transition-all duration-300 hover:border-purple-200 hover:shadow-md rounded-xl sm:rounded-2xl justify-between"
                 >
-                  {/* Photo: aspect-[4/3] di mobile agar tidak kebesaran, sm:aspect-square di desktop */}
-                  <div className="relative block aspect-[4/3] sm:aspect-square overflow-hidden bg-slate-100">
+                  {/* Photo: aspect-[4/3] ringkas agar pas 2 produk di 1 layar mobile */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                     <Link
                       className="block w-full h-full"
                       href={`/produk/${prod.slug}`}
@@ -525,88 +528,73 @@ export default function HomePage() {
                         alt={prod.name}
                         src={primaryImage}
                         className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
+                        loading="lazy"
                       />
                     </Link>
 
                     {/* Badges pojok kiri atas */}
-                    <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
+                    <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
                       {prod.isAvailable ? (
-                        <span className="rounded-md bg-emerald-600/90 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase shadow-2xs">
+                        <span className="rounded-md bg-emerald-600/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold uppercase shadow-2xs">
                           Tersedia
                         </span>
                       ) : (
-                        <span className="rounded-md bg-red-600/90 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase shadow-2xs">
+                        <span className="rounded-md bg-red-600/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
                           Habis
                         </span>
                       )}
                       {prod.isBestSeller && (
-                        <span className="rounded-md bg-amber-500/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-wide shadow-2xs">
-                          Best seller
+                        <span className="rounded-md bg-amber-500/95 text-white px-1.5 py-0.5 text-[7.5px] sm:text-[9px] font-bold uppercase tracking-wide shadow-2xs">
+                          Best
                         </span>
                       )}
                     </div>
 
                     {/* Tombol Like pojok kanan atas */}
-                    <div className="absolute top-2 right-2 z-10">
+                    <div className="absolute top-1.5 right-1.5 z-10">
                       <ProductLikeButton product={prod} size="sm" />
                     </div>
                   </div>
 
-                  {/* Body Info */}
-                  <div className="p-2.5 sm:p-3.5 flex flex-1 flex-col justify-between space-y-1.5 sm:space-y-2">
-                    <div>
-                      <div className="mb-0.5 flex items-center justify-between gap-1">
-                        <span className="truncate rounded-md bg-purple-50 px-1.5 py-0.5 text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-wide text-[#4A0E4E]">
-                          {prod.category?.name || "Kue"}
-                        </span>
-                        <span className="shrink-0 text-[9px] sm:text-[10px] font-medium text-slate-400">
-                          ★ 4.9
-                        </span>
-                      </div>
-
-                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-tight">
-                        <h3 className="line-clamp-1 sm:line-clamp-2 text-xs sm:text-sm font-extrabold text-slate-900 transition-colors group-hover:text-[#4A0E4E]">
+                  {/* Body Info Kompak */}
+                  <div className="p-2 sm:p-3 flex flex-1 flex-col justify-between space-y-1 sm:space-y-1.5 min-w-0 bg-white">
+                    <div className="min-w-0">
+                      <span className="text-[8px] sm:text-[9.5px] font-bold uppercase text-[#4A0E4E] tracking-wide block truncate mb-0.5">
+                        {prod.category?.name || "Kue"}
+                      </span>
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-tight min-w-0">
+                        <h3 className="font-extrabold text-[11.5px] sm:text-sm text-slate-900 group-hover:text-[#4A0E4E] transition-colors truncate">
                           {prod.name}
                         </h3>
                       </Link>
                     </div>
 
                     {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-1 mt-auto">
-                      <div>
-                        <p className="text-[8.5px] sm:text-[9.5px] font-semibold uppercase tracking-wide text-slate-400 hidden sm:block">
-                          Harga
-                        </p>
-                        <p className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none">
+                    <div className="pt-1 border-t border-slate-100 flex items-center justify-between gap-1 mt-auto min-w-0">
+                      <div className="min-w-0">
+                        <p className="text-[11.5px] sm:text-sm font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
                           {formatPrice(currentPrice)}
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-1">
-                        <button
-                          type="button"
-                          disabled={!prod.isAvailable}
-                          onClick={() => handleQuickAdd(prod)}
-                          className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs ${
-                            !prod.isAvailable
-                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                              : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
-                          }`}
-                          title={!prod.isAvailable ? "Produk Tidak Tersedia" : "Tambah ke Keranjang"}
-                        >
-                          <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                          <span className="hidden xs:inline">{!prod.isAvailable ? "Habis" : "+ Keranjang"}</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setQuickViewProduct(prod as any)}
-                          className="hidden sm:inline-flex items-center justify-center border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 h-7 w-7 p-0 rounded-lg shadow-2xs cursor-pointer active:scale-95 shrink-0"
-                          title="Lihat Cepat (Quick View)"
-                        >
-                          <Eye className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        disabled={!prod.isAvailable}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleQuickAdd(prod);
+                        }}
+                        className={`h-6 sm:h-7 px-1.5 sm:px-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-bold transition-all flex items-center gap-0.5 shadow-2xs shrink-0 ${
+                          !prod.isAvailable
+                            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                            : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
+                        }`}
+                        title={!prod.isAvailable ? "Habis" : "Tambah ke Keranjang"}
+                      >
+                        <ShoppingCart className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                        <span>{!prod.isAvailable ? "Habis" : "+"}</span>
+                      </button>
                     </div>
                   </div>
                 </article>

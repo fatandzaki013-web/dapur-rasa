@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -90,7 +93,7 @@ function ProductsContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-14">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-14 w-full max-w-full overflow-hidden">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-amber-600/30">
@@ -220,18 +223,14 @@ function ProductsContent() {
         </div>
       </div>
 
-      {/* Grid Produk Responsif (2 Kolom di HP / Mobile seperti Galeri) */}
+      {/* Grid Produk Responsif (Persis Galeri: 2 Kolom Kiri & Kanan Tanpa Geser Samping) */}
       {isLoading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 border border-stone-200 animate-pulse space-y-2">
-              <div className="aspect-[4/3] sm:aspect-square bg-stone-200 rounded-xl" />
-              <div className="h-3.5 bg-stone-200 rounded w-3/4" />
-              <div className="h-3 bg-stone-200 rounded w-1/2" />
-              <div className="pt-2 flex justify-between items-center">
-                <div className="h-4 bg-stone-200 rounded w-1/2" />
-                <div className="w-7 h-7 bg-stone-200 rounded-lg" />
-              </div>
+            <div key={i} className="min-w-0 bg-white rounded-xl sm:rounded-2xl p-2 sm:p-3 border border-stone-200 animate-pulse space-y-2">
+              <div className="aspect-[4/3] bg-stone-200 rounded-lg" />
+              <div className="h-3 bg-stone-200 rounded w-3/4" />
+              <div className="h-2.5 bg-stone-200 rounded w-1/2" />
             </div>
           ))}
         </div>
@@ -258,7 +257,7 @@ function ProductsContent() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6 w-full max-w-full overflow-hidden">
           {products.map((prod) => {
             const currentPrice = prod.price;
             const isOutOfStock = !prod.isAvailable || prod.stock <= 0;
@@ -269,105 +268,93 @@ function ProductsContent() {
             return (
               <div
                 key={prod.id}
-                className="bg-white rounded-2xl sm:rounded-3xl border border-stone-200/90 overflow-hidden shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 flex flex-col group justify-between"
+                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-xl sm:rounded-2xl border border-stone-200/90 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 justify-between"
               >
-                {/* Product Image: aspect-[4/3] di mobile agar pas dan tidak kebesaran */}
-                <div className="relative aspect-[4/3] sm:aspect-square bg-stone-100 overflow-hidden">
+                {/* Product Image: aspect-[4/3] ringkas agar muat 2 produk sejajar */}
+                <div className="relative aspect-[4/3] w-full bg-stone-100 overflow-hidden">
                   <Link href={`/produk/${prod.slug}`} prefetch={true} className="block w-full h-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={primaryImg}
                       alt={prod.name}
                       className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
+                      loading="lazy"
                     />
                   </Link>
 
                   {/* Badges di pojok kiri atas */}
-                  <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
+                  <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
                     {prod.isAvailable ? (
-                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-600/90 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-600/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
                         Tersedia
                       </span>
                     ) : (
-                      <span className="px-1.5 py-0.5 rounded-md bg-red-600/90 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                      <span className="px-1.5 py-0.5 rounded-md bg-red-600/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
                         Habis
                       </span>
                     )}
                     {prod.isBestSeller && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
-                        Best Seller
+                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/95 text-white text-[7.5px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                        Best
                       </span>
                     )}
                   </div>
 
                   {/* Tombol Like di pojok kanan atas */}
-                  <div className="absolute top-2 right-2 z-10">
+                  <div className="absolute top-1.5 right-1.5 z-10">
                     <ProductLikeButton product={prod} size="sm" />
                   </div>
 
-                  {/* Quick View Button on Desktop Hover Only (Hidden on Mobile) */}
-                  <button
-                    type="button"
-                    onClick={() => setQuickViewProduct(prod as any)}
-                    className="hidden sm:flex absolute inset-x-3 bottom-3 py-1.5 bg-stone-900/90 hover:bg-stone-900 text-white text-xs font-semibold rounded-xl opacity-0 group-hover:opacity-100 transition-all backdrop-blur-xs items-center justify-center gap-1.5 shadow-lg cursor-pointer"
-                  >
-                    <Eye className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Lihat Cepat</span>
-                  </button>
-
                   {!prod.isAvailable ? (
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-red-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
-                        Tidak Tersedia
+                      <span className="bg-red-600 text-white font-bold text-[9px] sm:text-xs px-2 py-0.5 rounded-full shadow-lg">
+                        Habis
                       </span>
                     </div>
                   ) : prod.stock <= 0 ? (
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-amber-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
-                        Stok Habis
+                      <span className="bg-amber-600 text-white font-bold text-[9px] sm:text-xs px-2 py-0.5 rounded-full shadow-lg">
+                        Habis
                       </span>
                     </div>
                   ) : null}
                 </div>
 
-                {/* Info Card */}
-                <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between space-y-1.5 sm:space-y-2">
-                  <div>
-                    <div className="text-[8.5px] sm:text-[10px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate mb-0.5">
+                {/* Info Card Kompak */}
+                <div className="p-2 sm:p-3 flex-1 flex flex-col justify-between space-y-1 sm:space-y-1.5 min-w-0 bg-white">
+                  <div className="min-w-0">
+                    <span className="text-[8px] sm:text-[9.5px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate block mb-0.5">
                       {prod.category?.name || "Kue"}
-                    </div>
+                    </span>
                     <Link
                       href={`/produk/${prod.slug}`}
                       prefetch={true}
-                      className="font-bold text-stone-900 text-xs sm:text-sm hover:text-[#4A0E4E] transition-colors line-clamp-1 block leading-tight"
+                      className="font-bold text-stone-900 text-[11.5px] sm:text-sm hover:text-[#4A0E4E] transition-colors truncate block leading-snug"
                     >
                       {prod.name}
                     </Link>
                   </div>
 
                   {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                  <div className="pt-1.5 border-t border-stone-100 flex items-center justify-between gap-1 mt-auto">
-                    <div>
-                      <div className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none">
+                  <div className="pt-1 border-t border-stone-100 flex items-center justify-between gap-1 mt-auto min-w-0">
+                    <div className="min-w-0">
+                      <div className="text-[11.5px] sm:text-sm font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
                         {formatPrice(currentPrice)}
-                        <span className="text-[8.5px] sm:text-xs font-normal text-stone-500 ml-0.5">
-                          /{prod.unit}
-                        </span>
                       </div>
                     </div>
 
                     <button
                       onClick={() => handleQuickAdd(prod)}
                       disabled={isOutOfStock}
-                      className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 ${
+                      className={`h-6 sm:h-7 px-1.5 sm:px-2 rounded-md sm:rounded-lg text-[9px] sm:text-xs font-bold transition-all flex items-center gap-0.5 shadow-2xs shrink-0 ${
                         isOutOfStock
                           ? "bg-stone-200 text-stone-400 cursor-not-allowed"
                           : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer"
                       }`}
                       title={!prod.isAvailable ? "Habis" : "Tambah ke Keranjang"}
                     >
-                      <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                      <span className="hidden xs:inline">{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                      <ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                      <span>{isOutOfStock ? "Habis" : "+"}</span>
                     </button>
                   </div>
                 </div>

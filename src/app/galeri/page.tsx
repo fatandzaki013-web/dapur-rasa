@@ -124,7 +124,7 @@ export default function GalleryPage() {
           <p className="text-xs text-gray-500">Silakan pilih kategori galeri lainnya.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6 w-full max-w-full overflow-hidden">
           {filteredItems.map((item, index) => (
             <div
               key={item.id}
