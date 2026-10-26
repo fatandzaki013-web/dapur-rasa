@@ -27,8 +27,7 @@ import {
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
 import ProductLikeButton from "@/components/ProductLikeButton";
-import CustomerFeedbackModal from "@/components/CustomerFeedbackModal";
-import { Star, HelpCircle, MessageSquareQuote, ChevronDown, Award } from "lucide-react";
+import { HelpCircle, ChevronDown } from "lucide-react";
 import {
   DEFAULT_PRODUCTS,
   DEFAULT_GALLERY_ITEMS,
@@ -59,38 +58,10 @@ export default function HomePage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null);
-  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [homeTestimonials, setHomeTestimonials] = useState<any[]>([
-    {
-      id: "testi-1",
-      customerName: "Ibu Rahmawati",
-      comment: "Pesan 80 snack box untuk pengajian keluarga di Perum Griya Cileungsi 5. Kuenya datang tepat waktu, masih hangat, dan para tamu memuji pastelnya yang renyah banget. Pengantaran juga free ongkir. Mantap!",
-      rating: 5,
-      avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
-      eventOrProduct: "Snack Box Pengajian Keluarga",
-      badge: "Griya Cileungsi 5"
-    },
-    {
-      id: "testi-2",
-      customerName: "Dimas Suryanto",
-      comment: "Risol mayo dan pastel ayamnya juara! Kulitnya pas, mayo dan kejunya lumer tanpa eneg. Cocok banget buat camilan sore bareng teman-teman di rumah. Pasti langganan terus.",
-      rating: 5,
-      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-      eventOrProduct: "Risol Mayo & Pastel Crispy",
-      badge: "Pelanggan Setia"
-    },
-    {
-      id: "testi-3",
-      customerName: "dr. Sarah Permatasari",
-      comment: "Fudgy browniesnya luar biasa enak, cokelatnya pekat dan teksturnya fudgy legit berpadu shiny crust. Anak-anak langsung habis setengah kotak dalam sekejap. Higienis dan recommended!",
-      rating: 5,
-      avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
-      eventOrProduct: "Fudgy Brownies Shiny Crust",
-      badge: "Snack Box Kantor"
-    }
-  ]);
+  const [galleryPage, setGalleryPage] = useState(1);
+  const GALLERY_PER_PAGE = 8;
 
   // 5 Default Hero Slider Banners (Shofi Frozen Style - 16:9 on Desktop, 1:1 on Mobile)
   const defaultHeroSlides = [
@@ -183,13 +154,6 @@ export default function HomePage() {
       })
       .catch((e) => console.error("Error fetching products:", e));
 
-    fetch("/api/public/testimonials", { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.testimonials && data.testimonials.length > 0) setHomeTestimonials(data.testimonials);
-      })
-      .catch((e) => console.error("Error fetching testimonials:", e));
-
     fetch("/api/public/gallery", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
@@ -203,6 +167,19 @@ export default function HomePage() {
     if (selectedGalleryTag === "Semua") return galleryItems;
     return galleryItems.filter((item) => item.categoryTag === selectedGalleryTag);
   }, [galleryItems, selectedGalleryTag]);
+
+  // Gallery pagination: 8 foto per halaman (4 di kiri, 4 di kanan pada mobile 2 kolom)
+  const totalGalleryPages = Math.max(1, Math.ceil(filteredGalleryItems.length / GALLERY_PER_PAGE));
+  const displayedGalleryItems = useMemo(() => {
+    const start = (galleryPage - 1) * GALLERY_PER_PAGE;
+    return filteredGalleryItems.slice(start, start + GALLERY_PER_PAGE);
+  }, [filteredGalleryItems, galleryPage]);
+
+  // Reset halaman ke 1 saat ganti kategori
+  const handleGalleryTagChange = (tag: string) => {
+    setSelectedGalleryTag(tag);
+    setGalleryPage(1);
+  };
 
   // Unique gallery tags
   const galleryTags = useMemo(() => {
@@ -477,6 +454,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+
         </section>
 
         {/* ============================================================== */}
@@ -605,7 +583,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* SECTION 5: GALERI FOTO KUE & CAMILAN (Visual Showcase Dapur Rasa) */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-gray-100">
+        <section id="galeri-section" className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-gray-100 scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#4A0E4E] mb-1">
@@ -635,7 +613,7 @@ export default function HomePage() {
               return (
                 <button
                   key={tag as string}
-                  onClick={() => setSelectedGalleryTag(tag as string)}
+                  onClick={() => handleGalleryTagChange(tag as string)}
                   className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                     isSelected
                       ? "bg-[#4A0E4E] text-white shadow-xs"
@@ -650,10 +628,10 @@ export default function HomePage() {
 
           {/* Gallery Grid (2 Columns on Mobile, 3 on Tablet, 4 on Desktop) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
-            {filteredGalleryItems.map((item, idx) => (
+            {displayedGalleryItems.map((item, idx) => (
               <div
                 key={item.id}
-                onClick={() => setLightboxIndex(idx)}
+                onClick={() => setLightboxIndex((galleryPage - 1) * GALLERY_PER_PAGE + idx)}
                 className="group relative flex flex-col overflow-hidden bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 cursor-pointer"
               >
                 {/* Photo with zoom effect */}
@@ -691,6 +669,63 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+          {/* Gallery Pagination Controls (8 foto per halaman) */}
+          {totalGalleryPages > 1 && (
+            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500 order-2 sm:order-1 font-medium">
+                Menampilkan {(galleryPage - 1) * GALLERY_PER_PAGE + 1}&ndash;{Math.min(galleryPage * GALLERY_PER_PAGE, filteredGalleryItems.length)} dari{" "}
+                <strong className="text-gray-800">{filteredGalleryItems.length}</strong> foto galeri
+              </span>
+
+              <div className="flex items-center gap-1.5 order-1 sm:order-2">
+                <button
+                  type="button"
+                  disabled={galleryPage === 1}
+                  onClick={() => {
+                    setGalleryPage((p) => Math.max(1, p - 1));
+                    document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                  aria-label="Halaman Sebelumnya"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span className="hidden xs:inline">Prev</span>
+                </button>
+
+                {Array.from({ length: totalGalleryPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => {
+                      setGalleryPage(pageNum);
+                      document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                    className={`min-w-[34px] h-[34px] px-2 rounded-xl text-xs font-bold flex items-center justify-center transition cursor-pointer ${
+                      galleryPage === pageNum
+                        ? "bg-[#4A0E4E] text-white shadow-xs font-extrabold"
+                        : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  disabled={galleryPage === totalGalleryPages}
+                  onClick={() => {
+                    setGalleryPage((p) => Math.min(totalGalleryPages, p + 1));
+                    document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="px-3 py-1.5 rounded-xl border border-gray-200 bg-white text-xs font-bold text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition shadow-2xs cursor-pointer"
+                  aria-label="Halaman Selanjutnya"
+                >
+                  <span className="hidden xs:inline">Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* ============================================================== */}
@@ -787,92 +822,6 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/* ============================================================== */}
-        {/* SECTION 7: ULASAN & TESTIMONI PELANGGAN (Social Proof)         */}
-        {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-6 pt-4 border-t border-gray-100">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-1.5">
-                <MessageSquareQuote className="w-3.5 h-3.5 text-amber-700" />
-                <span>Kata Mereka Tentang Dapur Rasa</span>
-              </div>
-              <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 tracking-tight font-heading">
-                Ulasan &amp; Testimoni Pelanggan
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-xl">
-                Pengalaman nyata para pelanggan setia yang menikmati kerenyahan pastel, lezatnya risol mayo, dan paket snack box kami.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-auto flex-wrap">
-              <button
-                type="button"
-                onClick={() => setIsFeedbackModalOpen(true)}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
-              >
-                <MessageSquareQuote className="w-3.5 h-3.5" />
-                <span>+ Tulis Ulasan / Saran</span>
-              </button>
-              <Link
-                href="/testimoni"
-                className="text-xs sm:text-sm font-bold text-[#4A0E4E] hover:underline inline-flex items-center gap-1 shrink-0"
-              >
-                <span>Lihat Semua</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            {homeTestimonials.slice(0, 3).map((item, index) => (
-              <div
-                key={item.id || index}
-                className="p-5 sm:p-6 rounded-3xl bg-white border border-gray-200/90 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between space-y-4 hover:border-amber-300"
-              >
-                <div className="space-y-3">
-                  {/* Rating Stars */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-amber-400">
-                      {Array.from({ length: item.rating || 5 }).map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                      Terverifikasi
-                    </span>
-                  </div>
-
-                  {/* Comment */}
-                  <p className="text-xs sm:text-sm text-gray-700 leading-relaxed italic">
-                    &ldquo;{item.comment}&rdquo;
-                  </p>
-                </div>
-
-                {/* User info */}
-                <div className="pt-3 border-t border-gray-100 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-purple-100 text-[#4A0E4E] font-extrabold flex items-center justify-center shrink-0 overflow-hidden shadow-2xs border border-purple-200">
-                    {item.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.avatarUrl} alt={item.customerName} className="w-full h-full object-cover" />
-                    ) : (
-                      item.customerName?.charAt(0) || "U"
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">
-                      {item.customerName}
-                    </h4>
-                    <p className="text-[11px] text-gray-400 truncate">
-                      {item.eventOrProduct || "Pelanggan Dapur Rasa"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
@@ -1016,16 +965,6 @@ export default function HomePage() {
           </div>
         </div>
       )}
-      {/* Customer Feedback Modal */}
-      <CustomerFeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onClose={() => setIsFeedbackModalOpen(false)}
-        onSuccess={(newFeedback) => {
-          setHomeTestimonials((prev) => [newFeedback, ...prev]);
-          setToastMessage("Terima kasih! Ulasan & saran Anda telah berhasil dikirim.");
-          setTimeout(() => setToastMessage(null), 4000);
-        }}
-      />
     </>
   );
 }
