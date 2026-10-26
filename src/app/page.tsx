@@ -828,7 +828,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* SECTION 8: FAQ - PERTANYAAN UMUM (Interactive Accordion)       */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-4xl px-2.5 sm:px-6 space-y-6 pt-4 border-t border-gray-100">
+        <section id="faq" className="mx-auto max-w-4xl px-2.5 sm:px-6 space-y-6 pt-4 border-t border-gray-100 scroll-mt-24">
           <div className="text-center space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-[#4A0E4E] text-xs font-bold">
               <HelpCircle className="w-3.5 h-3.5 text-[#4A0E4E]" />

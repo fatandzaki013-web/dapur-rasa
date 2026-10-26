@@ -11,6 +11,7 @@ import {
   Image as ImageIcon,
   BookOpen,
   Palette,
+  HelpCircle,
   MessageSquareQuote,
   TrendingUp,
   Settings,
@@ -155,7 +156,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Artikel & Tips Kuliner", href: "/admin/content/articles", icon: BookOpen },
     { label: "Warna & Tema Website", href: "/admin/theme", icon: Palette },
     { label: "Tampilan Beranda (Banner)", href: "/admin/homepage", icon: Layers },
-    { label: "Testimoni & FAQ", href: "/admin/testimonials-faq", icon: MessageSquareQuote },
+    { label: "Tanya Jawab (FAQ)", href: "/admin/testimonials-faq", icon: HelpCircle },
   ];
 
   // 4. Pengaturan Toko

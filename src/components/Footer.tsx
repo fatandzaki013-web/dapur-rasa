@@ -201,9 +201,9 @@ export default function Footer() {
               </h4>
               <ul className="space-y-1.5 text-xs text-slate-400">
                 <li>
-                  <Link href="/testimoni" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <Link href="/#faq" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Testimoni</span>
+                    <span className="truncate">Tanya Jawab (FAQ)</span>
                   </Link>
                 </li>
                 <li>
@@ -280,8 +280,8 @@ export default function Footer() {
           <Link className="hover:text-slate-300 transition-colors" href="/kebijakan">
             Syarat Ketentuan
           </Link>
-          <Link className="hover:text-slate-300 transition-colors" href="/testimoni">
-            Testimoni
+          <Link className="hover:text-slate-300 transition-colors" href="/#faq">
+            FAQ
           </Link>
           <Link className="hover:text-slate-300 transition-colors" href="/kontak">
             Hubungi Kami
