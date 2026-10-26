@@ -47,7 +47,7 @@ export default async function RootLayout({
 
   const primary = theme?.primaryColor || "#4B291B";
   const secondary = theme?.secondaryColor || "#A9683B";
-  const bg = theme?.backgroundColor || "#FAF5EF";
+  const bg = theme?.backgroundColor || "#F4F8F4";
   const surface = theme?.surfaceColor || "#FFFDF9";
   const accent = theme?.accentColor || "#EBD9C7";
   const text = theme?.textColor || "#211A16";
