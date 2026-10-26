@@ -193,9 +193,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Format Pesan WhatsApp Singkat, Padat & Langsung Memuat Catatan Pemesan
+    // 6. Format Pesan WhatsApp Singkat, Padat & Memuat Catatan Pemesan (Tanpa Alamat Toko)
     const brand = settings?.brandName || "Dapur Rasa";
-    const defaultStoreAddress = "Perumahan Griya Cileungsi 5 Blok A8 No. 01";
 
     // Daftar pesanan ringkas & to the point
     const itemsListText = verifiedOrderItems
@@ -205,6 +204,18 @@ export async function POST(req: NextRequest) {
       )
       .join("\n");
 
+    const deliveryLine =
+      type === "DELIVERY"
+        ? `*Pengiriman:* Diantar ke ${deliveryAddress.trim()}`
+        : "*Pengiriman:* Diambil Sendiri";
+
+    let paymentText = "COD";
+    if (paymentMethod === "QRIS") {
+      paymentText = "QRIS";
+    } else if (paymentMethod === "GOPAY" || paymentMethod === "NO_REK_GOPAY") {
+      paymentText = "Transfer GoPay (085888159765)";
+    }
+
     const notesLine = notes && notes.trim() ? `\n*Catatan:* ${notes.trim()}` : "";
 
     const waMessage = `Halo ${brand}, saya mau pesan:
@@ -213,8 +224,8 @@ ${itemsListText}
 
 *Total:* Rp ${totalAmount.toLocaleString("id-ID")}
 *Pemesan:* ${customerName.trim()} (${cleanPhone})
-*Alamat Dapur:* ${defaultStoreAddress}
-*Pembayaran:* Transfer Bank / QRIS${notesLine}
+${deliveryLine}
+*Pembayaran:* ${paymentText}${notesLine}
 
 Mohon segera diproses ya, terima kasih!`;
 
