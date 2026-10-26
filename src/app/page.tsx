@@ -291,7 +291,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Mobile Aspect Ratio 16:10 - Clean, Beautiful, Doesn't hijack viewport */}
-                  <div className="block md:hidden relative w-full aspect-[16/10] overflow-hidden bg-gray-900">
+                  <div className="block md:hidden relative w-full aspect-square overflow-hidden bg-gray-900">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       alt={slide.title}
