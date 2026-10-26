@@ -86,6 +86,15 @@ export async function PUT(
       }
     }
 
+    if (price !== undefined && (isNaN(Number(price)) || Number(price) < 0)) {
+      return NextResponse.json({ error: "Harga tidak boleh bernilai negatif." }, { status: 400 });
+    }
+
+    const checkPrice = price !== undefined && !isNaN(Number(price)) ? Number(price) : existingProduct.price;
+    if (promoPrice !== undefined && promoPrice !== null && Number(promoPrice) > 0 && Number(promoPrice) >= checkPrice) {
+      return NextResponse.json({ error: "Harga promo harus lebih kecil dari harga normal." }, { status: 400 });
+    }
+
     const newStock = stock !== undefined ? Math.max(0, Number(stock)) : existingProduct.stock;
     const stockDiff = newStock - existingProduct.stock;
 

@@ -156,6 +156,7 @@ Terima kasih banyak telah memesan di ${brandName}!
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setErrorMessage(null);
 
     if (!customerName.trim()) {

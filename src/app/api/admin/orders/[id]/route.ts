@@ -55,30 +55,82 @@ export async function PUT(
       return NextResponse.json({ error: "Pesanan tidak ditemukan." }, { status: 404 });
     }
 
-    // Jika admin mengonfirmasi pesanan dan meminta pengurangan stok
+    // 1. Jika admin mengonfirmasi pesanan (DIKONFIRMASI) dan opsi kurangi stok aktif
     if (
       status === "DIKONFIRMASI" &&
       existingOrder.status !== "DIKONFIRMASI" &&
       reduceStockOnConfirm
     ) {
-      for (const item of existingOrder.items) {
-        if (item.productId) {
-          const prod = await prisma.product.findUnique({ where: { id: item.productId } });
-          if (prod) {
-            const newStock = Math.max(0, prod.stock - item.quantity);
-            await prisma.product.update({
-              where: { id: item.productId },
-              data: { stock: newStock },
-            });
-            await prisma.stockLog.create({
-              data: {
-                productId: item.productId,
-                changeAmount: -item.quantity,
-                previousStock: prod.stock,
-                newStock,
-                reason: `Pengurangan stok otomatis untuk pesanan ${existingOrder.orderCode}`,
-              },
-            });
+      // Pastikan stok belum pernah dipotong sebelumnya untuk nomor pesanan ini (mencegah double-deduction)
+      const alreadyDeducted = await prisma.stockLog.findFirst({
+        where: {
+          reason: { contains: existingOrder.orderCode },
+          changeAmount: { lt: 0 },
+        },
+      });
+
+      if (!alreadyDeducted) {
+        for (const item of existingOrder.items) {
+          if (item.productId) {
+            const prod = await prisma.product.findUnique({ where: { id: item.productId } });
+            if (prod) {
+              const newStock = Math.max(0, prod.stock - item.quantity);
+              await prisma.product.update({
+                where: { id: item.productId },
+                data: { stock: newStock },
+              });
+              await prisma.stockLog.create({
+                data: {
+                  productId: item.productId,
+                  changeAmount: -item.quantity,
+                  previousStock: prod.stock,
+                  newStock,
+                  reason: `Pengurangan stok otomatis untuk pesanan ${existingOrder.orderCode}`,
+                },
+              });
+            }
+          }
+        }
+      }
+    }
+
+    // 2. Jika pesanan dibatalkan (DIBATALKAN):
+    // Kembalikan stok HANYA JIKA sebelumnya stok pernah dipotong dan BELUM pernah dikembalikan
+    if (status === "DIBATALKAN" && existingOrder.status !== "DIBATALKAN") {
+      const hadDeduction = await prisma.stockLog.findFirst({
+        where: {
+          reason: { contains: existingOrder.orderCode },
+          changeAmount: { lt: 0 },
+        },
+      });
+
+      const alreadyRestored = await prisma.stockLog.findFirst({
+        where: {
+          reason: { contains: `Pengembalian stok pesanan dibatalkan ${existingOrder.orderCode}` },
+          changeAmount: { gt: 0 },
+        },
+      });
+
+      if (hadDeduction && !alreadyRestored) {
+        for (const item of existingOrder.items) {
+          if (item.productId) {
+            const prod = await prisma.product.findUnique({ where: { id: item.productId } });
+            if (prod) {
+              const newStock = prod.stock + item.quantity;
+              await prisma.product.update({
+                where: { id: item.productId },
+                data: { stock: newStock },
+              });
+              await prisma.stockLog.create({
+                data: {
+                  productId: item.productId,
+                  changeAmount: item.quantity,
+                  previousStock: prod.stock,
+                  newStock,
+                  reason: `Pengembalian stok pesanan dibatalkan ${existingOrder.orderCode}`,
+                },
+              });
+            }
           }
         }
       }

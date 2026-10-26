@@ -200,7 +200,7 @@ function ProductsContent() {
                 : "bg-stone-100 hover:bg-stone-200 text-stone-700"
             }`}
           >
-            Semua ({products.length})
+            {selectedCategory === "" ? `Semua Menu (${products.length})` : "Semua Menu"}
           </button>
           {categories.map((cat) => {
             const isSelected = selectedCategory === cat.slug;

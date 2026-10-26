@@ -9,8 +9,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 export async function POST(req: NextRequest) {
   try {
     const admin = await getCurrentAdmin();
-    // Allow upload in dev or if admin session is verified
-    if (!admin && process.env.NODE_ENV === "production") {
+    if (!admin) {
       return NextResponse.json(
         { error: "Akses ditolak. Silakan login terlebih dahulu di /admin/login." },
         { status: 401 }

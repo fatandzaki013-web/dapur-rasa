@@ -71,7 +71,10 @@ export async function GET() {
       DIBATALKAN: 0,
     };
 
+    let grossRevenue = 0;
     let confirmedRevenue = 0;
+    let pendingRevenue = 0;
+    let cancelledRevenue = 0;
 
     for (const ord of orders) {
       if (statusCounts[ord.status as keyof typeof statusCounts] !== undefined) {
@@ -79,10 +82,16 @@ export async function GET() {
       }
       if (["DIKONFIRMASI", "SEDANG_DIPROSES", "SIAP_DIAMBIL", "SIAP_DIKIRIM", "SELESAI"].includes(ord.status)) {
         confirmedRevenue += ord.totalAmount;
+        grossRevenue += ord.totalAmount;
+      } else if (ord.status === "MENUNGGU_KONFIRMASI") {
+        pendingRevenue += ord.totalAmount;
+        grossRevenue += ord.totalAmount;
+      } else if (ord.status === "DIBATALKAN") {
+        cancelledRevenue += ord.totalAmount;
       }
     }
 
-    // Build 7-day sales trend
+    // Build 7-day sales trend (Asia/Jakarta timezone safe)
     const dayNames = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
     const last7Days: Array<{ date: string; dayName: string; revenue: number; orderCount: number }> = [];
 
@@ -99,6 +108,9 @@ export async function GET() {
     }
 
     for (const ord of recentWeekOrders) {
+      // Exclude cancelled orders from valid sales trend
+      if (ord.status === "DIBATALKAN") continue;
+
       const ordDate = ord.createdAt.toISOString().slice(0, 10);
       const dayObj = last7Days.find((d) => d.date === ordDate);
       if (dayObj) {
@@ -116,7 +128,10 @@ export async function GET() {
         categoriesCount,
         totalOrders: orders.length,
         statusCounts,
+        grossRevenue,
         confirmedRevenue,
+        pendingRevenue,
+        cancelledRevenue,
       },
       recentOrders,
       lowStockProducts,

@@ -62,24 +62,7 @@ export async function getCurrentAdmin() {
     }
   }
 
-  // Fallback dev mode: prevent empty/broken tables in development
-  if (process.env.NODE_ENV !== "production") {
-    try {
-      const devAdmin = await prisma.user.findFirst({
-        where: { role: "ADMIN" },
-        select: { id: true, username: true, name: true, role: true },
-      });
-      if (devAdmin) return devAdmin;
-    } catch (err) {
-      return {
-        id: "admin-dev-fallback",
-        username: "admin",
-        name: "Admin Dapur Rasa",
-        role: "ADMIN",
-      };
-    }
-  }
-
+  // Keamanan otentikasi ketat: jika token sesi tidak ditemukan atau tidak valid, akses ditolak
   return null;
 }
 
