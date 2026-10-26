@@ -257,8 +257,8 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
       });
 
       if (data.whatsappUrl) {
-        // Open WhatsApp in new tab so user can still see receipt here
-        window.open(data.whatsappUrl, "_blank");
+        // Langsung arahkan otomatis masuk ke WhatsApp penjual!
+        window.location.href = data.whatsappUrl;
       }
     } catch (err: any) {
       setErrorMessage(err.message || "Terjadi kesalahan saat memproses pesanan.");
@@ -288,7 +288,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
             Terima Kasih, {completedOrder.customerName}!
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
-            Pesanan Anda telah tercatat rapi di dapur kami dan diteruskan ke WhatsApp toko. Silakan simpan bukti transaksi resmi di bawah ini.
+            Pesanan Anda otomatis diarahkan ke WhatsApp penjual. Jika ruang chat belum terbuka otomatis, silakan klik tombol hijau di bawah ini.
           </p>
         </div>
 
@@ -1130,7 +1130,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
               }`}
             >
               <Phone className="w-5 h-5" />
-              <span>{isSubmitting ? "Sedang Memproses..." : "Pesan Sekarang via WhatsApp"}</span>
+              <span>{isSubmitting ? "Membuka WhatsApp..." : "Checkout & Pesan via WhatsApp"}</span>
               <ArrowRight className="w-4 h-4 ml-1" />
             </button>
 
@@ -1172,7 +1172,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
             }`}
           >
             <Phone className="w-4 h-4" />
-            <span>{isSubmitting ? "Memproses..." : "Pesan via WhatsApp"}</span>
+            <span>{isSubmitting ? "Membuka..." : "Checkout via WA"}</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

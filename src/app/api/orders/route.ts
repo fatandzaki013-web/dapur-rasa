@@ -193,32 +193,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 6. Format Pesan WhatsApp Singkat, Padat & Jelas
+    // 6. Format Pesan WhatsApp Singkat, Padat & Langsung Memuat Catatan Pemesan
+    const brand = settings?.brandName || "Dapur Rasa";
+    const paymentLabel = paymentMethod === "COD" ? "COD" : "Transfer";
+
+    // Daftar pesanan ringkas & to the point
     const itemsListText = verifiedOrderItems
       .map(
         (it) =>
-          `• ${it.productName}${it.variantName ? ` (${it.variantName})` : ""} (${it.quantity}x) = Rp ${it.subtotal.toLocaleString("id-ID")}`
+          `• ${it.productName}${it.variantName ? ` (${it.variantName})` : ""} (${it.quantity}x)`
       )
       .join("\n");
 
-    const deliverySummary =
+    const deliveryLine =
       type === "DELIVERY"
-        ? `Diantar ke ${deliveryAddress.trim()} (Free Ongkir Griya Cileungsi 5)`
-        : "Ambil di Dapur Toko (Griya Cileungsi 5)";
+        ? `*Alamat:* ${deliveryAddress.trim()}`
+        : "*Pengambilan:* Ambil Sendiri di Dapur Toko";
 
-    const notesSummary = notes && notes.trim() ? `\n📝 *Catatan:* ${notes.trim()}` : "";
-    const scheduleSummary = scheduleDate
-      ? `\n⏰ *Waktu:* ${scheduleDate}${scheduleTime ? ` jam ${scheduleTime}` : ""}`
+    const scheduleLine = scheduleDate
+      ? `\n*Jadwal:* ${scheduleDate}${scheduleTime ? ` jam ${scheduleTime}` : ""}`
       : "";
 
-    const waMessage = `Halo ${settings?.brandName || "Dapur Rasa"}, saya mau order:
+    const notesLine = notes && notes.trim() ? `\n*Catatan:* ${notes.trim()}` : "";
 
-📋 *Pesanan (${orderCode}):*
+    const waMessage = `Halo ${brand}, saya mau pesan:
+
 ${itemsListText}
-*Total: Rp ${totalAmount.toLocaleString("id-ID")}* (${paymentMethodLabel})
 
-📍 *Pengiriman:* ${deliverySummary}${scheduleSummary}${notesSummary}
-👤 *Pemesan:* ${customerName.trim()} (${cleanPhone})
+*Total:* Rp ${totalAmount.toLocaleString("id-ID")} (${paymentLabel})
+*Pemesan:* ${customerName.trim()} (${cleanPhone})
+${deliveryLine}${scheduleLine}${notesLine}
 
 Mohon segera diproses ya, terima kasih!`;
 
