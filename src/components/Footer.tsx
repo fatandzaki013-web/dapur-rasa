@@ -32,7 +32,7 @@ export default function Footer() {
   }
 
   const brandName = settings?.brandName || "Dapur Rasa";
-  const address = settings?.address || "Perumahan Griya Cileungsi 5, Cileungsi, Jawa Barat";
+  const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat";
   const whatsappNum = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
 
   return (

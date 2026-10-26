@@ -174,6 +174,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    try {
+      localStorage.removeItem(CART_STORAGE_KEY);
+      localStorage.setItem(CART_STORAGE_KEY, "[]");
+    } catch (e) {
+      console.error("Gagal mengosongkan keranjang di localStorage:", e);
+    }
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

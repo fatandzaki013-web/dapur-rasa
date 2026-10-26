@@ -8,10 +8,7 @@ import {
   ShoppingBag,
   Phone,
   CheckCircle,
-  Truck,
   Store,
-  Calendar,
-  Clock,
   ArrowRight,
   AlertCircle,
   ExternalLink,
@@ -21,20 +18,19 @@ import {
   MapPin,
   Check,
   CreditCard,
-  Wallet,
-  Building2,
+  QrCode,
   Sparkles,
   Plus,
   Minus,
   Trash2,
-  QrCode,
   User,
   ChevronRight,
   ShieldCheck,
-  Receipt,
-  Tag,
   ArrowLeft,
+  FileText,
 } from "lucide-react";
+
+const STORE_OFFICIAL_ADDRESS = "Perumahan Griya Cileungsi 5 Blok A8 No. 01";
 
 interface CompletedOrderInfo {
   orderCode: string;
@@ -43,12 +39,8 @@ interface CompletedOrderInfo {
   shippingFee: number;
   customerName: string;
   customerPhone: string;
-  fulfillmentType: "PICKUP" | "DELIVERY";
   deliveryAddress: string;
-  scheduleDate: string;
-  scheduleTime: string;
   paymentMethodLabel: string;
-  paymentMethod: "COD" | "TRANSFER_BANK";
   notes: string;
   createdAtFormatted: string;
   items: Array<{
@@ -67,11 +59,6 @@ export default function CheckoutPage() {
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [fulfillmentType, setFulfillmentType] = useState<"PICKUP" | "DELIVERY">("DELIVERY");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"COD" | "TRANSFER_BANK">("COD");
-  const [scheduleDate, setScheduleDate] = useState("");
-  const [scheduleTime, setScheduleTime] = useState("");
   const [notes, setNotes] = useState("");
 
   const [isCopiedReceipt, setIsCopiedReceipt] = useState(false);
@@ -84,9 +71,7 @@ export default function CheckoutPage() {
 
   const brandName = settings?.brandName || "Dapur Rasa";
   const brandTagline = settings?.tagline || "Kue Rumahan Kualitas Premium Fresh";
-  const brandAddress = settings?.address || "Perumahan Griya Cileungsi 5";
 
-  // Free Ongkir untuk Griya Cileungsi 5
   const shippingFee = 0;
   const totalAmount = subtotal + shippingFee;
 
@@ -122,26 +107,21 @@ Tanggal Waktu : ${completedOrder.createdAtFormatted}
 Nama Pemesan  : ${completedOrder.customerName}
 No. WhatsApp  : ${completedOrder.customerPhone}
 
-METODE PENERIMAAN:
-${
-  completedOrder.fulfillmentType === "DELIVERY"
-    ? `• Status: DIANTAR KE ALAMAT RUMAH\n• Alamat Lengkap: ${completedOrder.deliveryAddress || brandAddress}\n• Ketentuan Ongkir: Free Ongkir Area Griya Cileungsi 5`
-    : `• Status: AMBIL SENDIRI DI DAPUR TOKO (${brandAddress})`
-}
+LOKASI DAPUR TOKO:
+• Alamat Resmi: ${STORE_OFFICIAL_ADDRESS}
 
-PILIHAN PEMBAYARAN:
-• Metode Bayar : ${completedOrder.paymentMethodLabel}
-${completedOrder.scheduleDate ? `• Jadwal Waktu : ${completedOrder.scheduleDate} ${completedOrder.scheduleTime ? `pukul ${completedOrder.scheduleTime}` : ""}\n` : ""}
-${completedOrder.notes ? `• Catatan Khusus: ${completedOrder.notes}\n` : ""}
+METODE PEMBAYARAN:
+• Pembayaran  : Transfer Bank & QRIS All Payment
+${completedOrder.notes ? `• Catatan     : ${completedOrder.notes}\n` : ""}
 RINCIAN PESANAN KUE:
 ${itemsList}
 
 Subtotal      : ${formatPrice(completedOrder.subtotal)}
-Ongkos Kirim  : GRATIS (Free Ongkir Griya Cileungsi 5)
+Ongkos Kirim  : GRATIS (Free Ongkir)
 TOTAL TAGIHAN : ${formatPrice(completedOrder.totalAmount)}
 ====================================
 Terima kasih banyak telah memesan di ${brandName}!
-Pesanan Anda dibuat fresh dengan sepenuh hati.
+Pesanan Anda disiapkan fresh dengan sepenuh hati.
 ====================================`;
 
     try {
@@ -179,11 +159,6 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
       return;
     }
 
-    if (fulfillmentType === "DELIVERY" && !deliveryAddress.trim()) {
-      setErrorMessage("Mohon cantumkan alamat lengkap pengantaran (misal Blok/No Rumah di Perum Griya Cileungsi 5).");
-      return;
-    }
-
     if (items.length === 0) {
       setErrorMessage("Keranjang pesanan Anda masih kosong.");
       return;
@@ -211,12 +186,10 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
         body: JSON.stringify({
           customerName: customerName.trim(),
           customerPhone: cleanPhone,
-          fulfillmentType,
-          deliveryAddress: fulfillmentType === "DELIVERY" ? deliveryAddress.trim() : null,
-          scheduleDate: scheduleDate || null,
-          scheduleTime: scheduleTime || null,
+          fulfillmentType: "PICKUP",
+          deliveryAddress: STORE_OFFICIAL_ADDRESS,
           notes: notes.trim() || null,
-          paymentMethod,
+          paymentMethod: "TRANSFER_BANK_QRIS",
           items: items.map((it) => ({
             productId: it.productId,
             name: it.name,
@@ -232,7 +205,14 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
         throw new Error(data.error || "Gagal memproses pesanan.");
       }
 
+      // Kosongkan keranjang di state dan localStorage seketika
       clearCart();
+      try {
+        localStorage.removeItem("dr_cart_items_v1");
+        localStorage.setItem("dr_cart_items_v1", "[]");
+      } catch (e) {
+        // Fallback
+      }
 
       setCompletedOrder({
         orderCode: data.orderCode,
@@ -241,15 +221,8 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
         shippingFee: data.shippingFee ?? 0,
         customerName: customerName.trim(),
         customerPhone: cleanPhone,
-        fulfillmentType,
-        deliveryAddress: deliveryAddress.trim(),
-        scheduleDate,
-        scheduleTime,
-        paymentMethodLabel:
-          paymentMethod === "COD"
-            ? "Bayar Tunai saat Diterima (COD)"
-            : "Transfer Bank / QRIS",
-        paymentMethod,
+        deliveryAddress: STORE_OFFICIAL_ADDRESS,
+        paymentMethodLabel: "Transfer Bank / QRIS",
         notes: notes.trim(),
         createdAtFormatted: nowFormatted,
         items: orderItemsSnapshot,
@@ -268,11 +241,9 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
   };
 
   // ==============================================================
-  // VIEW: HASIL BUKTI TRANSAKSI & UCAPAN TERIMA KASIH (STRUK RESMI)
+  // VIEW: HASIL BUKTI TRANSAKSI & STRUK RESMI SETELAH CHECKOUT
   // ==============================================================
   if (completedOrder) {
-    const isDelivery = completedOrder.fulfillmentType === "DELIVERY";
-
     return (
       <div className="max-w-3xl mx-auto px-4 pt-24 sm:pt-28 pb-16 space-y-6 sm:space-y-8 animate-fadeIn">
         {/* Banner Sukses Atas */}
@@ -332,7 +303,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
             </div>
           </div>
 
-          {/* Rincian Pemesan & Pengantaran */}
+          {/* Rincian Pemesan & Alamat Toko */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-stone-50/80 p-4 sm:p-5 rounded-2xl border border-stone-200/90">
             <div>
               <span className="text-stone-400 text-[10px] uppercase font-bold block mb-1">
@@ -343,23 +314,24 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
                 <Phone className="w-3.5 h-3.5 text-stone-400" />
                 <span>{completedOrder.customerPhone}</span>
               </p>
+              {completedOrder.notes && (
+                <p className="text-stone-500 text-[11px] mt-1.5 italic">
+                  Catatan: {completedOrder.notes}
+                </p>
+              )}
             </div>
 
             <div>
               <span className="text-stone-400 text-[10px] uppercase font-bold block mb-1">
-                Metode Penerimaan:
+                Alamat Dapur &amp; Lokasi Toko:
               </span>
               <div className="flex items-center gap-1.5 font-bold text-[#4A0E4E]">
-                {isDelivery ? <Truck className="w-4 h-4 text-emerald-600" /> : <Store className="w-4 h-4 text-[#4A0E4E]" />}
-                <span>
-                  {isDelivery ? "Diantar ke Rumah (Kurir Toko)" : "Ambil Sendiri di Dapur Toko"}
-                </span>
+                <Store className="w-4 h-4 text-[#4A0E4E]" />
+                <span>{STORE_OFFICIAL_ADDRESS}</span>
               </div>
-              {isDelivery && completedOrder.deliveryAddress && (
-                <p className="text-[11px] text-stone-600 mt-1 leading-relaxed bg-white p-2 rounded-lg border border-stone-200/80">
-                  <span className="font-semibold text-stone-700">Alamat:</span> {completedOrder.deliveryAddress}
-                </p>
-              )}
+              <p className="text-[11px] text-emerald-800 font-semibold mt-1 bg-emerald-50 px-2 py-0.5 rounded inline-block">
+                Pembayaran: Transfer Bank &amp; QRIS
+              </p>
             </div>
           </div>
 
@@ -425,15 +397,6 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
               <span>Subtotal Produk</span>
               <span className="font-semibold text-stone-800">{formatPrice(completedOrder.subtotal)}</span>
             </div>
-            <div className="flex justify-between items-center text-emerald-700 font-semibold">
-              <span className="flex items-center gap-1">
-                <Truck className="w-3.5 h-3.5" />
-                <span>Ongkos Kirim</span>
-              </span>
-              <span className="bg-emerald-50 px-2 py-0.5 rounded text-[11px] font-bold">
-                GRATIS (Free Ongkir Griya Cileungsi 5)
-              </span>
-            </div>
             <div className="flex justify-between items-center text-base sm:text-lg font-extrabold text-stone-900 pt-3 border-t border-stone-200">
               <span>Total Tagihan</span>
               <span className="text-[#4A0E4E] font-heading font-black text-lg sm:text-xl">
@@ -442,50 +405,48 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
             </div>
           </div>
 
-          {/* Petunjuk Pembayaran jika Transfer Bank */}
-          {completedOrder.paymentMethod === "TRANSFER_BANK" && (
-            <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-200/80 space-y-2 text-xs">
-              <div className="flex items-center justify-between">
-                <div className="font-bold text-[#4A0E4E] flex items-center gap-1.5">
-                  <CreditCard className="w-4 h-4 text-[#4A0E4E]" />
-                  <span>Informasi Rekening Pembayaran:</span>
-                </div>
-                <span className="text-[10px] font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
-                  Transfer Bank / QRIS
-                </span>
+          {/* Kotak Rekening & QRIS */}
+          <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-200/80 space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-[#4A0E4E] flex items-center gap-1.5">
+                <CreditCard className="w-4 h-4 text-[#4A0E4E]" />
+                <span>Rincian Pembayaran Transfer &amp; QRIS:</span>
               </div>
-              <p className="text-stone-700 leading-relaxed text-[11.5px]">
-                Silakan lakukan transfer pembayaran ke salah satu rekening resmi kami di bawah ini:
-              </p>
-              <div className="bg-white p-3 rounded-xl border border-purple-200 flex items-center justify-between gap-3">
-                <div>
-                  <span className="font-bold text-stone-900 block text-xs">Bank BCA</span>
-                  <span className="font-mono font-black text-[#4A0E4E] text-sm">7310-982-120</span>
-                  <span className="text-[10px] text-stone-500 block">a.n. Dapur Rasa / Mama Fatan</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleCopyBank("7310982120", "BCA")}
-                  className="px-3 py-1.5 rounded-lg border border-purple-300 bg-purple-50 text-xs font-bold text-[#4A0E4E] hover:bg-purple-100 transition flex items-center gap-1 cursor-pointer"
-                >
-                  {copiedBank === "BCA" ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">Tersalin!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Salin</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <p className="text-[11px] text-stone-500 italic">
-                *Kirimkan bukti transfer via chat WhatsApp toko untuk konfirmasi instan.
-              </p>
+              <span className="text-[10px] font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
+                Transfer Bank / QRIS
+              </span>
             </div>
-          )}
+            <p className="text-stone-700 leading-relaxed text-[11.5px]">
+              Pembayaran dapat dilakukan melalui Transfer Bank BCA atau QRIS All Payment:
+            </p>
+            <div className="bg-white p-3 rounded-xl border border-purple-200 flex items-center justify-between gap-3">
+              <div>
+                <span className="font-bold text-stone-900 block text-xs">Bank BCA</span>
+                <span className="font-mono font-black text-[#4A0E4E] text-sm">7310-982-120</span>
+                <span className="text-[10px] text-stone-500 block">a.n. Dapur Rasa / Mama Fatan</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleCopyBank("7310982120", "BCA")}
+                className="px-3 py-1.5 rounded-lg border border-purple-300 bg-purple-50 text-xs font-bold text-[#4A0E4E] hover:bg-purple-100 transition flex items-center gap-1 cursor-pointer"
+              >
+                {copiedBank === "BCA" ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-emerald-700">Tersalin!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Salin</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <p className="text-[11px] text-stone-500 italic">
+              *Tersedia QRIS All Payment (BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, DANA). Kirimkan bukti transfer via chat WhatsApp toko.
+            </p>
+          </div>
         </div>
 
         {/* Action Buttons */}
@@ -493,12 +454,10 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
           {completedOrder.whatsappUrl && (
             <a
               href={completedOrder.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg flex items-center justify-center gap-2.5 transition-all text-sm sm:text-base cursor-pointer hover:shadow-xl active:scale-[0.99]"
             >
               <Phone className="w-5 h-5" />
-              <span>Buka Kembali Chat WhatsApp Toko</span>
+              <span>Buka Ruang Chat WhatsApp Penjual Sekarang</span>
               <ExternalLink className="w-4 h-4 ml-1 opacity-80" />
             </a>
           )}
@@ -576,7 +535,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
   }
 
   // ==============================================================
-  // VIEW: FORMULIR CHECKOUT RAPI & LENGKAP DENGAN GAMBAR PRODUK
+  // VIEW: FORMULIR CHECKOUT RAPI & SEDERHANA
   // ==============================================================
   return (
     <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-28 pb-28 lg:pb-16 animate-fadeIn">
@@ -605,33 +564,15 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
           Checkout &amp; Konfirmasi Pesanan
         </h1>
         <p className="text-xs sm:text-sm text-stone-500 mt-1.5 leading-relaxed max-w-2xl">
-          Lengkapi data alamat dan kontak pemesan. Pesanan akan otomatis terhubung ke WhatsApp dapur toko kami untuk langsung dipersiapkan secara fresh.
+          Lengkapi nama dan kontak pemesan. Pesanan Anda akan langsung otomatis terhubung ke WhatsApp dapur toko kami.
         </p>
-
-        {/* Alur Langkah Sederhana */}
-        <div className="flex items-center gap-2 sm:gap-3 mt-4 text-[11px] sm:text-xs font-bold text-stone-500 overflow-x-auto pb-1">
-          <div className="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 shrink-0">
-            <CheckCircle className="w-3.5 h-3.5" />
-            <span>1. Pilih Menu ({totalItems})</span>
-          </div>
-          <ChevronRight className="w-3.5 h-3.5 text-stone-300 shrink-0" />
-          <div className="flex items-center gap-1.5 text-[#4A0E4E] bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200 shrink-0">
-            <span className="w-4 h-4 rounded-full bg-[#4A0E4E] text-white text-[10px] flex items-center justify-center font-bold">2</span>
-            <span>2. Rincian &amp; Pengantaran</span>
-          </div>
-          <ChevronRight className="w-3.5 h-3.5 text-stone-300 shrink-0" />
-          <div className="flex items-center gap-1.5 text-stone-400 px-2.5 py-1 rounded-full shrink-0">
-            <span className="w-4 h-4 rounded-full bg-stone-200 text-stone-600 text-[10px] flex items-center justify-center font-bold">3</span>
-            <span>3. Konfirmasi WhatsApp</span>
-          </div>
-        </div>
       </div>
 
       {errorMessage && (
         <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
           <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
           <div>
-            <span className="font-bold block">Mohon Periksa Kembali Formulir:</span>
+            <span className="font-bold block">Mohon Periksa Kembali:</span>
             <span>{errorMessage}</span>
           </div>
         </div>
@@ -639,7 +580,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
 
       <form id="checkout-form" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* ============================================================== */}
-        {/* LEFT COLUMN: FORM DETAILS LENGKAP & RAPI (7 COLS) */}
+        {/* LEFT COLUMN: DATA KONTAK, ALAMAT TOKO, & METODE PEMBAYARAN */}
         {/* ============================================================== */}
         <div className="lg:col-span-7 space-y-6">
           {/* Section 1: Kontak Pemesan */}
@@ -689,273 +630,8 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
                   />
                 </div>
                 <p className="text-[11px] text-stone-500 mt-1">
-                  Nomor aktif untuk konfirmasi pengantaran via WhatsApp.
+                  Nomor aktif untuk konfirmasi pesanan via WhatsApp.
                 </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2: Pilihan Pengantaran & Alamat */}
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
-            <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-xl bg-[#4A0E4E] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
-                2
-              </span>
-              <span>Metode Pengambilan / Pengantaran</span>
-            </h2>
-
-            {/* Pilihan 2 Kartu: Diantar vs Ambil Sendiri */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* Opsi 1: Diantar ke Alamat */}
-              <button
-                type="button"
-                onClick={() => setFulfillmentType("DELIVERY")}
-                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
-                  fulfillmentType === "DELIVERY"
-                    ? "border-emerald-600 bg-emerald-50/50 ring-2 ring-emerald-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
-                      <Truck className="w-5 h-5" />
-                    </div>
-                    {fulfillmentType === "DELIVERY" && (
-                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                        <CheckCircle className="w-3 h-3 text-emerald-700" />
-                        Dipilih
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-extrabold text-sm text-stone-900">
-                    Diantar ke Rumah
-                  </h3>
-                  <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
-                    Kurir toko mengantar pesanan langsung ke depan rumah Anda.
-                  </p>
-                </div>
-                <div className="mt-3 pt-2.5 border-t border-emerald-200/60 flex flex-wrap items-center justify-between gap-1 text-xs">
-                  <span className="text-stone-500 text-[11px]">Griya Cileungsi 5:</span>
-                  <span className="font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded text-[10.5px]">
-                    FREE ONGKIR
-                  </span>
-                </div>
-              </button>
-
-              {/* Opsi 2: Ambil Sendiri di Dapur */}
-              <button
-                type="button"
-                onClick={() => setFulfillmentType("PICKUP")}
-                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
-                  fulfillmentType === "PICKUP"
-                    ? "border-[#4A0E4E] bg-purple-50/60 ring-2 ring-[#4A0E4E]/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-[#4A0E4E]">
-                      <Store className="w-5 h-5" />
-                    </div>
-                    {fulfillmentType === "PICKUP" && (
-                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-[#4A0E4E] bg-purple-100 px-2 py-0.5 rounded-full">
-                        <CheckCircle className="w-3 h-3 text-[#4A0E4E]" />
-                        Dipilih
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-extrabold text-sm text-stone-900">
-                    Ambil Sendiri di Dapur
-                  </h3>
-                  <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
-                    Ambil langsung di dapur toko kami saat pesanan sudah siap.
-                  </p>
-                </div>
-                <div className="mt-3 pt-2.5 border-t border-purple-200/60 flex flex-wrap items-center justify-between gap-1 text-xs">
-                  <span className="text-stone-500 text-[11px]">Biaya:</span>
-                  <span className="font-extrabold text-purple-800 bg-purple-100 px-2 py-0.5 rounded text-[10.5px]">
-                    GRATIS (Rp 0)
-                  </span>
-                </div>
-              </button>
-            </div>
-
-            {/* Info Gratis Ongkir Griya Cileungsi 5 */}
-            <div className="p-4 bg-emerald-50/90 rounded-2xl border border-emerald-200 text-xs text-emerald-950 space-y-1.5 shadow-2xs">
-              <div className="font-bold flex items-center gap-2 text-sm text-emerald-900">
-                <Truck className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span>Ketentuan Pengantaran &amp; Gratis Ongkir:</span>
-              </div>
-              <p className="leading-relaxed text-emerald-900 font-semibold text-xs">
-                🎉 <strong>Gratis Ongkos Kirim (Free Ongkir)</strong> khusus seluruh pengantaran di area <strong>Perumahan Griya Cileungsi 5</strong>.
-              </p>
-              <p className="leading-relaxed text-stone-600 text-[11.5px]">
-                Untuk pengantaran ke <strong>luar area Griya Cileungsi 5</strong>, kurir ojek online akan dikoordinasikan via WhatsApp dengan tarif hemat.
-              </p>
-            </div>
-
-            {/* Input Alamat jika diantar */}
-            {fulfillmentType === "DELIVERY" && (
-              <div className="pt-1 animate-fadeIn space-y-1.5">
-                <label className="block text-xs font-bold text-stone-800">
-                  Alamat Lengkap Pengantaran <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute top-3 left-3.5 pointer-events-none text-stone-400">
-                    <MapPin className="w-4 h-4" />
-                  </div>
-                  <textarea
-                    required
-                    rows={3}
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="Tuliskan: Blok Rumah, Nomor Rumah, RT/RW, dan patokan (misal: Griya Cileungsi 5 Blok C2 No. 15, dekat Masjid Al-Ikhlas)"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition shadow-xs leading-relaxed bg-white"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Section 3: Pembayaran & Catatan Tambahan */}
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
-            <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-xl bg-[#4A0E4E] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
-                3
-              </span>
-              <span>Pilihan Pembayaran &amp; Catatan Khusus</span>
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* COD */}
-              <label
-                className={`p-4 rounded-2xl border-2 flex items-start gap-3 cursor-pointer transition-all ${
-                  paymentMethod === "COD"
-                    ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="COD"
-                  checked={paymentMethod === "COD"}
-                  onChange={() => setPaymentMethod("COD")}
-                  className="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                />
-                <div className="flex-1">
-                  <span className="font-bold text-stone-900 text-xs sm:text-sm flex items-center gap-1.5">
-                    <Wallet className="w-4 h-4 text-emerald-700" />
-                    Bayar Tunai saat Diterima (COD)
-                  </span>
-                  <p className="text-[11px] text-stone-500 mt-0.5 leading-relaxed">
-                    Bayar langsung saat kue tiba di rumah Anda.
-                  </p>
-                </div>
-              </label>
-
-              {/* Transfer / QRIS */}
-              <label
-                className={`p-4 rounded-2xl border-2 flex items-start gap-3 cursor-pointer transition-all ${
-                  paymentMethod === "TRANSFER_BANK"
-                    ? "border-[#4A0E4E] bg-purple-50/60 ring-2 ring-[#4A0E4E]/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="TRANSFER_BANK"
-                  checked={paymentMethod === "TRANSFER_BANK"}
-                  onChange={() => setPaymentMethod("TRANSFER_BANK")}
-                  className="mt-1 h-4 w-4 text-[#4A0E4E] focus:ring-[#4A0E4E] cursor-pointer"
-                />
-                <div className="flex-1">
-                  <span className="font-bold text-stone-900 text-xs sm:text-sm flex items-center gap-1.5">
-                    <CreditCard className="w-4 h-4 text-[#4A0E4E]" />
-                    Transfer Bank / QRIS
-                  </span>
-                  <p className="text-[11px] text-stone-500 mt-0.5 leading-relaxed">
-                    BCA, Mandiri, BRI, atau QRIS All Payment.
-                  </p>
-                </div>
-              </label>
-            </div>
-
-            {/* Kotak Info Rekening jika memilih Transfer Bank */}
-            {paymentMethod === "TRANSFER_BANK" && (
-              <div className="p-4 bg-purple-50/80 rounded-2xl border border-purple-200 space-y-2.5 animate-fadeIn">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-xs text-[#4A0E4E] flex items-center gap-1.5">
-                    <QrCode className="w-4 h-4 text-[#4A0E4E]" />
-                    Rincian Rekening Resmi Toko
-                  </span>
-                  <span className="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
-                    Tersedia QRIS
-                  </span>
-                </div>
-
-                <div className="bg-white p-3.5 rounded-xl border border-purple-200/90 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
-                  <div>
-                    <span className="text-[11px] font-bold text-stone-500 block uppercase">Bank BCA</span>
-                    <span className="font-mono font-black text-stone-900 text-sm sm:text-base tracking-wider">
-                      7310-982-120
-                    </span>
-                    <span className="text-[10px] text-stone-500 block">
-                      a.n. Dapur Rasa / Mama Fatan
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleCopyBank("7310982120", "BCA_FORM")}
-                    className="px-3 py-1.5 rounded-lg border border-purple-300 bg-purple-50 text-xs font-bold text-[#4A0E4E] hover:bg-purple-100 transition flex items-center gap-1.5 cursor-pointer"
-                  >
-                    {copiedBank === "BCA_FORM" ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700">Tersalin!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Salin No. Rekening</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <p className="text-[11px] text-stone-500 leading-tight">
-                  💡 Bukti transfer dan konfirmasi dapat Anda kirimkan langsung saat chat WhatsApp toko terbuka.
-                </p>
-              </div>
-            )}
-
-            {/* Jadwal Pengantaran & Catatan */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1 flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-stone-500" />
-                  <span>Tanggal Diinginkan (Opsional)</span>
-                </label>
-                <input
-                  type="date"
-                  value={scheduleDate}
-                  onChange={(e) => setScheduleDate(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 bg-white"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1 flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-stone-500" />
-                  <span>Jam Pengantaran (Opsional)</span>
-                </label>
-                <input
-                  type="time"
-                  value={scheduleTime}
-                  onChange={(e) => setScheduleTime(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 bg-white"
-                />
               </div>
             </div>
 
@@ -972,10 +648,99 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
               />
             </div>
           </div>
+
+          {/* Section 2: Alamat & Lokasi Dapur Kami */}
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-3.5">
+            <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
+              <span className="w-7 h-7 rounded-xl bg-[#4A0E4E] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
+                2
+              </span>
+              <span>Alamat Dapur &amp; Lokasi Toko Kami</span>
+            </h2>
+
+            <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/90 space-y-2">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-[#4A0E4E] shrink-0 mt-0.5">
+                  <Store className="w-5 h-5" />
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-sm sm:text-base text-stone-900">
+                      {STORE_OFFICIAL_ADDRESS}
+                    </span>
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full shrink-0">
+                      Lokasi Resmi
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    Seluruh olahan kue rumahan, aneka pastel crispy, dan frozen food disiapkan fresh setiap hari langsung dari dapur toko kami di alamat ini.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Informasi Pembayaran (Transfer Bank & QRIS) */}
+          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-3.5">
+            <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
+              <span className="w-7 h-7 rounded-xl bg-[#4A0E4E] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
+                3
+              </span>
+              <span>Metode Pembayaran: Transfer Bank &amp; QRIS</span>
+            </h2>
+
+            <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-200 space-y-3">
+              <p className="text-xs text-stone-700 leading-relaxed">
+                Pembayaran pesanan dapat dilakukan dengan mudah melalui <strong>Transfer Bank BCA</strong> atau <strong>QRIS All Payment</strong>:
+              </p>
+
+              {/* Box Rekening BCA */}
+              <div className="bg-white p-3.5 rounded-xl border border-purple-200 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+                <div>
+                  <span className="text-[11px] font-bold text-stone-500 block uppercase">Bank BCA</span>
+                  <span className="font-mono font-black text-stone-900 text-sm sm:text-base tracking-wider">
+                    7310-982-120
+                  </span>
+                  <span className="text-[10px] text-stone-500 block">
+                    a.n. Dapur Rasa / Mama Fatan
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleCopyBank("7310982120", "BCA_FORM")}
+                  className="px-3.5 py-1.5 rounded-lg border border-purple-300 bg-purple-50 text-xs font-bold text-[#4A0E4E] hover:bg-purple-100 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                >
+                  {copiedBank === "BCA_FORM" ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="text-emerald-700">Tersalin!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Salin No. Rekening</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Keterangan QRIS */}
+              <div className="flex items-center gap-2 text-xs text-purple-900 bg-purple-100/70 p-2.5 rounded-xl">
+                <QrCode className="w-4 h-4 text-[#4A0E4E] shrink-0" />
+                <span>
+                  <strong>Tersedia QRIS All Payment:</strong> BCA, Mandiri, BRI, BNI, GoPay, OVO, ShopeePay, DANA.
+                </span>
+              </div>
+
+              <p className="text-[11px] text-stone-500 leading-tight italic">
+                💡 Bukti transfer atau konfirmasi QRIS dapat Anda kirimkan langsung saat chat WhatsApp toko kami terbuka.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* ============================================================== */}
-        {/* RIGHT COLUMN: RINGKASAN PESANAN DENGAN GAMBAR PRODUK JELAS (5 COLS) */}
+        {/* RIGHT COLUMN: RINGKASAN PESANAN DENGAN FOTO PRODUK (5 COLS) */}
         {/* ============================================================== */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-lg lg:sticky lg:top-24 lg:self-start space-y-4">
@@ -1010,7 +775,6 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
                         alt={item.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          // Hide broken image link and display fallback icon
                           (e.target as HTMLElement).style.display = "none";
                         }}
                       />
@@ -1091,12 +855,10 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
                 <span className="font-semibold text-stone-800">{formatPrice(subtotal)}</span>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-stone-600">Ongkos Kirim</span>
-                <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-[11px]">
-                  {fulfillmentType === "DELIVERY"
-                    ? "Free Ongkir (Griya Cileungsi 5)"
-                    : "Gratis Rp 0 (Ambil Sendiri)"}
+              <div className="flex justify-between items-center text-stone-600">
+                <span>Pembayaran</span>
+                <span className="font-bold text-[#4A0E4E] bg-purple-50 px-2 py-0.5 rounded text-[11px]">
+                  Transfer Bank / QRIS
                 </span>
               </div>
 
@@ -1115,7 +877,7 @@ Pesanan Anda dibuat fresh dengan sepenuh hati.
                 <span>Pesan Cepat Otomatis ke WhatsApp</span>
               </p>
               <p className="text-[11px] text-emerald-800 leading-relaxed">
-                Rincian pesanan dan alamat pengantaran Anda langsung tersusun rapi di WhatsApp toko kami untuk verifikasi instan.
+                Rincian pesanan dan alamat dapur Anda langsung terhubung ke WhatsApp toko untuk konfirmasi cepat.
               </p>
             </div>
 

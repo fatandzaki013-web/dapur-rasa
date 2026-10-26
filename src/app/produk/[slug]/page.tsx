@@ -60,7 +60,7 @@ export default function ProductDetailPage({
   const { slug } = resolvedParams;
 
   const { settings, formatPrice } = useStore();
-  const { addItem, setIsCartOpen } = useCart();
+  const { addItem, setIsCartOpen, clearCart } = useCart();
 
   const cached = productDetailCache.get(slug);
   const [product, setProduct] = useState<ProductDetail | null>(cached ? cached.product : null);
@@ -167,6 +167,13 @@ export default function ProductDetailPage({
 • Estimasi Total: Rp ${totalPrice.toLocaleString("id-ID")}
 
 Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
+
+    // Kosongkan keranjang agar saat kembali ke web, keranjang belanja langsung bersih
+    clearCart();
+    try {
+      localStorage.removeItem("dr_cart_items_v1");
+      localStorage.setItem("dr_cart_items_v1", "[]");
+    } catch (e) {}
 
     window.open(`https://api.whatsapp.com/send?phone=${formattedWa}&text=${encodeURIComponent(message)}`, "_blank");
   };

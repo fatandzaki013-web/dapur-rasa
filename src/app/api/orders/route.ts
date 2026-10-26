@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
 
     // 6. Format Pesan WhatsApp Singkat, Padat & Langsung Memuat Catatan Pemesan
     const brand = settings?.brandName || "Dapur Rasa";
-    const paymentLabel = paymentMethod === "COD" ? "COD" : "Transfer";
+    const defaultStoreAddress = "Perumahan Griya Cileungsi 5 Blok A8 No. 01";
 
     // Daftar pesanan ringkas & to the point
     const itemsListText = verifiedOrderItems
@@ -205,24 +205,16 @@ export async function POST(req: NextRequest) {
       )
       .join("\n");
 
-    const deliveryLine =
-      type === "DELIVERY"
-        ? `*Alamat:* ${deliveryAddress.trim()}`
-        : "*Pengambilan:* Ambil Sendiri di Dapur Toko";
-
-    const scheduleLine = scheduleDate
-      ? `\n*Jadwal:* ${scheduleDate}${scheduleTime ? ` jam ${scheduleTime}` : ""}`
-      : "";
-
     const notesLine = notes && notes.trim() ? `\n*Catatan:* ${notes.trim()}` : "";
 
     const waMessage = `Halo ${brand}, saya mau pesan:
 
 ${itemsListText}
 
-*Total:* Rp ${totalAmount.toLocaleString("id-ID")} (${paymentLabel})
+*Total:* Rp ${totalAmount.toLocaleString("id-ID")}
 *Pemesan:* ${customerName.trim()} (${cleanPhone})
-${deliveryLine}${scheduleLine}${notesLine}
+*Alamat Dapur:* ${defaultStoreAddress}
+*Pembayaran:* Transfer Bank / QRIS${notesLine}
 
 Mohon segera diproses ya, terima kasih!`;
 
