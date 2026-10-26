@@ -32,9 +32,7 @@ import {
   Smartphone,
 } from "lucide-react";
 
-const GOPAY_NUMBER = "085888159765";
-const GOPAY_DISPLAY = "0858-8815-9765";
-const GOPAY_NAME = "Mama Fatan / Dapur Rasa";
+const DEFAULT_GOPAY_NUMBER = "085888159765";
 
 interface CompletedOrderInfo {
   orderCode: string;
@@ -80,6 +78,11 @@ export default function CheckoutPage() {
 
   const brandName = settings?.brandName || "Dapur Rasa";
   const brandTagline = settings?.tagline || "Kue Rumahan Kualitas Premium Fresh";
+
+  const rawWa = settings?.whatsappNumber || DEFAULT_GOPAY_NUMBER;
+  const GOPAY_NUMBER = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : rawWa;
+  const GOPAY_DISPLAY = GOPAY_NUMBER.replace(/(\d{4})(\d{4})(\d+)/, "$1-$2-$3");
+  const GOPAY_NAME = `Mama Fatan / ${settings?.brandName || "Dapur Rasa"}`;
 
   const shippingFee = 0;
   const totalAmount = subtotal + shippingFee;

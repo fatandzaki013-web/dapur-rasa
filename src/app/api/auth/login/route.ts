@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, hashPassword, signAdminToken, COOKIE_NAME } from "@/lib/auth";
+import fs from "fs";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     let authenticatedUser: { id: string; username: string; name: string; role: string } | null = null;
 
-    // 1. Coba periksa ke database
+    // 1. Coba periksa ke database Prisma
     try {
       let user = await prisma.user.findUnique({
         where: { username },
@@ -60,7 +62,34 @@ export async function POST(req: NextRequest) {
     }
 
     // 2. Resilient Fallback: Jika koneksi DB bermasalah saat deploy cloud / serverless,
-    // tetap izinkan admin login dengan kredensial resmi agar tidak terkunci dengan pesan 'kesalahan server'
+    // periksa dari prisma/initial-data.json
+    if (!authenticatedUser) {
+      try {
+        const initialDataPath = path.join(process.cwd(), "prisma", "initial-data.json");
+        if (fs.existsSync(initialDataPath)) {
+          const raw = fs.readFileSync(initialDataPath, "utf8");
+          const parsed = JSON.parse(raw);
+          const matchedUser = parsed.User?.find(
+            (u: any) => u.username?.toLowerCase() === username.toLowerCase()
+          );
+          if (matchedUser && matchedUser.passwordHash) {
+            const isValid = await verifyPassword(password, matchedUser.passwordHash);
+            if (isValid) {
+              authenticatedUser = {
+                id: matchedUser.id || "admin-master-verified",
+                username: matchedUser.username,
+                name: matchedUser.name || "Admin Dapur Rasa",
+                role: matchedUser.role || "ADMIN",
+              };
+            }
+          }
+        }
+      } catch (fileErr) {
+        console.warn("Fallback initial-data.json check failed:", fileErr);
+      }
+    }
+
+    // 3. Fallback default awal
     if (!authenticatedUser) {
       if (
         (username === "admin" || username === "admin@dapurrasa.com") &&

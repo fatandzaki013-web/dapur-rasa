@@ -34,22 +34,9 @@ interface AdminUser {
 // Brand Logo: Golden & dark navy teardrop emblem with clean golden spark
 function BrandLogoIcon() {
   return (
-    <svg
-      viewBox="0 0 36 36"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="w-9 h-9 shrink-0 drop-shadow-xs"
-    >
-      <path
-        d="M18 3C18 3 8 13.5 8 22.5C8 28 12.5 32.5 18 32.5C23.5 32.5 28 28 28 22.5C28 13.5 18 3 18 3Z"
-        fill="#F59E0B"
-      />
-      <path
-        d="M19 6C19 6 12.5 15.5 12.5 22.5C12.5 25.8 15 28.5 18 28.5C21 28.5 23.5 25.8 23.5 22.5C23.5 16.5 19 6 19 6Z"
-        fill="#0F172A"
-      />
-      <circle cx="18" cy="23.5" r="2.2" fill="#FBBF24" />
-    </svg>
+    <div className="w-9 h-9 rounded-xl bg-[#4A0E4E] text-white flex items-center justify-center shadow-xs font-bold text-lg shrink-0">
+      🍰
+    </div>
   );
 }
 
@@ -154,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: "Dashboard", href: "/admin", icon: LayoutGrid, exact: true },
     { label: "Kelola Produk & Kue", href: "/admin/products", icon: Package },
     { label: "Kelola Pesanan", href: "/admin/orders", icon: ShoppingBag },
-    { label: "Galeri Foto Kue", href: "/admin/gallery", icon: ImageIcon },
+    { label: "Galeri Foto (8 Foto)", href: "/admin/gallery", icon: ImageIcon },
   ];
 
   // 2. Data Master (Kategori & Stok Inventaris)
@@ -340,19 +327,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* User Card & Logout Footer (Email disesuaikan dengan website Dapur Rasa) */}
         <div className="p-4 border-t border-slate-100 bg-white space-y-3">
           {/* User Profile */}
-          <div className="flex items-center gap-3 px-1">
-            <div className="w-10 h-10 rounded-full bg-[#FEF9C3] text-slate-800 font-bold text-base flex items-center justify-center shrink-0 shadow-2xs">
-              S
+          <Link
+            href="/admin/settings"
+            className="flex items-center gap-3 px-2 py-2 rounded-2xl hover:bg-purple-50/70 transition border border-transparent hover:border-purple-200 group cursor-pointer"
+            title="Klik untuk ubah profil, username, atau ganti kata sandi"
+          >
+            <div className="w-10 h-10 rounded-full bg-purple-100 text-[#4A0E4E] font-extrabold text-base flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition">
+              {adminUser?.name?.charAt(0) || "A"}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-xs font-bold text-slate-900 truncate">
-                {adminUser?.name || "Super Admin"}
+              <div className="text-xs font-bold text-slate-900 truncate group-hover:text-[#4A0E4E] transition">
+                {adminUser?.name || "Admin Dapur Rasa"}
               </div>
-              <div className="text-[11px] text-slate-400 truncate">
-                admin@dapurrasa.com
+              <div className="text-[11px] text-purple-700 font-semibold truncate flex items-center gap-1">
+                <span>@{adminUser?.username || "admin"}</span>
+                <span className="text-[10px] text-slate-400 font-normal">&bull; Ganti Sandi</span>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Outlined Logout Button */}
           <button
@@ -514,17 +506,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
               {/* Profile & Logout Mobile */}
               <div className="p-4 border-t border-slate-100 bg-white space-y-2.5">
-                <div className="flex items-center gap-2.5 px-1">
-                  <div className="w-9 h-9 rounded-full bg-[#FEF9C3] text-slate-800 font-bold text-sm flex items-center justify-center shrink-0">
-                    S
+                <Link
+                  href="/admin/settings"
+                  onClick={() => setIsMobileSidebarOpen(false)}
+                  className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl hover:bg-purple-50 transition border border-transparent hover:border-purple-200"
+                  title="Klik untuk ganti username atau sandi"
+                >
+                  <div className="w-9 h-9 rounded-full bg-purple-100 text-[#4A0E4E] font-bold text-sm flex items-center justify-center shrink-0">
+                    {adminUser?.name?.charAt(0) || "A"}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-bold text-slate-900 truncate">
-                      {adminUser?.name || "Super Admin"}
+                      {adminUser?.name || "Admin Dapur Rasa"}
                     </div>
-                    <div className="text-[10px] text-slate-400 truncate">admin@dapurrasa.com</div>
+                    <div className="text-[10px] text-purple-700 font-semibold truncate">
+                      @{adminUser?.username || "admin"} &bull; Ganti Sandi
+                    </div>
                   </div>
-                </div>
+                </Link>
 
                 <button
                   type="button"

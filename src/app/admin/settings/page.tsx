@@ -2,29 +2,58 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Save, CheckCircle, AlertCircle, Palette, Settings, RotateCcw } from "lucide-react";
+import {
+  Save,
+  CheckCircle,
+  AlertCircle,
+  Palette,
+  Settings,
+  RotateCcw,
+  User,
+  KeyRound,
+  Eye,
+  EyeOff,
+  Store,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 export default function AdminSettingsPage() {
-  const [activeTab, setActiveTab] = useState<"store" | "theme">("store");
+  const [activeTab, setActiveTab] = useState<"store" | "account" | "theme">("store");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Store Settings State
-  const [brandName, setBrandName] = useState("");
-  const [tagline, setTagline] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [operationalHours, setOperationalHours] = useState("");
-  const [defaultShippingFee, setDefaultShippingFee] = useState<number | string>(15000);
+  const [brandName, setBrandName] = useState("Dapur Rasa");
+  const [tagline, setTagline] = useState("Kue & Camilan Rumahan Kualitas Premium");
+  const [whatsappNumber, setWhatsappNumber] = useState("6285888159765");
+  const [address, setAddress] = useState(
+    "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
+  );
+  const [operationalHours, setOperationalHours] = useState(
+    "Setiap Hari: 07:00 - 20:00 WIB"
+  );
+  const [defaultShippingFee, setDefaultShippingFee] = useState<number | string>(0);
   const [minOrderAmount, setMinOrderAmount] = useState<number | string>(0);
-  const [metaTitle, setMetaTitle] = useState("");
-  const [metaDescription, setMetaDescription] = useState("");
+  const [metaTitle, setMetaTitle] = useState("Dapur Rasa | Toko Kue Rumahan Lezat & Higienis");
+  const [metaDescription, setMetaDescription] = useState(
+    "Pesan aneka kue basah, pastel renyah, risol mayo lumer, brownies legit, dan snack box lezat Dapur Rasa."
+  );
+
+  // Admin Account & Password State
+  const [adminName, setAdminName] = useState("Admin Dapur Rasa");
+  const [adminUsername, setAdminUsername] = useState("admin");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Theme Config State
-  const [primaryColor, setPrimaryColor] = useState("#4B291B");
-  const [secondaryColor, setSecondaryColor] = useState("#A9683B");
+  const [primaryColor, setPrimaryColor] = useState("#4A0E4E");
+  const [secondaryColor, setSecondaryColor] = useState("#F59E0B");
   const [backgroundColor, setBackgroundColor] = useState("#FAF5EF");
   const [surfaceColor, setSurfaceColor] = useState("#FFFDF9");
   const [accentColor, setAccentColor] = useState("#EBD9C7");
@@ -32,33 +61,45 @@ export default function AdminSettingsPage() {
 
   const fetchData = async () => {
     try {
-      const [sRes, tRes] = await Promise.all([
+      const [sRes, tRes, pRes] = await Promise.all([
         fetch("/api/admin/settings"),
         fetch("/api/admin/theme"),
+        fetch("/api/admin/profile"),
       ]);
 
       const sData = await sRes.json();
       const tData = await tRes.json();
+      const pData = await pRes.json();
 
       if (sData.settings) {
-        setBrandName(sData.settings.brandName || "");
-        setTagline(sData.settings.tagline || "");
-        setWhatsappNumber(sData.settings.whatsappNumber || "");
-        setAddress(sData.settings.address || "");
-        setOperationalHours(sData.settings.operationalHours || "");
-        setDefaultShippingFee(sData.settings.defaultShippingFee ?? 15000);
+        setBrandName(sData.settings.brandName || "Dapur Rasa");
+        setTagline(sData.settings.tagline || "Kue & Camilan Rumahan Kualitas Premium");
+        setWhatsappNumber(sData.settings.whatsappNumber || "6285888159765");
+        setAddress(
+          sData.settings.address ||
+            "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
+        );
+        setOperationalHours(
+          sData.settings.operationalHours || "Setiap Hari: 07:00 - 20:00 WIB"
+        );
+        setDefaultShippingFee(sData.settings.defaultShippingFee ?? 0);
         setMinOrderAmount(sData.settings.minOrderAmount ?? 0);
         setMetaTitle(sData.settings.metaTitle || "");
         setMetaDescription(sData.settings.metaDescription || "");
       }
 
       if (tData.theme) {
-        setPrimaryColor(tData.theme.primaryColor || "#4B291B");
-        setSecondaryColor(tData.theme.secondaryColor || "#A9683B");
+        setPrimaryColor(tData.theme.primaryColor || "#4A0E4E");
+        setSecondaryColor(tData.theme.secondaryColor || "#F59E0B");
         setBackgroundColor(tData.theme.backgroundColor || "#FAF5EF");
         setSurfaceColor(tData.theme.surfaceColor || "#FFFDF9");
         setAccentColor(tData.theme.accentColor || "#EBD9C7");
         setTextColor(tData.theme.textColor || "#211A16");
+      }
+
+      if (pData.user) {
+        setAdminName(pData.user.name || "Admin Dapur Rasa");
+        setAdminUsername(pData.user.username || "admin");
       }
     } catch (e) {
       console.error(e);
@@ -78,6 +119,7 @@ export default function AdminSettingsPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
+  // Simpan Pengaturan Toko
   const handleSaveStore = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -101,16 +143,76 @@ export default function AdminSettingsPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Gagal menyimpan.");
+      if (!res.ok) throw new Error(data.error || "Gagal menyimpan pengaturan toko.");
 
-      showToast("Pengaturan toko berhasil diperbarui!");
+      showToast("Pengaturan profil & kontak toko berhasil diperbarui!");
     } catch (err: any) {
-      setErrorMessage(err.message || "Gagal.");
+      setErrorMessage(err.message || "Gagal menyimpan pengaturan toko.");
     } finally {
       setIsSaving(false);
     }
   };
 
+  // Simpan Akun & Ganti Password Admin
+  const handleSaveAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
+
+    const cleanUsername = adminUsername.trim();
+    if (!cleanUsername || cleanUsername.length < 3) {
+      setErrorMessage("Username harus terdiri dari minimal 3 karakter.");
+      setIsSaving(false);
+      return;
+    }
+
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        setErrorMessage("Kata sandi baru minimal 6 karakter.");
+        setIsSaving(false);
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        setErrorMessage("Konfirmasi kata sandi baru tidak cocok.");
+        setIsSaving(false);
+        return;
+      }
+
+      if (!currentPassword) {
+        setErrorMessage("Masukkan kata sandi lama Anda untuk konfirmasi keamanan.");
+        setIsSaving(false);
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch("/api/admin/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: adminName.trim(),
+          username: cleanUsername,
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal memperbarui akun.");
+
+      showToast("Username & kata sandi admin berhasil diperbarui!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: any) {
+      setErrorMessage(err.message || "Terjadi kesalahan saat memperbarui akun.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Simpan Palet Warna Tema
   const handleSaveTheme = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -131,9 +233,9 @@ export default function AdminSettingsPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Gagal menyimpan.");
+      if (!res.ok) throw new Error(data.error || "Gagal menyimpan tema.");
 
-      showToast("Tema palet warna website berhasil diterapkan!");
+      showToast("Tema warna website berhasil diterapkan!");
     } catch (err: any) {
       setErrorMessage(err.message || "Gagal.");
     } finally {
@@ -142,99 +244,140 @@ export default function AdminSettingsPage() {
   };
 
   const resetThemeToDefault = () => {
-    setPrimaryColor("#4B291B");
-    setSecondaryColor("#A9683B");
+    setPrimaryColor("#4A0E4E");
+    setSecondaryColor("#F59E0B");
     setBackgroundColor("#FAF5EF");
     setSurfaceColor("#FFFDF9");
     setAccentColor("#EBD9C7");
     setTextColor("#211A16");
-    showToast("Warna dikembalikan ke tema default Warm Bakery!");
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* Toast */}
+    <div className="space-y-6 max-w-5xl mx-auto font-sans pb-12">
+      {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 border border-amber-600/30 animate-fadeIn">
+        <div className="fixed top-20 right-6 z-50 bg-[#4A0E4E] text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-fadeIn border border-amber-400/40">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
       )}
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-stone-900 font-heading">
-          Pengaturan Toko & Konfigurasi Tema
-        </h1>
-        <p className="text-xs text-stone-500 mt-0.5">
-          Atur nomor WhatsApp resmi, ongkos kirim, dan kustomisasi palet warna toko secara terpusat.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-1">
+            <span>Admin</span>
+            <span>/</span>
+            <span className="text-[#4A0E4E] font-bold">Pengaturan</span>
+          </div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            Pusat Pengaturan Toko &amp; Akun
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Kelola profil toko, nomor WhatsApp pesanan, alamat, dan ganti username &amp; password login Anda.
+          </p>
+        </div>
       </div>
 
+      {/* Error Alert */}
       {errorMessage && (
-        <div className="p-4 bg-red-50 text-red-800 text-xs rounded-xl border border-red-200 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
-          <span>{errorMessage}</span>
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+          <div className="flex-1 font-medium leading-relaxed">{errorMessage}</div>
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="flex border-b border-stone-200 gap-4 text-xs font-bold">
+      {/* Tabs Navigation */}
+      <div className="flex items-center gap-2 border-b border-slate-200 overflow-x-auto pb-1 scrollbar-none">
         <button
-          onClick={() => setActiveTab("store")}
-          className={`pb-3 px-2 border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+          type="button"
+          onClick={() => {
+            setActiveTab("store");
+            setErrorMessage(null);
+          }}
+          className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "store"
-              ? "border-amber-700 text-amber-800"
-              : "border-transparent text-stone-500 hover:text-stone-800"
+              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
-          <Settings className="w-4 h-4" />
-          <span>Pengaturan Bisnis & WhatsApp</span>
+          <Store className="w-4 h-4" />
+          <span>Profil Toko &amp; WhatsApp</span>
         </button>
 
         <button
-          onClick={() => setActiveTab("theme")}
-          className={`pb-3 px-2 border-b-2 transition-all flex items-center gap-2 cursor-pointer ${
+          type="button"
+          onClick={() => {
+            setActiveTab("account");
+            setErrorMessage(null);
+          }}
+          className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+            activeTab === "account"
+              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          <KeyRound className="w-4 h-4" />
+          <span>Ganti Username &amp; Password</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setActiveTab("theme");
+            setErrorMessage(null);
+          }}
+          className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "theme"
-              ? "border-amber-700 text-amber-800"
-              : "border-transparent text-stone-500 hover:text-stone-800"
+              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
           <Palette className="w-4 h-4" />
-          <span>Palet Warna & Tema Desain</span>
+          <span>Palet Warna Website</span>
         </button>
       </div>
 
-      {/* Content */}
+      {/* Tab 1: Pengaturan Toko */}
       {isLoading ? (
-        <div className="p-12 text-center text-xs text-stone-500">Memuat konfigurasi...</div>
+        <div className="p-12 text-center text-xs text-slate-500 bg-white rounded-3xl border">
+          Memuat konfigurasi...
+        </div>
       ) : activeTab === "store" ? (
-        <form onSubmit={handleSaveStore} className="space-y-6 text-xs">
-          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-4">
-            <h2 className="font-heading font-bold text-base text-stone-900 border-b pb-2">
-              Pengaturan WhatsApp & Operasional
-            </h2>
+        <form onSubmit={handleSaveStore} className="space-y-6 text-xs sm:text-sm">
+          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs space-y-5">
+            <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <div>
+                <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                  <Store className="w-4 h-4 text-[#4A0E4E]" />
+                  <span>Informasi Kontak &amp; Operasional Toko</span>
+                </h2>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Pengaturan ini langsung tampil di website pembeli (header, footer, dan tautan checkout WhatsApp).
+                </p>
+              </div>
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
-                  Nomor WhatsApp Toko (Format 62...) <span className="text-red-600">*</span>
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                  Nomor WhatsApp Toko (Awali 62...) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder="6281234567890"
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 font-mono"
+                  placeholder="6285888159765"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
-                <span className="text-[10px] text-stone-400 mt-1 block">
-                  Penting: Pastikan menggunakan kode negara 62 (tanpa tanda + atau spasi) agar tautan chat langsung terbuka.
+                <span className="text-[11px] text-slate-400 mt-1 block">
+                  * Otomatis menerima pesan pemesanan checkout dari pembeli dan menjadi nomor GoPay default.
                 </span>
               </div>
 
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
                   Nama Brand Toko
                 </label>
                 <input
@@ -242,14 +385,59 @@ export default function AdminSettingsPage() {
                   value={brandName}
                   onChange={(e) => setBrandName(e.target.value)}
                   placeholder="Dapur Rasa"
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                Alamat Toko / Dapur Produksi <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+              />
+              <span className="text-[11px] text-slate-400 mt-1 block">
+                Alamat ini tampil di footer website dan petunjuk titik ambil pesanan pelanggan.
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                  Jam Buka Dapur
+                </label>
+                <input
+                  type="text"
+                  value={operationalHours}
+                  onChange={(e) => setOperationalHours(e.target.value)}
+                  placeholder="Setiap Hari: 07:00 - 20:00 WIB"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                  Slogan / Tagline Toko
+                </label>
+                <input
+                  type="text"
+                  value={tagline}
+                  onChange={(e) => setTagline(e.target.value)}
+                  placeholder="Kue & Camilan Rumahan Kualitas Premium"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
                   Tarif Standar Ongkos Kirim (Rp)
                 </label>
                 <input
@@ -257,12 +445,16 @@ export default function AdminSettingsPage() {
                   min={0}
                   value={defaultShippingFee}
                   onChange={(e) => setDefaultShippingFee(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300"
+                  placeholder="0 untuk gratis ongkir"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
+                <span className="text-[11px] text-slate-400 mt-1 block">
+                  Isi 0 jika pengantaran ke area Perum Griya Cileungsi 5 adalah Gratis Ongkir.
+                </span>
               </div>
 
               <div>
-                <label className="block font-semibold text-stone-700 mb-1">
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
                   Batas Minimal Pemesanan (Rp)
                 </label>
                 <input
@@ -270,92 +462,235 @@ export default function AdminSettingsPage() {
                   min={0}
                   value={minOrderAmount}
                   onChange={(e) => setMinOrderAmount(e.target.value)}
-                  placeholder="0 jika tidak ada minimal"
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block font-semibold text-stone-700 mb-1">Alamat Toko / Dapur</label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Jl. Mawar Melati No. 12, Jakarta"
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300"
-                />
-              </div>
-
-              <div>
-                <label className="block font-semibold text-stone-700 mb-1">Jam Buka Dapur</label>
-                <input
-                  type="text"
-                  value={operationalHours}
-                  onChange={(e) => setOperationalHours(e.target.value)}
-                  placeholder="Senin - Sabtu: 08:00 - 18:00 WIB"
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300"
+                  placeholder="0 jika tidak ada batas minimal"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
               </div>
             </div>
 
             <div className="pt-2">
-              <label className="block font-semibold text-stone-700 mb-1">SEO Title Website</label>
+              <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                Judul Website di Google (SEO Title)
+              </label>
               <input
                 type="text"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
                 placeholder="Dapur Rasa | Toko Kue Rumahan Lezat & Higienis"
-                className="w-full px-3 py-2 rounded-xl border border-stone-300"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-stone-700 mb-1">SEO Meta Description</label>
+              <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                Deskripsi Singkat Website (SEO Description)
+              </label>
               <textarea
                 rows={2}
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                placeholder="Pesan aneka kue basah, pastel renyah, risol mayo lumer untuk acara dan arisan..."
-                className="w-full px-3 py-2 rounded-xl border border-stone-300"
+                placeholder="Pesan aneka kue basah, pastel renyah, risol mayo lumer untuk acara dan kumpul keluarga..."
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
               />
             </div>
 
-            <div className="pt-3 border-t flex justify-end">
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-xs"
+                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
               >
-                {isSaving ? "Menyimpan..." : "Simpan Pengaturan Toko"}
+                <Save className="w-4 h-4" />
+                <span>{isSaving ? "Menyimpan..." : "Simpan Pengaturan Toko"}</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      ) : activeTab === "account" ? (
+        /* Tab 2: Akun & Ganti Password Admin */
+        <form onSubmit={handleSaveAccount} className="space-y-6 text-xs sm:text-sm">
+          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs space-y-6">
+            <div className="border-b border-slate-100 pb-3">
+              <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                <KeyRound className="w-4 h-4 text-[#4A0E4E]" />
+                <span>Ganti Username &amp; Kata Sandi Akun Admin</span>
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Anda dapat mengubah username akun login dan mengganti kata sandi kapan saja demi keamanan.
+              </p>
+            </div>
+
+            {/* Info Box */}
+            <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-100 text-xs text-[#4A0E4E] flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#4A0E4E] shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <span className="font-bold block">Petunjuk Keamanan Akun:</span>
+                <p className="text-purple-900/80 leading-relaxed">
+                  Username dan kata sandi baru akan langsung aktif setelah Anda klik <strong>Simpan Perubahan Akun</strong>. Pastikan Anda mengingat atau mencatat kredensial baru tersebut untuk login berikutnya.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                  Nama Lengkap Admin <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    required
+                    value={adminName}
+                    onChange={(e) => setAdminName(e.target.value)}
+                    placeholder="Admin Dapur Rasa"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                  Username Login <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">
+                    @
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    value={adminUsername}
+                    onChange={(e) => setAdminUsername(e.target.value)}
+                    placeholder="admin"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  />
+                </div>
+                <span className="text-[11px] text-slate-400 mt-1 block">
+                  Hanya huruf, angka, underscore (_), atau titik (.).
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 space-y-4">
+              <h3 className="font-bold text-slate-800 text-xs uppercase tracking-wider">
+                Ganti Kata Sandi (Opsional)
+              </h3>
+              <p className="text-xs text-slate-400">
+                Biarkan kolom kata sandi baru kosong jika Anda hanya ingin mengubah Nama atau Username saja.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                    Kata Sandi Baru
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Minimal 6 karakter"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                    Ulangi Kata Sandi Baru
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Ketik ulang kata sandi baru"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {newPassword && (
+                <div className="pt-2 animate-fadeIn">
+                  <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
+                    Kata Sandi Lama / Saat Ini <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative max-w-md">
+                    <KeyRound className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      required={!!newPassword}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Masukkan kata sandi lama Anda"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <span className="text-[11px] text-slate-400 mt-1 block">
+                    Diperlukan untuk memvalidasi perubahan kata sandi baru.
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSaving}
+                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
+              >
+                <Save className="w-4 h-4" />
+                <span>{isSaving ? "Menyimpan..." : "Simpan Perubahan Akun & Sandi"}</span>
               </button>
             </div>
           </div>
         </form>
       ) : (
-        <form onSubmit={handleSaveTheme} className="space-y-6 text-xs">
-          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-6">
-            <div className="bg-gradient-to-r from-amber-500/10 to-amber-500/5 p-4 rounded-2xl border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+        /* Tab 3: Palet Warna */
+        <form onSubmit={handleSaveTheme} className="space-y-6 text-xs sm:text-sm">
+          <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs space-y-6">
+            <div className="bg-gradient-to-r from-purple-500/10 to-amber-500/10 p-4 rounded-2xl border border-purple-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="font-bold text-amber-900 block text-xs">Studio Kustomisasi Warna & Live Simulator</span>
-                <span className="text-[11px] text-amber-800">Ubah palet warna dengan preset 1-klik dan simulator beranda toko secara realtime.</span>
+                <span className="font-bold text-[#4A0E4E] block text-xs sm:text-sm">
+                  Studio Kustomisasi Warna Website
+                </span>
+                <span className="text-xs text-slate-600">
+                  Ubah palet warna website secara realtime untuk menyesuaikan identitas visual Dapur Rasa.
+                </span>
               </div>
               <Link
                 href="/admin/theme"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs shrink-0 transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-xs shadow-xs shrink-0 transition"
               >
                 <Palette className="w-3.5 h-3.5" />
-                <span>Buka Studio Tema</span>
+                <span>Buka Studio Tema Lengkap</span>
               </Link>
             </div>
 
-            <div className="flex items-center justify-between border-b pb-2">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h2 className="font-heading font-bold text-base text-stone-900">
-                  Palet Warna Tema Website
+                <h2 className="font-bold text-base text-slate-900">
+                  Palet Warna Tema Utama
                 </h2>
-                <p className="text-[11px] text-stone-500">
+                <p className="text-xs text-slate-400 mt-0.5">
                   Warna ini diterapkan secara dinamis ke seluruh tombol, latar belakang, dan aksen website pelanggan.
                 </p>
               </div>
@@ -363,16 +698,16 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={resetThemeToDefault}
-                className="text-amber-800 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                className="text-[#4A0E4E] font-bold hover:underline inline-flex items-center gap-1 cursor-pointer text-xs"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Default Bakery Palette</span>
+                <span>Reset Warna Default Toko</span>
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Warna Utama (Primary)</label>
+              <div className="space-y-1.5 p-3 rounded-2xl border border-slate-200">
+                <label className="block font-semibold text-slate-700 text-xs">Warna Utama (Primary)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -384,14 +719,14 @@ export default function AdminSettingsPage() {
                     type="text"
                     value={primaryColor}
                     onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono text-xs"
                   />
                 </div>
-                <span className="text-[10px] text-stone-400 block">Default: #4B291B (Cocoa Brown)</span>
+                <span className="text-[10px] text-slate-400 block">Default: #4A0E4E (Dapur Rasa Purple)</span>
               </div>
 
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Warna Sekunder (Secondary)</label>
+              <div className="space-y-1.5 p-3 rounded-2xl border border-slate-200">
+                <label className="block font-semibold text-slate-700 text-xs">Warna Aksen (Secondary/Gold)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -403,14 +738,14 @@ export default function AdminSettingsPage() {
                     type="text"
                     value={secondaryColor}
                     onChange={(e) => setSecondaryColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono text-xs"
                   />
                 </div>
-                <span className="text-[10px] text-stone-400 block">Default: #A9683B (Caramel)</span>
+                <span className="text-[10px] text-slate-400 block">Default: #F59E0B (Warm Golden)</span>
               </div>
 
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Latar Belakang (Background)</label>
+              <div className="space-y-1.5 p-3 rounded-2xl border border-slate-200">
+                <label className="block font-semibold text-slate-700 text-xs">Latar Belakang (Background)</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="color"
@@ -422,104 +757,21 @@ export default function AdminSettingsPage() {
                     type="text"
                     value={backgroundColor}
                     onChange={(e) => setBackgroundColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono text-xs"
                   />
                 </div>
-                <span className="text-[10px] text-stone-400 block">Default: #FAF5EF (Warm Cream)</span>
-              </div>
-
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Permukaan Kartu (Surface)</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={surfaceColor}
-                    onChange={(e) => setSurfaceColor(e.target.value)}
-                    className="w-9 h-9 rounded-lg border-0 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={surfaceColor}
-                    onChange={(e) => setSurfaceColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
-                  />
-                </div>
-                <span className="text-[10px] text-stone-400 block">Default: #FFFDF9 (Ivory)</span>
-              </div>
-
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Warna Aksen (Accent)</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={accentColor}
-                    onChange={(e) => setAccentColor(e.target.value)}
-                    className="w-9 h-9 rounded-lg border-0 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={accentColor}
-                    onChange={(e) => setAccentColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
-                  />
-                </div>
-                <span className="text-[10px] text-stone-400 block">Default: #EBD9C7 (Soft Beige)</span>
-              </div>
-
-              <div className="space-y-1.5 p-3 rounded-2xl border border-stone-200">
-                <label className="block font-semibold text-stone-700">Warna Teks (Text)</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="color"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="w-9 h-9 rounded-lg border-0 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={textColor}
-                    onChange={(e) => setTextColor(e.target.value)}
-                    className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono"
-                  />
-                </div>
-                <span className="text-[10px] text-stone-400 block">Default: #211A16 (Dark Charcoal)</span>
+                <span className="text-[10px] text-slate-400 block">Default: #FAF5EF (Warm Cream)</span>
               </div>
             </div>
 
-            {/* Live Preview Box */}
-            <div className="p-5 rounded-2xl border border-stone-200 space-y-3" style={{ backgroundColor }}>
-              <span className="text-[11px] font-bold text-stone-500 uppercase">
-                Pratinjau Langsung Kombinasi Warna:
-              </span>
-              <div
-                className="p-4 rounded-xl shadow-xs border flex items-center justify-between"
-                style={{ backgroundColor: surfaceColor, borderColor: accentColor }}
-              >
-                <div>
-                  <h4 className="font-heading font-bold text-sm" style={{ color: primaryColor }}>
-                    Contoh Kartu Pastel Ayam Dapur Rasa
-                  </h4>
-                  <p className="text-xs mt-0.5" style={{ color: textColor }}>
-                    Kulit renyah gurih, isian telur dan daging ayam melimpah.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-xl text-white font-bold text-xs shadow-xs"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  Beli Kue
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t flex justify-end">
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-xs"
+                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
               >
-                {isSaving ? "Menyimpan..." : "Terapkan Palet Warna"}
+                <Save className="w-4 h-4" />
+                <span>{isSaving ? "Menyimpan..." : "Simpan Palet Warna"}</span>
               </button>
             </div>
           </div>

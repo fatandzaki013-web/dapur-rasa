@@ -217,7 +217,7 @@ export default function AdminDashboardPage() {
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
             <span>Admin</span>
             <span>/</span>
-            <span className="text-[#0A2544] font-bold">Dashboard Overview</span>
+            <span className="text-[#4A0E4E] font-bold">Dashboard Overview</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Ringkasan Operasional &amp; Penjualan Toko
@@ -235,16 +235,204 @@ export default function AdminDashboardPage() {
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
             title="Segarkan data terbaru"
           >
-            <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#0A2544]" : "text-slate-600"}`} />
+            <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#4A0E4E]" : "text-slate-600"}`} />
             <span>{isRefreshing ? "Menyegarkan..." : "Segarkan"}</span>
           </button>
 
           <Link
             href="/admin/products"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0A2544] hover:bg-[#12365e] text-white text-xs font-bold shadow-xs transition-all active:scale-98"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-bold shadow-xs transition-all active:scale-98"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Kue Baru</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* PETA KENDALI WEBSITE (Panduan Praktis & Mudah Dipahami)        */}
+      {/* ============================================================== */}
+      <div className="bg-gradient-to-br from-white via-purple-50/40 to-amber-50/30 p-5 sm:p-6 rounded-3xl border border-purple-100 shadow-2xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-purple-100/70 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#4A0E4E] text-white flex items-center justify-center shadow-xs">
+              <Sparkles className="w-4 h-4 text-amber-300" />
+            </div>
+            <div>
+              <h2 className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight">
+                Peta Kendali Website (Mudah Dipahami)
+              </h2>
+              <p className="text-[11px] sm:text-xs text-slate-500">
+                Seluruh bagian dan isi website Dapur Rasa dapat Anda atur langsung dari menu-menu berikut:
+              </p>
+            </div>
+          </div>
+          <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto">
+            ✅ Terhubung Otomatis ke Web
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 pt-1">
+          {/* 1. Produk */}
+          <Link
+            href="/admin/products"
+            className="p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-300 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-purple-100 text-[#4A0E4E] flex items-center justify-center font-bold">
+                <Package className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full">
+                Katalog Kue
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Kelola Produk &amp; Harga Kue
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Tambah kue baru, ubah harga pastel &amp; risol, upload foto produk, serta aktifkan status ketersediaan stok.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Atur Produk Kue</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
+          </Link>
+
+          {/* 2. Pesanan */}
+          <Link
+            href="/admin/orders"
+            className="p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-300 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                <ShoppingBag className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">
+                Pesanan Masuk
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Pesanan &amp; Pengantaran
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Pantau pesanan masuk, alamat pengantaran di Griya Cileungsi 5, total tagihan, dan hubungi WA pemesan.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Buka Pesanan</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
+          </Link>
+
+          {/* 3. Galeri Foto */}
+          <Link
+            href="/admin/gallery"
+            className="p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-300 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                <ImageIcon className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full">
+                Galeri Beranda
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Galeri Foto (8 Foto Per Halaman)
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Kelola dokumentasi foto kue asli yang tampil di beranda (tampilan 2 kolom di HP: 4 kiri &amp; 4 kanan).
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Kelola Galeri Foto</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
+          </Link>
+
+          {/* 4. Banner Slider */}
+          <Link
+            href="/admin/homepage"
+            className="p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-300 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
+                <Layers className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full">
+                Banner Promo
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Banner Slider Halaman Depan
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Ganti foto dan teks promosi banner slider bergerak yang tampil di bagian paling atas halaman depan.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Atur Banner Beranda</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
+          </Link>
+
+          {/* 5. Kategori */}
+          <Link
+            href="/admin/categories"
+            className="p-4 rounded-2xl bg-white border border-slate-200/90 hover:border-purple-300 hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold">
+                <Cake className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-rose-800 bg-rose-50 px-2 py-0.5 rounded-full">
+                Kategori Produk
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Kategori &amp; Menu Spesial
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Atur kelompok kategori kue (Pastel, Risol Mayo, Kue Basah, Kue Kering, Snack Box, Frozen Food).
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Atur Kategori Kue</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
+          </Link>
+
+          {/* 6. Settings & Change Password */}
+          <Link
+            href="/admin/settings"
+            className="p-4 rounded-2xl bg-gradient-to-br from-white to-purple-50/50 border-2 border-purple-200 hover:border-[#4A0E4E] hover:shadow-md transition-all group flex flex-col justify-between space-y-2.5"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-9 h-9 rounded-xl bg-[#4A0E4E] text-white flex items-center justify-center font-bold">
+                <Settings className="w-4.5 h-4.5" />
+              </div>
+              <span className="text-[10px] font-bold text-white bg-[#4A0E4E] px-2 py-0.5 rounded-full">
+                Sandi &amp; Kontak Toko
+              </span>
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition">
+                Ganti Sandi &amp; Pengaturan Toko
+              </h3>
+              <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                Ubah <strong>Username &amp; Password</strong> login admin, nomor WhatsApp pesanan, dan alamat Griya Cileungsi 5.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-[#4A0E4E] inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              <span>Ganti Sandi &amp; Profil</span>
+              <ChevronRight className="w-3 h-3" />
+            </span>
           </Link>
         </div>
       </div>
@@ -407,7 +595,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
               <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-[#0A2544]" />
+                <TrendingUp className="w-4 h-4 text-[#4A0E4E]" />
                 <span>Tren Penjualan 7 Hari Terakhir</span>
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -464,7 +652,7 @@ export default function AdminDashboardPage() {
                         style={{ height: `${percentHeight}%` }}
                         className={`w-full rounded-t-xl transition-all duration-500 ${
                           chartMode === "revenue"
-                            ? "bg-gradient-to-t from-[#0A2544] to-[#1E4E8C] group-hover:from-amber-600 group-hover:to-amber-400"
+                            ? "bg-gradient-to-t from-[#4A0E4E] to-[#7B1882] group-hover:from-amber-600 group-hover:to-amber-400"
                             : "bg-gradient-to-t from-emerald-600 to-teal-400 group-hover:from-purple-700 group-hover:to-purple-500"
                         }`}
                       />
@@ -501,7 +689,7 @@ export default function AdminDashboardPage() {
             </div>
             <Link
               href="/admin/categories"
-              className="text-xs font-bold text-[#0A2544] hover:underline flex items-center gap-0.5"
+              className="text-xs font-bold text-[#4A0E4E] hover:underline flex items-center gap-0.5"
             >
               <span>Kelola</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -517,7 +705,7 @@ export default function AdminDashboardPage() {
               topCategories.map((cat, idx) => {
                 const colors = [
                   "bg-amber-500",
-                  "bg-[#0A2544]",
+                  "bg-[#4A0E4E]",
                   "bg-purple-600",
                   "bg-emerald-600",
                   "bg-blue-600",
@@ -567,7 +755,7 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
             <h2 className="font-bold text-lg text-slate-900 flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#0A2544]" />
+              <ShoppingBag className="w-5 h-5 text-[#4A0E4E]" />
               <span>Transaksi &amp; Pesanan Terbaru</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -584,13 +772,13 @@ export default function AdminDashboardPage() {
                 placeholder="Cari nama / no. WA..."
                 value={orderSearchTerm}
                 onChange={(e) => setOrderSearchTerm(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0A2544]/20 w-44 sm:w-56"
+                className="pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 w-44 sm:w-56"
               />
             </div>
 
             <Link
               href="/admin/orders"
-              className="text-xs font-bold text-[#0A2544] hover:text-[#164475] inline-flex items-center gap-1 shrink-0"
+              className="text-xs font-bold text-[#4A0E4E] hover:text-[#5C1261] inline-flex items-center gap-1 shrink-0"
             >
               <span>Buka Semua Transaksi</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -642,7 +830,7 @@ export default function AdminDashboardPage() {
                         <div className="flex items-center gap-1 font-semibold">
                           {isDelivery ? (
                             <>
-                              <Truck className="w-3.5 h-3.5 text-[#0A2544]" />
+                              <Truck className="w-3.5 h-3.5 text-[#4A0E4E]" />
                               <span>Diantar ke Rumah</span>
                             </>
                           ) : (
@@ -721,7 +909,7 @@ export default function AdminDashboardPage() {
             </div>
             <Link
               href="/admin/stock"
-              className="text-xs font-bold text-[#0A2544] hover:underline flex items-center gap-0.5"
+              className="text-xs font-bold text-[#4A0E4E] hover:underline flex items-center gap-0.5"
             >
               <span>Kelola Stok</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -789,7 +977,7 @@ export default function AdminDashboardPage() {
                 <Cake className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#0A2544]">
+                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#4A0E4E]">
                   Katalog Kue
                 </span>
                 <span className="text-[11px] text-slate-400 leading-tight block mt-0.5">
@@ -806,7 +994,7 @@ export default function AdminDashboardPage() {
                 <Palette className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#0A2544]">
+                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#4A0E4E]">
                   Visual Homepage
                 </span>
                 <span className="text-[11px] text-slate-400 leading-tight block mt-0.5">
@@ -823,7 +1011,7 @@ export default function AdminDashboardPage() {
                 <ImageIcon className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#0A2544]">
+                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#4A0E4E]">
                   Galeri Foto
                 </span>
                 <span className="text-[11px] text-slate-400 leading-tight block mt-0.5">
@@ -840,7 +1028,7 @@ export default function AdminDashboardPage() {
                 <Settings className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#0A2544]">
+                <span className="font-bold text-slate-900 block text-xs group-hover:text-[#4A0E4E]">
                   Pengaturan
                 </span>
                 <span className="text-[11px] text-slate-400 leading-tight block mt-0.5">
