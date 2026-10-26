@@ -8,7 +8,9 @@ import { InstagramIcon, FacebookIcon } from "@/components/SocialIcons";
 export default function ContactPage() {
   const { settings } = useStore();
   const brandName = settings?.brandName || "Dapur Rasa";
-  const storeWa = settings?.whatsappNumber?.replace(/[^0-9]/g, "") || "6281234567890";
+  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
+  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-16">
@@ -36,12 +38,12 @@ export default function ContactPage() {
               <h3 className="font-heading font-bold text-stone-900 text-base">WhatsApp Resmi</h3>
               <p className="text-xs text-stone-500 mt-0.5">Respon cepat selama jam kerja</p>
               <a
-                href={`https://wa.me/${storeWa}`}
+                href={`https://wa.me/${waLinkNum}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-bold text-emerald-700 hover:underline mt-2 inline-block"
               >
-                +{settings?.whatsappNumber || "6281234567890"}
+                {waDisplayNum}
               </a>
             </div>
           </div>
@@ -71,7 +73,8 @@ export default function ContactPage() {
               <h3 className="font-heading font-bold text-stone-900 text-base">Jam Operasional</h3>
               <p className="text-xs text-stone-500 mt-0.5">Jadwal produksi & pengantaran</p>
               <p className="text-sm text-stone-800 font-medium mt-2">
-                {settings?.operationalHours || "Senin - Sabtu: 08:00 - 18:00 WIB"}
+                <span className="block">Senin – Sabtu: 05.00 – 22.00 WIB</span>
+                <span className="block text-amber-800 font-semibold text-xs mt-0.5">Hari Minggu: Tutup</span>
               </p>
             </div>
           </div>
@@ -92,7 +95,7 @@ export default function ContactPage() {
 
             <div className="pt-4">
               <a
-                href={`https://wa.me/${storeWa}?text=${encodeURIComponent(
+                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(
                   `Halo ${brandName}, saya ingin konsultasi pemesanan kue / snack box untuk acara.`
                 )}`}
                 target="_blank"

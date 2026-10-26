@@ -22,7 +22,9 @@ export default function AboutPage() {
   const aboutSec = sections.find((s) => s.sectionKey === "about");
   const brandName = settings?.brandName || "Dapur Rasa";
   const address = settings?.address || "Perum Griya Cileungsi 5, Cileungsi, Bogor, Jawa Barat";
-  const whatsappNumber = settings?.whatsappNumber || "085888159765";
+  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
+  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-16 space-y-16">
@@ -95,7 +97,7 @@ export default function AboutPage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a
-              href={`https://wa.me/6285888159765?text=${encodeURIComponent(
+              href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(
                 "Halo Dapur Rasa, saya ingin konsultasi pemesanan kue / snack box."
               )}`}
               target="_blank"
@@ -103,7 +105,7 @@ export default function AboutPage() {
               className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm transition-all"
             >
               <Phone className="w-4 h-4" />
-              <span>Konsultasi WA (085888159765)</span>
+              <span>Konsultasi WA ({waDisplayNum})</span>
             </a>
           </div>
         </div>
@@ -188,9 +190,9 @@ export default function AboutPage() {
             <span className="text-xs font-bold text-amber-300 uppercase tracking-wider block">
               Jam Operasional
             </span>
-            <p className="font-bold text-base sm:text-lg">Senin - Sabtu: 07:00 - 18:00 WIB</p>
-            <p className="text-xs text-purple-200">
-              Hari Minggu melayani pesanan khusus partai/acara
+            <p className="font-bold text-base sm:text-lg">Senin – Sabtu: 05.00 – 22.00 WIB</p>
+            <p className="text-xs text-amber-300 font-semibold">
+              Hari Minggu: Tutup
             </p>
           </div>
 
@@ -199,13 +201,13 @@ export default function AboutPage() {
               Kontak & Pemesanan
             </span>
             <a
-              href={`https://wa.me/6285888159765`}
+              href={`https://wa.me/${waLinkNum}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs shadow-md transition"
             >
               <Phone className="w-4 h-4" />
-              <span>WhatsApp: 085888159765</span>
+              <span>WhatsApp: {waDisplayNum}</span>
             </a>
           </div>
         </div>

@@ -185,7 +185,7 @@ export default function AdminNavigationPage() {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Jl. Mawar Melati No. 12, Jakarta"
+                  placeholder="Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
                   className="w-full px-3 py-2 rounded-xl border border-stone-300"
                 />
               </div>
@@ -196,7 +196,7 @@ export default function AdminNavigationPage() {
                   type="text"
                   value={operationalHours}
                   onChange={(e) => setOperationalHours(e.target.value)}
-                  placeholder="Senin - Sabtu: 08:00 - 18:00 WIB"
+                  placeholder="Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)"
                   className="w-full px-3 py-2 rounded-xl border border-stone-300"
                 />
               </div>

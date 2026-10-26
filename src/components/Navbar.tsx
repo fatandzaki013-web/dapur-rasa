@@ -63,7 +63,9 @@ export default function Navbar() {
   }
 
   const brandName = settings?.brandName || "Dapur Rasa";
-  const whatsappNum = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
+  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -407,7 +409,7 @@ export default function Navbar() {
               {/* Chat WhatsApp & Admin Login Link */}
               <div className="pt-2 border-t border-gray-100 space-y-2">
                 <a
-                  href={`https://wa.me/${whatsappNum}?text=${encodeURIComponent(
+                  href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(
                     "Halo Dapur Rasa, saya ingin konsultasi / pesan kue..."
                   )}`}
                   target="_blank"

@@ -845,6 +845,10 @@ export default function HomePage() {
           <div className="space-y-3">
             {[
               {
+                q: "Kapan jam operasional buka dan jadwal pelayanan Dapur Rasa?",
+                a: "Dapur Rasa melayani pemesanan setiap hari Senin sampai Sabtu, pukul 05.00 – 22.00 WIB. Khusus hari Minggu toko kami tutup. Untuk pertanyaan, konsultasi menu acara, atau pesanan langsung, Anda dapat menghubungi WhatsApp kami di 085888159765."
+              },
+              {
                 q: "Bagaimana cara melakukan pemesanan kue di website Dapur Rasa?",
                 a: "Sangat mudah! Pilih aneka kue favorit Anda dari katalog produk, tentukan jumlahnya, lalu klik Tambah ke Keranjang. Pada halaman Checkout, cantumkan nama, nomor WhatsApp, serta pilihan diambil langsung di dapur atau diantar ke rumah. Pesanan Anda akan langsung terhubung ke WhatsApp resmi toko kami untuk konfirmasi ketersediaan."
               },

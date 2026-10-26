@@ -33,7 +33,9 @@ export default function Footer() {
 
   const brandName = settings?.brandName || "Dapur Rasa";
   const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat";
-  const whatsappNum = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
+  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-8 mt-auto w-full max-w-full overflow-hidden">
@@ -150,7 +152,7 @@ export default function Footer() {
                 <TikTokIcon className="w-4 h-4 fill-current" />
               </a>
               <a
-                href={`https://wa.me/${whatsappNum}`}
+                href={`https://wa.me/${waLinkNum}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
@@ -247,7 +249,8 @@ export default function Footer() {
                 <div>
                   <p className="font-bold text-slate-200">Jam Operasional</p>
                   <p className="leading-snug text-[11px] text-slate-400">
-                    {settings?.operationalHours || "Setiap Hari: 08:00 - 20:00 WIB"}
+                    <span className="block">Senin – Sabtu: 05.00 – 22.00 WIB</span>
+                    <span className="block text-amber-400 font-medium">Hari Minggu: Tutup</span>
                   </p>
                 </div>
               </div>
@@ -255,7 +258,7 @@ export default function Footer() {
 
             <div className="pt-1">
               <a
-                href={`https://wa.me/${whatsappNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin pesan kue...")}`}
+                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin pesan kue...")}`}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"

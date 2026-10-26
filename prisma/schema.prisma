@@ -159,9 +159,9 @@ model StoreSetting {
   tagline            String   @default("Kue & Camilan Rumahan Kualitas Premium")
   logoUrl            String?
   faviconUrl         String?
-  whatsappNumber     String   @default("6281234567890")
+  whatsappNumber     String   @default("6285888159765")
   address            String?  @default("Jl. Mawar Melati No. 12, Jakarta")
-  operationalHours   String   @default("Senin - Sabtu: 08:00 - 18:00 WIB")
+  operationalHours   String   @default("Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)")
   fulfillmentOptions String   @default("PICKUP,DELIVERY")
   defaultShippingFee Float    @default(15000)
   minOrderAmount     Float    @default(0)

@@ -33,7 +33,7 @@ export default function AdminSettingsPage() {
     "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
   );
   const [operationalHours, setOperationalHours] = useState(
-    "Setiap Hari: 07:00 - 20:00 WIB"
+    "Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)"
   );
   const [defaultShippingFee, setDefaultShippingFee] = useState<number | string>(0);
   const [minOrderAmount, setMinOrderAmount] = useState<number | string>(0);
@@ -80,7 +80,7 @@ export default function AdminSettingsPage() {
             "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
         );
         setOperationalHours(
-          sData.settings.operationalHours || "Setiap Hari: 07:00 - 20:00 WIB"
+          sData.settings.operationalHours || "Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)"
         );
         setDefaultShippingFee(sData.settings.defaultShippingFee ?? 0);
         setMinOrderAmount(sData.settings.minOrderAmount ?? 0);
@@ -416,7 +416,7 @@ export default function AdminSettingsPage() {
                   type="text"
                   value={operationalHours}
                   onChange={(e) => setOperationalHours(e.target.value)}
-                  placeholder="Setiap Hari: 07:00 - 20:00 WIB"
+                  placeholder="Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
               </div>

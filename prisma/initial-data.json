@@ -1014,13 +1014,13 @@
   "StoreSetting": [
     {
       "id": "default",
-      "brandName": "Warung Mama Fatan",
+      "brandName": "Dapur Rasa",
       "tagline": "Kue & Camilan Rumahan Fresh — Melayani Pesanan Satuan & Paket Box",
       "logoUrl": "",
       "faviconUrl": "",
       "whatsappNumber": "6285888159765",
       "address": "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Bogor, Jawa Barat",
-      "operationalHours": "Senin - Sabtu: 07:00 - 18:00 WIB (Minggu Melayani Pesanan Khusus Acara)",
+      "operationalHours": "Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)",
       "fulfillmentOptions": "PICKUP,DELIVERY",
       "defaultShippingFee": 1000,
       "minOrderAmount": 20000,
@@ -1029,7 +1029,7 @@
       "instagramUrl": "https://instagram.com",
       "facebookUrl": "https://facebook.com",
       "tiktokUrl": "https://tiktok.com",
-      "metaTitle": "Warung Mama Fatan — Aneka Kue & Camilan Rumahan Lezat",
+      "metaTitle": "Dapur Rasa — Aneka Kue & Camilan Rumahan Lezat",
       "metaDescription": "Pesan aneka pastel crispy, risol mayo lumer, kue basah tradisional, brownies, dan paket snack box partai besar (>50 box) di Perum Griya Cileungsi 5.",
       "createdAt": 1792652254665,
       "updatedAt": "2026-10-24T01:57:41.492Z"
@@ -1243,7 +1243,7 @@
       "imageUrl": null,
       "mobileImageUrl": null,
       "buttonText": "Chat Kami di WhatsApp",
-      "buttonLink": "https://wa.me/6281234567890",
+      "buttonLink": "https://wa.me/6285888159765",
       "secondaryButtonText": null,
       "secondaryButtonLink": null,
       "badgeText": null,
