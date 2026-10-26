@@ -92,7 +92,7 @@ export default async function RootLayout({
             <CartProvider>
               <DynamicTheme />
               <Navbar />
-              <div className="flex-1 flex flex-col bg-theme-bg" style={{ backgroundColor: bg }}>{children}</div>
+              <div className="flex-1 flex flex-col bg-theme-bg w-full max-w-full min-w-0 overflow-x-clip" style={{ backgroundColor: bg }}>{children}</div>
               <Footer />
               <CartDrawer />
               <WishlistDrawer />
