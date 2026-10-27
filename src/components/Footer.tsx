@@ -12,7 +12,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Truck,
-  Sparkles,
+  Flame,
   Wallet,
 } from "lucide-react";
 import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
@@ -26,72 +26,76 @@ export default function Footer() {
     setCurrentYear(new Date().getFullYear());
   }, []);
 
-  // Hide footer inside admin dashboard
+  // Sembunyikan footer saat berada di halaman admin
   if (pathname.startsWith("/admin")) {
     return null;
   }
 
   const brandName = settings?.brandName || "Dapur Rasa";
-  const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat";
+  const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Bogor, Jawa Barat";
   const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
   const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
   const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
-    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-8 mt-auto w-full max-w-full overflow-hidden">
-      {/* Top Value Badges Bar (Kompak & Rapi di Mobile 2x2, Desktop 4 Kolom) */}
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-8 mt-auto w-full max-w-full overflow-hidden font-sans">
+      {/* ============================================================== */}
+      {/* 1. TOP VALUE BADGES (Kompak & Rapi 2x2 di HP, 4 Kolom di PC)    */}
+      {/* ============================================================== */}
       <div className="mx-auto max-w-7xl px-3 sm:px-6 pb-6 sm:pb-10 border-b border-slate-800/80">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
-          {/* Badge 1 */}
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-900/60 border border-slate-800/80 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-950/60 text-purple-400 flex items-center justify-center shrink-0 border border-purple-800/40">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          {/* Badge 1: 100% Halal */}
+          <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/70 border border-slate-800/80 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-950/70 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-800/50">
               <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
             </div>
             <div className="min-w-0">
               <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">100% Halal &amp; Higienis</h4>
-              <p className="text-[9px] sm:text-[10.5px] text-slate-400 truncate">Bahan segar bermutu</p>
+              <p className="text-[9.5px] sm:text-[11px] text-slate-400 truncate">Bahan alami bermutu</p>
             </div>
           </div>
 
-          {/* Badge 2 */}
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-900/60 border border-slate-800/80 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-emerald-950/60 text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-800/40">
-              <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400" />
+          {/* Badge 2: Pengantaran Griya Cileungsi 5 */}
+          <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/70 border border-slate-800/80 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-950/70 text-purple-400 flex items-center justify-center shrink-0 border border-purple-800/50">
+              <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[11px] sm:text-xs font-bold text-white leading-tight">Free Ongkir Griya Cileungsi 5</h4>
-              <p className="text-[9px] sm:text-[10.5px] text-slate-400 leading-tight">Diantar hangat ke rumah</p>
+              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Antar Griya Cileungsi 5</h4>
+              <p className="text-[9.5px] sm:text-[11px] text-slate-400 truncate">Diantar atau ambil di dapur</p>
             </div>
           </div>
 
-          {/* Badge 3 */}
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-900/60 border border-slate-800/80 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-950/60 text-amber-400 flex items-center justify-center shrink-0 border border-amber-800/40">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
+          {/* Badge 3: Fresh Setiap Hari (Logo Flame Baru) */}
+          <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/70 border border-slate-800/80 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-amber-950/70 text-amber-400 flex items-center justify-center shrink-0 border border-amber-800/50">
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Fresh Tiap Hari</h4>
-              <p className="text-[9px] sm:text-[10.5px] text-slate-400 truncate">Resep rumahan lezat</p>
+              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Fresh Setiap Hari</h4>
+              <p className="text-[9.5px] sm:text-[11px] text-slate-400 truncate">Hangat baru matang</p>
             </div>
           </div>
 
-          {/* Badge 4 */}
-          <div className="flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-slate-900/60 border border-slate-800/80 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-950/60 text-blue-400 flex items-center justify-center shrink-0 border border-blue-800/40">
+          {/* Badge 4: Pembayaran Fleksibel */}
+          <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/70 border border-slate-800/80 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-blue-950/70 text-blue-400 flex items-center justify-center shrink-0 border border-blue-800/50">
               <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
             </div>
             <div className="min-w-0">
-              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Bisa Bayar COD</h4>
-              <p className="text-[9px] sm:text-[10.5px] text-slate-400 truncate">Bayar tunai di tempat</p>
+              <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">COD, QRIS &amp; Transfer</h4>
+              <p className="text-[9.5px] sm:text-[11px] text-slate-400 truncate">Bisa bayar di tempat</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Responsive Footer */}
+      {/* ============================================================== */}
+      {/* 2. MAIN FOOTER CONTENT (3 Kolom Seimbang di PC, Stack Rapi di HP) */}
+      {/* ============================================================== */}
       <div className="mx-auto max-w-7xl px-3 sm:px-6 py-8 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          {/* Kolom 1: Brand & Socials (md:col-span-4) */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10">
+          {/* Kolom 1: Profil Toko & Sosial Media (md:col-span-4) */}
           <div className="md:col-span-4 space-y-3.5">
             <div className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center p-1 shadow-md shrink-0">
@@ -99,7 +103,7 @@ export default function Footer() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={settings.logoUrl}
-                    alt="Logo"
+                    alt={brandName}
                     className="w-full h-full object-contain"
                   />
                 ) : (
@@ -119,17 +123,28 @@ export default function Footer() {
             </div>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
-              Dapur spesialis aneka pastel crispy, risol mayo lumer, kue basah, brownies panggang, dan pesanan snack box higienis untuk keluarga &amp; acara Anda.
+              Spesialis pastel crispy renyah, risol mayo lumer, aneka kue basah tradisional, brownies panggang, dan paket snack box higienis untuk keluarga &amp; acara Anda.
             </p>
 
-            {/* Social Icons */}
-            <div className="flex items-center gap-2 pt-0.5">
+            {/* Social Icons Media */}
+            <div className="flex items-center gap-2 pt-1">
+              <a
+                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin bertanya tentang pesanan kue...")}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
+                aria-label="WhatsApp"
+                title="WhatsApp Resmi"
+              >
+                <WhatsAppIcon className="w-4 h-4 fill-current" />
+              </a>
               <a
                 href={settings?.instagramUrl || "https://instagram.com"}
                 target="_blank"
                 rel="noreferrer"
                 className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
                 aria-label="Instagram"
+                title="Instagram"
               >
                 <InstagramIcon className="w-4 h-4 fill-current" />
               </a>
@@ -137,8 +152,9 @@ export default function Footer() {
                 href={settings?.facebookUrl || "https://facebook.com"}
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
+                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-blue-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
                 aria-label="Facebook"
+                title="Facebook"
               >
                 <FacebookIcon className="w-4 h-4 fill-current" />
               </a>
@@ -146,28 +162,20 @@ export default function Footer() {
                 href={settings?.tiktokUrl || "https://tiktok.com"}
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
+                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-pink-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
                 aria-label="TikTok"
+                title="TikTok"
               >
                 <TikTokIcon className="w-4 h-4 fill-current" />
-              </a>
-              <a
-                href={`https://wa.me/${waLinkNum}`}
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
-                aria-label="WhatsApp"
-              >
-                <WhatsAppIcon className="w-4 h-4 fill-current" />
               </a>
             </div>
           </div>
 
-          {/* Kolom 2: Navigasi Menu & Info (md:col-span-4, 2 sub-kolom di mobile) */}
+          {/* Kolom 2: Navigasi Menu & Informasi (md:col-span-4, 2 sub-kolom di mobile) */}
           <div className="md:col-span-4 grid grid-cols-2 gap-4">
             <div className="space-y-2.5">
               <h4 className="text-white font-bold text-xs tracking-wider uppercase border-b border-slate-800/80 pb-1.5">
-                Pilihan Menu
+                Koleksi Menu
               </h4>
               <ul className="space-y-1.5 text-xs text-slate-400">
                 <li>
@@ -185,13 +193,19 @@ export default function Footer() {
                 <li>
                   <Link href="/produk?category=risol" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Risol Mayo</span>
+                    <span className="truncate">Risol Mayo Lumer</span>
                   </Link>
                 </li>
                 <li>
                   <Link href="/produk?category=frozen-food" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
                     <span className="truncate">Frozen Food</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/produk?category=snack-box" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+                    <span className="truncate">Paket Snack Box</span>
                   </Link>
                 </li>
               </ul>
@@ -211,13 +225,19 @@ export default function Footer() {
                 <li>
                   <Link href="/galeri" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Galeri Foto</span>
+                    <span className="truncate">Galeri Foto Kue</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/tentang-kami" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+                    <span className="truncate">Tentang Kami</span>
                   </Link>
                 </li>
                 <li>
                   <Link href="/kontak" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Kontak Kami</span>
+                    <span className="truncate">Kontak Dapur</span>
                   </Link>
                 </li>
                 <li>
@@ -233,45 +253,54 @@ export default function Footer() {
           {/* Kolom 3: Dapur & Chat WhatsApp (md:col-span-4) */}
           <div className="md:col-span-4 space-y-3">
             <h4 className="text-white font-bold text-xs tracking-wider uppercase border-b border-slate-800/80 pb-1.5">
-              Lokasi &amp; Pemesanan
+              Lokasi Dapur &amp; Pemesanan
             </h4>
-            <div className="space-y-2 text-xs text-slate-400">
+            <div className="space-y-2.5 text-xs text-slate-400">
               <div className="flex items-start gap-2">
                 <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-slate-200">Alamat Dapur</p>
-                  <p className="leading-snug text-[11px] text-slate-400">{address}</p>
+                  <p className="leading-snug text-[11px] text-slate-400 mt-0.5">{address}</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2">
                 <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-slate-200">Jam Operasional</p>
-                  <p className="leading-snug text-[11px] text-slate-400">
-                    <span className="block">Senin – Sabtu: 05.00 – 22.00 WIB</span>
-                    <span className="block text-amber-400 font-medium">Hari Minggu: Tutup</span>
+                  <p className="font-bold text-slate-200">Jam Operasional Toko</p>
+                  <p className="leading-snug text-[11px] text-slate-400 mt-0.5">
+                    <span className="block font-medium text-slate-300">Senin – Sabtu: 05.00 – 22.00 WIB</span>
+                    <span className="block text-amber-400 font-semibold">Hari Minggu: Tutup</span>
                   </p>
                 </div>
               </div>
+
+              <div className="flex items-center gap-2 pt-0.5">
+                <PhoneCall className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span className="text-[11px] text-slate-300 font-mono font-bold">
+                  {waDisplayNum}
+                </span>
+              </div>
             </div>
 
-            <div className="pt-1">
+            <div className="pt-2">
               <a
                 href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin pesan kue...")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+                className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
-                <span>Chat Pesan Langsung ke WhatsApp</span>
+                <span>Pesan Cepat via WhatsApp</span>
               </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar: Copyright & Policy (Tanpa Overflow Horizontal) */}
+      {/* ============================================================== */}
+      {/* 3. BOTTOM BAR (Copyright & Kebijakan Rapi Tanpa Overflow)       */}
+      {/* ============================================================== */}
       <div className="mx-auto max-w-7xl px-3 sm:px-6 border-t border-slate-900 pt-5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2.5 text-center sm:text-left">
         <p>
           &copy; {currentYear} <strong>{brandName}</strong>. Seluruh Hak Cipta Dilindungi.

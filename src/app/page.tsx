@@ -14,6 +14,7 @@ import {
   CheckCircle,
   MapPin,
   ShieldCheck,
+  Award,
   Sparkles,
   PackageCheck,
   ShoppingBag,
@@ -402,7 +403,7 @@ export default function HomePage() {
             {/* Fitur 3: Kualitas & Harga Terbaik */}
             <div className="bg-amber-50/70 border border-amber-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
               <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
-                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
+                <Award className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
               </div>
               <div className="space-y-0.5 sm:space-y-1">
                 <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
