@@ -12,9 +12,7 @@ import {
   Search,
   Menu,
   X,
-  LayoutDashboard,
   UtensilsCrossed,
-  Lock,
   Phone,
   Home,
   Cake,
@@ -178,15 +176,7 @@ export default function Navbar() {
 
             {/* Right Action Icons */}
             <div className="flex items-center gap-1 sm:gap-1.5">
-              {/* Dashboard Button (Desktop) */}
-              <Link
-                href="/admin/login"
-                className="hidden sm:flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#4A0E4E]/10 w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#4A0E4E]"
-                title="Dashboard Admin (Login)"
-              >
-                <LayoutDashboard className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
-              </Link>
-
+              
               {/* Wishlist Button */}
               <button
                 type="button"
@@ -420,15 +410,7 @@ export default function Navbar() {
                   <span>Chat Langsung ke WhatsApp Dapur</span>
                 </a>
 
-                <Link
-                  href="/admin/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-600 font-bold text-[11px] hover:bg-gray-100 transition-colors"
-                >
-                  <Lock className="w-3.5 h-3.5 text-gray-500" />
-                  <span>Portal Dashboard Admin Toko</span>
-                </Link>
-              </div>
+                              </div>
             </div>
           </div>
         </div>

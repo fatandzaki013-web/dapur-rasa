@@ -15,7 +15,7 @@ import {
   Flame,
   Wallet,
 } from "lucide-react";
-import { InstagramIcon, FacebookIcon, TikTokIcon, WhatsAppIcon } from "@/components/SocialIcons";
+import { WhatsAppIcon } from "@/components/SocialIcons";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -126,47 +126,18 @@ export default function Footer() {
               Spesialis pastel crispy renyah, risol mayo lumer, aneka kue basah tradisional, brownies panggang, dan paket snack box higienis untuk keluarga &amp; acara Anda.
             </p>
 
-            {/* Social Icons Media */}
-            <div className="flex items-center gap-2 pt-1">
+            {/* Tombol WhatsApp Resmi Toko */}
+            <div className="pt-1">
               <a
                 href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin bertanya tentang pesanan kue...")}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
-                aria-label="WhatsApp"
-                title="WhatsApp Resmi"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 transition-all shadow-xs text-xs font-semibold"
+                aria-label="WhatsApp Resmi"
+                title="WhatsApp Resmi Toko"
               >
-                <WhatsAppIcon className="w-4 h-4 fill-current" />
-              </a>
-              <a
-                href={settings?.instagramUrl || "https://instagram.com"}
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-[#4A0E4E] hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
-                aria-label="Instagram"
-                title="Instagram"
-              >
-                <InstagramIcon className="w-4 h-4 fill-current" />
-              </a>
-              <a
-                href={settings?.facebookUrl || "https://facebook.com"}
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-blue-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
-                aria-label="Facebook"
-                title="Facebook"
-              >
-                <FacebookIcon className="w-4 h-4 fill-current" />
-              </a>
-              <a
-                href={settings?.tiktokUrl || "https://tiktok.com"}
-                target="_blank"
-                rel="noreferrer"
-                className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 hover:bg-pink-600 hover:text-white flex items-center justify-center text-slate-400 transition-all shadow-xs"
-                aria-label="TikTok"
-                title="TikTok"
-              >
-                <TikTokIcon className="w-4 h-4 fill-current" />
+                <WhatsAppIcon className="w-4 h-4 fill-current text-emerald-400" />
+                <span>Chat WhatsApp Toko</span>
               </a>
             </div>
           </div>
@@ -241,9 +212,9 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin/login" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <Link href="/artikel" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Admin Portal</span>
+                    <span className="truncate">Artikel Kuliner</span>
                   </Link>
                 </li>
               </ul>
