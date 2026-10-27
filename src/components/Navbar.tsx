@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
@@ -34,6 +34,39 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+
+  // Secret 5-click easter egg to open admin login
+  const secretClickCountRef = useRef(0);
+  const secretResetTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (secretResetTimerRef.current) {
+        clearTimeout(secretResetTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleBrandLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (secretResetTimerRef.current) {
+      clearTimeout(secretResetTimerRef.current);
+    }
+
+    secretClickCountRef.current += 1;
+
+    if (secretClickCountRef.current >= 5) {
+      e.preventDefault();
+      secretClickCountRef.current = 0;
+      router.push("/admin/login");
+      return;
+    }
+
+    secretResetTimerRef.current = setTimeout(() => {
+      secretClickCountRef.current = 0;
+    }, 2500);
+  };
+
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,7 +140,11 @@ export default function Navbar() {
             }`}
           >
             {/* Brand Logo & Name */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0 group">
+            <Link
+              href="/"
+              onClick={handleBrandLogoClick}
+              className="flex items-center gap-2 sm:gap-2.5 shrink-0 group"
+            >
               {settings?.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
