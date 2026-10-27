@@ -125,7 +125,7 @@ export default function AdminLoginModal({
                   autoFocus
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder=""
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium"
                 />
               </div>
