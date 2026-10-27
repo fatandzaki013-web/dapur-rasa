@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ShoppingBag,
@@ -11,6 +11,16 @@ import {
   AlertCircle,
   X,
   ExternalLink,
+  Printer,
+  Download,
+  Bell,
+  BellOff,
+  Copy,
+  Check,
+  UtensilsCrossed,
+  Truck,
+  Store,
+  RefreshCw,
 } from "lucide-react";
 
 interface OrderItem {
@@ -50,9 +60,14 @@ function AdminOrdersContent() {
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [statusFilter, setStatusFilter] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Audio Notifikasi Pesanan Baru
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const previousOrdersCountRef = useRef<number | null>(null);
 
   // Modal Detail
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -62,7 +77,71 @@ function AdminOrdersContent() {
   const [reduceStockOnConfirm, setReduceStockOnConfirm] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const fetchOrders = async () => {
+  // Modal Cetak Struk
+  const [printingOrder, setPrintingOrder] = useState<Order | null>(null);
+  const [isCopiedReceipt, setIsCopiedReceipt] = useState(false);
+
+  // Inisialisasi pengaturan suara dari localStorage
+  useEffect(() => {
+    try {
+      const savedSound = localStorage.getItem("dr_admin_sound_enabled");
+      if (savedSound !== null) {
+        setSoundEnabled(savedSound === "true");
+      }
+    } catch (e) {}
+  }, []);
+
+  const playChime = () => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+
+      // Nada 1: D5 (587.33Hz)
+      const osc1 = ctx.createOscillator();
+      const gain1 = ctx.createGain();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(587.33, now);
+      gain1.gain.setValueAtTime(0.25, now);
+      gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc1.connect(gain1);
+      gain1.connect(ctx.destination);
+      osc1.start(now);
+      osc1.stop(now + 0.3);
+
+      // Nada 2: A5 (880Hz)
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(880, now + 0.15);
+      gain2.gain.setValueAtTime(0.25, now + 0.15);
+      gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start(now + 0.15);
+      osc2.stop(now + 0.55);
+    } catch (e) {
+      // Audio fallback jika dibatasi browser
+    }
+  };
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    try {
+      localStorage.setItem("dr_admin_sound_enabled", String(next));
+    } catch (e) {}
+    if (next) {
+      playChime();
+      showToast("Suara notifikasi pesanan baru diaktifkan 🔔");
+    } else {
+      showToast("Suara notifikasi pesanan dinonaktifkan 🔕");
+    }
+  };
+
+  const fetchOrders = async (isBackground = false) => {
+    if (!isBackground) setIsRefreshing(true);
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.set("status", statusFilter);
@@ -70,11 +149,25 @@ function AdminOrdersContent() {
 
       const res = await fetch(`/api/admin/orders?${params.toString()}`);
       const data = await res.json();
-      if (data.orders) setOrders(data.orders);
+      if (data.orders) {
+        // Deteksi apakah ada pesanan baru bertambah
+        if (previousOrdersCountRef.current !== null && data.orders.length > previousOrdersCountRef.current) {
+          const newOrders = data.orders.filter(
+            (o: Order) => o.status === "MENUNGGU_KONFIRMASI"
+          );
+          if (newOrders.length > 0) {
+            if (soundEnabled) playChime();
+            showToast(`🔔 Ada ${newOrders.length} pesanan baru menunggu konfirmasi dapur!`);
+          }
+        }
+        previousOrdersCountRef.current = data.orders.length;
+        setOrders(data.orders);
+      }
     } catch (e) {
       console.error(e);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -83,6 +176,14 @@ function AdminOrdersContent() {
     fetchOrders().finally(() => clearTimeout(timer));
     return () => clearTimeout(timer);
   }, [statusFilter, searchTerm]);
+
+  // Real-time auto-polling setiap 20 detik untuk mendeteksi order baru
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchOrders(true);
+    }, 20000);
+    return () => clearInterval(interval);
+  }, [statusFilter, searchTerm, soundEnabled]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -144,6 +245,111 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, "_blank");
   };
 
+  // Ekspor Laporan Pesanan ke CSV / Excel
+  const handleExportCSV = () => {
+    if (orders.length === 0) {
+      alert("Tidak ada data pesanan untuk diekspor.");
+      return;
+    }
+
+    const headers = [
+      "No. Pesanan",
+      "Tanggal Pesanan",
+      "Jam",
+      "Nama Pelanggan",
+      "Nomor WhatsApp",
+      "Metode Pengiriman",
+      "Alamat Pengantaran",
+      "Rincian Item Kue",
+      "Catatan Pelanggan",
+      "Metode Pembayaran",
+      "Status Pesanan",
+      "Status Pembayaran",
+      "Subtotal (Rp)",
+      "Ongkir (Rp)",
+      "Total Tagihan (Rp)",
+    ];
+
+    const rows = orders.map((o) => {
+      const d = new Date(o.createdAt);
+      const dateStr = d.toLocaleDateString("id-ID");
+      const timeStr = d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+      const itemsSummary = o.items
+        .map((it) => `${it.productName}${it.variantName ? ` (${it.variantName})` : ""} x${it.quantity}`)
+        .join("; ");
+      const fulfillment = o.fulfillmentType === "DELIVERY" ? "Pengantaran Griya Cileungsi 5" : "Ambil di Toko";
+
+      return [
+        `"${o.orderCode}"`,
+        `"${dateStr}"`,
+        `"${timeStr}"`,
+        `"${(o.customerName || "").replace(/"/g, '""')}"`,
+        `"'${o.customerPhone}"`, // prepend ' so Excel preserves leading zero
+        `"${fulfillment}"`,
+        `"${(o.deliveryAddress || "-").replace(/"/g, '""')}"`,
+        `"${itemsSummary.replace(/"/g, '""')}"`,
+        `"${(o.notes || "-").replace(/"/g, '""')}"`,
+        `"${(o.paymentMethod || "COD").replace(/"/g, '""')}"`,
+        `"${o.status}"`,
+        `"${o.paymentStatus}"`,
+        o.subtotal,
+        o.shippingFee,
+        o.totalAmount,
+      ].join(",");
+    });
+
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const today = new Date().toISOString().slice(0, 10);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Laporan-Pesanan-Dapur-Rasa-${today}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("Laporan pesanan berhasil diekspor ke format CSV / Excel!");
+  };
+
+  const handleCopyReceipt = (ord: Order) => {
+    const itemsList = ord.items
+      .map(
+        (it) =>
+          `• ${it.productName}${it.variantName ? ` (${it.variantName})` : ""} x ${it.quantity} = Rp ${(
+            it.unitPrice * it.quantity
+          ).toLocaleString("id-ID")}`
+      )
+      .join("\n");
+
+    const text = `====================================
+STRUK PESANAN - DAPUR RASA
+Perum Griya Cileungsi 5 Blok A8 No. 01
+WhatsApp: 085888159765
+====================================
+No. Pesanan   : ${ord.orderCode}
+Tanggal       : ${new Date(ord.createdAt).toLocaleString("id-ID")}
+Pelanggan     : ${ord.customerName} (${ord.customerPhone})
+Pengantaran   : ${ord.fulfillmentType === "DELIVERY" ? `Diantar ke ${ord.deliveryAddress || "-"}` : "Ambil Sendiri di Dapur"}
+Pembayaran    : ${ord.paymentMethod || "COD"} (${ord.paymentStatus})
+${ord.notes ? `Catatan       : ${ord.notes}\n` : ""}
+RINCIAN KUE:
+${itemsList}
+
+Subtotal      : Rp ${ord.subtotal.toLocaleString("id-ID")}
+Ongkos Kirim  : Rp ${ord.shippingFee.toLocaleString("id-ID")}
+TOTAL TAGIHAN : Rp ${ord.totalAmount.toLocaleString("id-ID")}
+====================================
+Terima kasih atas pesanannya!
+====================================`;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setIsCopiedReceipt(true);
+      setTimeout(() => setIsCopiedReceipt(false), 2000);
+    }
+  };
+
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -156,20 +362,20 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "MENUNGGU_KONFIRMASI":
-        return <span className="px-2.5 py-1 rounded bg-amber-100 text-amber-900 text-[11px] font-bold">Menunggu Konfirmasi</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold">Menunggu Konfirmasi</span>;
       case "DIKONFIRMASI":
-        return <span className="px-2.5 py-1 rounded bg-blue-100 text-blue-900 text-[11px] font-bold">Dikonfirmasi</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-900 text-[11px] font-bold">Dikonfirmasi</span>;
       case "SEDANG_DIPROSES":
-        return <span className="px-2.5 py-1 rounded bg-purple-100 text-purple-900 text-[11px] font-bold">Sedang Diproses</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-purple-100 text-purple-900 text-[11px] font-bold">Sedang Diproses</span>;
       case "SIAP_DIAMBIL":
       case "SIAP_DIKIRIM":
-        return <span className="px-2.5 py-1 rounded bg-teal-100 text-teal-900 text-[11px] font-bold">Siap Antar/Ambil</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-teal-100 text-teal-900 text-[11px] font-bold">Siap Antar/Ambil</span>;
       case "SELESAI":
-        return <span className="px-2.5 py-1 rounded bg-emerald-100 text-emerald-900 text-[11px] font-bold">Selesai</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-bold">Selesai</span>;
       case "DIBATALKAN":
-        return <span className="px-2.5 py-1 rounded bg-red-100 text-red-900 text-[11px] font-bold">Dibatalkan</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-red-100 text-red-900 text-[11px] font-bold">Dibatalkan</span>;
       default:
-        return <span className="px-2.5 py-1 rounded bg-stone-100 text-stone-700 text-[11px]">{status}</span>;
+        return <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 text-[11px]">{status}</span>;
     }
   };
 
@@ -193,14 +399,60 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
         </div>
       )}
 
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-stone-900 font-heading">
-          Manajemen Pesanan Masuk
-        </h1>
-        <p className="text-xs text-stone-500 mt-0.5">
-          Pantau seluruh pesanan pelanggan, ubah status dapur, dan hubungi pelanggan langsung via WhatsApp.
-        </p>
+      {/* Header dengan Aksi Operasional: Suara & Ekspor CSV */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-stone-900 font-heading">
+            Manajemen Pesanan Masuk
+          </h1>
+          <p className="text-xs text-stone-500 mt-0.5">
+            Pantau pesanan dapur secara real-time, cetak struk pesanan, dan ekspor laporan transaksi penjualan.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Tombol Toggle Suara Notifikasi */}
+          <button
+            onClick={toggleSound}
+            className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shadow-2xs cursor-pointer ${
+              soundEnabled
+                ? "bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100"
+                : "bg-stone-100 border-stone-200 text-stone-500 hover:bg-stone-200"
+            }`}
+            title={soundEnabled ? "Klik untuk mematikan suara pesanan" : "Klik untuk membunyikan alarm pesanan"}
+          >
+            {soundEnabled ? (
+              <>
+                <Bell className="w-3.5 h-3.5 text-amber-600" />
+                <span>Alarm Suara: Aktif</span>
+              </>
+            ) : (
+              <>
+                <BellOff className="w-3.5 h-3.5 text-stone-400" />
+                <span>Alarm Suara: Mati</span>
+              </>
+            )}
+          </button>
+
+          {/* Tombol Ekspor Laporan CSV */}
+          <button
+            onClick={handleExportCSV}
+            className="px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer active:scale-95"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Ekspor CSV / Excel</span>
+          </button>
+
+          {/* Tombol Refresh Manual */}
+          <button
+            onClick={() => fetchOrders()}
+            disabled={isRefreshing}
+            className="p-2 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 shadow-2xs transition cursor-pointer"
+            title="Muat ulang daftar pesanan"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-amber-600" : ""}`} />
+          </button>
+        </div>
       </div>
 
       {/* Filter Bar */}
@@ -213,7 +465,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari nomor pesanan, nama pelanggan, atau no. WA..."
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 text-xs"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-stone-300 text-xs focus:ring-1 focus:ring-amber-700 focus:outline-hidden"
             />
           </div>
         </div>
@@ -226,7 +478,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
               onClick={() => setStatusFilter(st.value)}
               className={`px-3 py-1.5 rounded-full font-semibold shrink-0 transition-all cursor-pointer ${
                 statusFilter === st.value
-                  ? "bg-amber-700 text-white"
+                  ? "bg-amber-700 text-white shadow-xs"
                   : "bg-stone-100 text-stone-600 hover:bg-stone-200"
               }`}
             >
@@ -236,7 +488,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table Pesanan */}
       <div className="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center text-xs text-stone-500">Memuat pesanan...</div>
@@ -250,7 +502,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                   <th className="py-3 px-4">No. Pesanan</th>
                   <th className="py-3 px-4">Tanggal Masuk</th>
                   <th className="py-3 px-4">Pelanggan</th>
-                  <th className="py-3 px-4">Metode</th>
+                  <th className="py-3 px-4">Metode &amp; Alamat</th>
                   <th className="py-3 px-4">Item Kue</th>
                   <th className="py-3 px-4">Total Tagihan</th>
                   <th className="py-3 px-4">Status Pesanan</th>
@@ -276,10 +528,18 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                       <div className="text-[11px] text-stone-500 font-mono">{ord.customerPhone}</div>
                     </td>
                     <td className="py-3 px-4 text-stone-600">
-                      <div className="font-semibold text-stone-900">
-                        {ord.fulfillmentType === "DELIVERY"
-                          ? "Pengantaran (Griya Cileungsi 5)"
-                          : "Ambil di Toko"}
+                      <div className="font-semibold text-stone-900 flex items-center gap-1">
+                        {ord.fulfillmentType === "DELIVERY" ? (
+                          <>
+                            <Truck className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Diantar (Griya Cileungsi 5)</span>
+                          </>
+                        ) : (
+                          <>
+                            <Store className="w-3.5 h-3.5 text-amber-700" />
+                            <span>Ambil di Toko</span>
+                          </>
+                        )}
                       </div>
                       {ord.deliveryAddress && (
                         <div className="text-[11px] text-stone-500 truncate max-w-[200px]" title={ord.deliveryAddress}>
@@ -291,24 +551,39 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                       </span>
                     </td>
                     <td className="py-3 px-4 text-stone-700">
-                      {ord.items.length} Macam Kue
+                      <span className="font-semibold">{ord.items.length} Macam Kue</span>
+                      <div className="text-[10px] text-stone-400 truncate max-w-[150px]">
+                        {ord.items.map((it) => it.productName).join(", ")}
+                      </div>
                     </td>
                     <td className="py-3 px-4 font-bold text-stone-900 font-heading">
                       {formatPrice(ord.totalAmount)}
                     </td>
                     <td className="py-3 px-4">{getStatusBadge(ord.status)}</td>
                     <td className="py-3 px-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {/* Tombol Cetak Struk Cepat */}
+                        <button
+                          onClick={() => setPrintingOrder(ord)}
+                          className="p-1.5 bg-purple-50 text-[#4A0E4E] hover:bg-purple-100 rounded-lg transition-colors cursor-pointer"
+                          title="Cetak Struk/Nota Pesanan"
+                        >
+                          <Printer className="w-3.5 h-3.5" />
+                        </button>
+
+                        {/* Tombol Chat WA Pelanggan */}
                         <button
                           onClick={() => handleChatCustomer(ord)}
-                          className="p-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors"
-                          title="Chat WA Pelanggan"
+                          className="p-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
+                          title="Hubungi via WhatsApp"
                         >
                           <Phone className="w-3.5 h-3.5" />
                         </button>
+
+                        {/* Tombol Detail & Status */}
                         <button
                           onClick={() => openDetailModal(ord)}
-                          className="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-lg transition-colors flex items-center gap-1"
+                          className="px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Detail</span>
@@ -323,21 +598,21 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
         )}
       </div>
 
-      {/* Modal Detail & Status Update */}
+      {/* MODAL 1: Detail & Status Update */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-stone-200 p-6 sm:p-8 space-y-6 text-xs">
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-stone-100">
               <div>
-                <span className="text-stone-400 font-mono text-[10px]">Detail Pesanan</span>
+                <span className="text-stone-400 font-mono text-[10px]">Detail Pesanan Masuk</span>
                 <h2 className="font-heading font-bold text-xl text-stone-900">
                   {selectedOrder.orderCode}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-1 text-stone-400 hover:text-stone-700 rounded-lg"
+                className="p-1 text-stone-400 hover:text-stone-700 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -440,7 +715,7 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
             {/* Status Update Form */}
             <form onSubmit={handleUpdateOrder} className="space-y-4 pt-2 border-t border-stone-100">
               <h3 className="font-bold text-stone-900 uppercase text-[11px]">
-                Perbarui Status Pesanan & Catatan Dapur:
+                Perbarui Status Pesanan &amp; Catatan Dapur:
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -500,28 +775,41 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
                 />
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row justify-between gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleChatCustomer(selectedOrder)}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center gap-2"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>Kirim Pesan Konfirmasi WA</span>
-                </button>
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleChatCustomer(selectedOrder)}
+                    className="flex-1 sm:flex-initial px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>Chat WA</span>
+                  </button>
 
-                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPrintingOrder(selectedOrder);
+                    }}
+                    className="flex-1 sm:flex-initial px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-[#4A0E4E] border border-purple-200 font-bold rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Printer className="w-4 h-4" />
+                    <span>Cetak Struk</span>
+                  </button>
+                </div>
+
+                <div className="flex gap-2 w-full sm:w-auto justify-end">
                   <button
                     type="button"
                     onClick={() => setSelectedOrder(null)}
-                    className="px-4 py-2 border rounded-xl"
+                    className="px-4 py-2 border rounded-xl hover:bg-stone-50 cursor-pointer"
                   >
                     Tutup
                   </button>
                   <button
                     type="submit"
                     disabled={isUpdating}
-                    className="px-5 py-2 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-xs"
+                    className="px-5 py-2 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl shadow-xs cursor-pointer active:scale-95"
                   >
                     {isUpdating ? "Menyimpan..." : "Simpan Status"}
                   </button>
@@ -531,6 +819,195 @@ Apakah ada rincian tambahan sebelum pesanan kami proses? Terima kasih.`;
           </div>
         </div>
       )}
+
+      {/* MODAL 2: CETAK STRUK / NOTA PESANAN (THERMAL & A4 READY) */}
+      {printingOrder && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto print:p-0 print:bg-white">
+          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-stone-200 overflow-hidden flex flex-col print:shadow-none print:border-none print:max-w-none print:w-full">
+            {/* Header Dialog (Tersembunyi saat diprint) */}
+            <div className="flex items-center justify-between p-4 border-b border-stone-100 bg-stone-50 print:hidden">
+              <div className="flex items-center gap-2 text-stone-800 font-bold text-xs">
+                <Printer className="w-4 h-4 text-amber-700" />
+                <span>Pratinjau Struk Dapur</span>
+              </div>
+              <button
+                onClick={() => setPrintingOrder(null)}
+                className="p-1 text-stone-400 hover:text-stone-700 rounded-lg cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* BADAN STRUK: Ukuran Standar Thermal Roll / Nota Kasir */}
+            <div
+              id="printable-order-receipt"
+              className="p-6 font-mono text-xs text-stone-900 space-y-4 bg-white print:p-0"
+            >
+              {/* Header Toko */}
+              <div className="text-center space-y-1 border-b border-dashed border-stone-300 pb-3">
+                <h2 className="text-base font-extrabold uppercase tracking-wider font-sans">
+                  DAPUR RASA
+                </h2>
+                <p className="text-[10px] text-stone-600 font-sans">
+                  Perum Griya Cileungsi 5 Blok A8 No. 01
+                </p>
+                <p className="text-[10px] text-stone-600">WhatsApp: 085888159765</p>
+              </div>
+
+              {/* Data No Pesanan & Waktu */}
+              <div className="border-b border-dashed border-stone-300 pb-2 text-[11px] space-y-0.5">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">No. Ref:</span>
+                  <span className="font-bold">{printingOrder.orderCode}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Waktu:</span>
+                  <span>{new Date(printingOrder.createdAt).toLocaleString("id-ID")}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Pemesan:</span>
+                  <span className="font-bold">{printingOrder.customerName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">No. WA:</span>
+                  <span>{printingOrder.customerPhone}</span>
+                </div>
+              </div>
+
+              {/* Pengiriman & Pembayaran */}
+              <div className="border-b border-dashed border-stone-300 pb-2 text-[11px] space-y-0.5">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Pengiriman:</span>
+                  <span className="font-bold">
+                    {printingOrder.fulfillmentType === "DELIVERY" ? "Diantar ke Rumah" : "Ambil Sendiri"}
+                  </span>
+                </div>
+                {printingOrder.deliveryAddress && (
+                  <div className="pt-0.5 text-stone-700">
+                    <span className="text-stone-500 text-[10px] block">Alamat Pengantaran:</span>
+                    <span className="font-bold">{printingOrder.deliveryAddress}</span>
+                  </div>
+                )}
+                <div className="flex justify-between pt-1">
+                  <span className="text-stone-500">Metode Bayar:</span>
+                  <span className="font-bold uppercase">{printingOrder.paymentMethod || "COD"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Status Bayar:</span>
+                  <span className="font-bold">{printingOrder.paymentStatus}</span>
+                </div>
+                {printingOrder.notes && (
+                  <div className="pt-1 text-stone-600 italic">
+                    Catatan: &ldquo;{printingOrder.notes}&rdquo;
+                  </div>
+                )}
+              </div>
+
+              {/* Item Belanja */}
+              <div className="border-b border-dashed border-stone-300 pb-3 space-y-1.5">
+                <div className="font-bold uppercase text-[10px] text-stone-500 pb-1">
+                  Daftar Pesanan:
+                </div>
+                {printingOrder.items.map((it, idx) => (
+                  <div key={idx} className="flex justify-between items-start text-[11px]">
+                    <div className="pr-2">
+                      <div className="font-bold">{it.productName}</div>
+                      {it.variantName && <div className="text-[10px] text-stone-500">{it.variantName}</div>}
+                      <div className="text-[10px] text-stone-500">
+                        {it.quantity} × Rp {it.unitPrice.toLocaleString("id-ID")}
+                      </div>
+                    </div>
+                    <div className="font-bold shrink-0">
+                      Rp {it.subtotal.toLocaleString("id-ID")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total & Ongkir */}
+              <div className="space-y-1 text-[11px]">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Subtotal:</span>
+                  <span>Rp {printingOrder.subtotal.toLocaleString("id-ID")}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Ongkos Kirim:</span>
+                  <span>{printingOrder.shippingFee > 0 ? `Rp ${printingOrder.shippingFee.toLocaleString("id-ID")}` : "GRATIS"}</span>
+                </div>
+                <div className="flex justify-between text-sm font-extrabold border-t border-dashed border-stone-300 pt-1.5 text-black">
+                  <span>TOTAL TAGIHAN:</span>
+                  <span>Rp {printingOrder.totalAmount.toLocaleString("id-ID")}</span>
+                </div>
+              </div>
+
+              {/* Footer Struk */}
+              <div className="text-center pt-2 text-[10px] text-stone-500 border-t border-dashed border-stone-300 space-y-0.5">
+                <p className="font-semibold text-stone-700">Terima kasih atas pesanan Anda!</p>
+                <p>Kue lezat &amp; fresh rumahan khas Dapur Rasa.</p>
+              </div>
+            </div>
+
+            {/* Tombol Aksi (Tersembunyi saat diprint) */}
+            <div className="p-4 bg-stone-50 border-t border-stone-200 flex flex-col sm:flex-row gap-2.5 print:hidden">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 py-2.5 px-4 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Cetak Struk Sekarang</span>
+              </button>
+
+              <button
+                onClick={() => handleCopyReceipt(printingOrder)}
+                className="py-2.5 px-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                title="Salin teks struk untuk dikirim via WA/SMS"
+              >
+                {isCopiedReceipt ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Tersalin!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Salin Teks</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => setPrintingOrder(null)}
+                className="py-2.5 px-3 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 font-semibold text-xs cursor-pointer"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Global Print Stylesheet: Hanya Cetak Elemen Struk */}
+      <style jsx global>{`
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          #printable-order-receipt,
+          #printable-order-receipt * {
+            visibility: visible !important;
+          }
+          #printable-order-receipt {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            max-width: 320px !important;
+            margin: 0 auto !important;
+            padding: 10px !important;
+            font-size: 11px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

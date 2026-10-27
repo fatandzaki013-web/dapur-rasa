@@ -76,6 +76,33 @@ export default function CheckoutPage() {
   // Completed order data for rendering official receipt
   const [completedOrder, setCompletedOrder] = useState<CompletedOrderInfo | null>(null);
 
+  // Restore completed order from localStorage on mount (e.g. if refreshed or returned from WhatsApp)
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem("dr_last_completed_order");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.orderCode) {
+          const age = Date.now() - (parsed.savedAt || 0);
+          // Hanya muat jika pesanan dibuat dalam 24 jam terakhir
+          if (age < 24 * 60 * 60 * 1000) {
+            setCompletedOrder(parsed);
+          }
+        }
+      }
+    } catch (e) {
+      // Fallback
+    }
+  }, []);
+
+  const handleResetOrder = () => {
+    try {
+      localStorage.removeItem("dr_last_completed_order");
+      window.history.replaceState(null, "", window.location.pathname);
+    } catch (e) {}
+    setCompletedOrder(null);
+  };
+
   const brandName = settings?.brandName || "Dapur Rasa";
   const brandTagline = settings?.tagline || "Kue Rumahan Kualitas Premium Fresh";
 
@@ -242,7 +269,7 @@ Terima kasih banyak telah memesan di ${brandName}!
         // Fallback
       }
 
-      setCompletedOrder({
+      const completedData = {
         orderCode: data.orderCode,
         totalAmount: data.totalAmount,
         subtotal: data.subtotal,
@@ -257,11 +284,19 @@ Terima kasih banyak telah memesan di ${brandName}!
         createdAtFormatted: nowFormatted,
         items: orderItemsSnapshot,
         whatsappUrl: data.whatsappUrl,
-      });
+        savedAt: Date.now(),
+      };
 
+      try {
+        localStorage.setItem("dr_last_completed_order", JSON.stringify(completedData));
+        window.history.replaceState(null, "", "?order=" + data.orderCode);
+      } catch (e) {}
+
+      setCompletedOrder(completedData);
+
+      // Buka link WhatsApp di window/tab baru agar halaman web tetap menampilkan bukti pesanan yang utuh!
       if (data.whatsappUrl) {
-        // Langsung arahkan otomatis masuk ke WhatsApp penjual!
-        window.location.href = data.whatsappUrl;
+        window.open(data.whatsappUrl, "_blank");
       }
     } catch (err: any) {
       setErrorMessage(err.message || "Terjadi kesalahan saat memproses pesanan.");
@@ -279,20 +314,36 @@ Terima kasih banyak telah memesan di ${brandName}!
     return (
       <div className="max-w-3xl mx-auto px-4 pt-24 sm:pt-28 pb-16 space-y-6 sm:space-y-8 animate-fadeIn">
         {/* Banner Sukses Atas */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-3">
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-md">
             <CheckCircle className="w-9 h-9 sm:w-11 sm:h-11" />
           </div>
-          <span className="text-xs font-bold text-amber-800 tracking-wider uppercase inline-flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+          <span className="text-xs font-bold text-amber-800 tracking-wider uppercase inline-flex items-center gap-1.5 bg-amber-50 px-3.5 py-1 rounded-full border border-amber-200">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
             Pesanan Berhasil Tercatat
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 font-heading">
             Terima Kasih, {completedOrder.customerName}!
           </h1>
-          <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto leading-relaxed">
-            Pesanan Anda otomatis diarahkan ke WhatsApp penjual. Jika ruang chat belum terbuka otomatis, silakan klik tombol hijau di bawah ini.
+          <p className="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
+            Pesanan Anda telah kami catat dalam antrean dapur. Jika aplikasi WhatsApp belum otomatis terbuka di perangkat Anda, silakan tekan tombol hijau di bawah:
           </p>
+
+          {/* Quick WhatsApp Action Launch Button */}
+          {completedOrder.whatsappUrl && (
+            <div className="pt-1">
+              <a
+                href={completedOrder.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-lg transition-all active:scale-95 cursor-pointer hover:shadow-xl"
+              >
+                <Phone className="w-5 h-5" />
+                <span>Buka WhatsApp &amp; Kirim Pesanan Sekarang</span>
+                <ExternalLink className="w-4 h-4 ml-1 opacity-80" />
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Tampilan Struk Resmi */}
@@ -480,13 +531,23 @@ Terima kasih banyak telah memesan di ${brandName}!
             </button>
           </div>
 
-          <div className="text-center pt-2">
+          <div className="text-center pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/produk"
+              onClick={handleResetOrder}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-bold transition shadow-sm active:scale-95"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>Pesan Kue Lainnya (Keranjang Baru)</span>
+            </Link>
+
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#4A0E4E] hover:underline"
+              onClick={handleResetOrder}
+              className="inline-flex items-center gap-2 text-xs font-bold text-stone-600 hover:text-stone-900 transition"
             >
               <UtensilsCrossed className="w-3.5 h-3.5" />
-              <span>Kembali ke Halaman Utama {brandName}</span>
+              <span>Kembali ke Halaman Utama</span>
             </Link>
           </div>
         </div>
