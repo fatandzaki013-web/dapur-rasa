@@ -177,7 +177,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* ============================================================== */}
       {/* SIDEBAR DESKTOP: Estetika Putih Bersih Khusus Dapur Rasa       */}
       {/* ============================================================== */}
-      <aside className="hidden md:flex w-64 bg-white text-slate-700 flex-col shrink-0 border-r border-slate-200/90 shadow-2xs select-none">
+      <aside className="hidden md:flex w-64 h-screen sticky top-0 bg-white text-slate-700 flex-col shrink-0 border-r border-slate-200/90 shadow-2xs select-none">
         {/* Brand Header */}
         <div className="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
           <BrandLogoIcon />
@@ -360,7 +360,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Top Navbar */}
         <header className="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
           <div className="flex items-center gap-3">
@@ -541,7 +541,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         )}
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#F8FAFC]">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-[#F8FAFC] min-w-0">
           {children}
         </main>
       </div>

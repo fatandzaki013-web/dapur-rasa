@@ -209,7 +209,7 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       {/* 1. TOP HEADER & GREETING BANNER                                */}
       {/* ============================================================== */}
-      <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
+      <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 min-w-0">
         <div className="space-y-1 min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
             <span>Admin Portal</span>
@@ -217,7 +217,7 @@ export default function AdminDashboardPage() {
             <span className="text-[#4A0E4E] font-bold">Ringkasan Operasional</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
-            Dashboard Operasional &amp; Penjualan Toko
+            Dashboard Operasional & Penjualan Toko
           </h1>
           <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
             Kelola pesanan dapur, pantau stok kue, dan monitor performa penjualan Dapur Rasa secara langsung.
@@ -238,7 +238,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/products"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-bold shadow-xs transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-xs transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah Kue Baru</span>
@@ -251,7 +251,7 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Pendapatan / Omset */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-purple-200 transition-all min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-slate-300 transition-all min-w-0 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider truncate">
               Total Pendapatan
@@ -260,8 +260,11 @@ export default function AdminDashboardPage() {
               <Wallet className="w-4.5 h-4.5 stroke-[1.8]" />
             </div>
           </div>
-          <div className="mt-3 min-w-0">
-            <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate" title={formatPrice(metrics?.confirmedRevenue || 0)}>
+          <div className="mt-3.5 min-w-0">
+            <span
+              className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate"
+              title={formatPrice(metrics?.confirmedRevenue || 0)}
+            >
               {isLoading ? "..." : formatPrice(metrics?.confirmedRevenue || 0)}
             </span>
             <div className="flex items-center gap-1.5 mt-2 min-w-0">
@@ -275,7 +278,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card 2: Total Pesanan Masuk */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-purple-200 transition-all min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-slate-300 transition-all min-w-0 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider truncate">
               Pesanan Masuk
@@ -284,7 +287,7 @@ export default function AdminDashboardPage() {
               <ShoppingBag className="w-4.5 h-4.5 stroke-[1.8]" />
             </div>
           </div>
-          <div className="mt-3 min-w-0">
+          <div className="mt-3.5 min-w-0">
             <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate">
               {isLoading ? "..." : `${metrics?.totalOrders || 0} Pesanan`}
             </span>
@@ -303,7 +306,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card 3: Produk Aktif & Menu Kue */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-purple-200 transition-all min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-slate-300 transition-all min-w-0 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider truncate">
               Menu Kue Aktif
@@ -312,7 +315,7 @@ export default function AdminDashboardPage() {
               <Package className="w-4.5 h-4.5 stroke-[1.8]" />
             </div>
           </div>
-          <div className="mt-3 min-w-0">
+          <div className="mt-3.5 min-w-0">
             <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate">
               {isLoading ? "..." : `${metrics?.activeProducts || 0} Menu`}
             </span>
@@ -326,7 +329,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card 4: Pengantaran & Area Operasional */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs hover:border-purple-200 transition-all min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-sm hover:border-slate-300 transition-all min-w-0 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider truncate">
               Wilayah Antar
@@ -335,15 +338,18 @@ export default function AdminDashboardPage() {
               <Truck className="w-4.5 h-4.5 stroke-[1.8]" />
             </div>
           </div>
-          <div className="mt-3 min-w-0">
-            <span className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate" title="Perum Griya Cileungsi 5">
+          <div className="mt-3.5 min-w-0">
+            <span
+              className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight block truncate"
+              title="Perum Griya Cileungsi 5"
+            >
               Griya Cileungsi 5
             </span>
             <div className="flex items-center gap-1.5 mt-2 min-w-0">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[11px] font-bold shrink-0">
                 Prioritas
               </span>
-              <span className="text-[11px] text-slate-400 truncate">&amp; Ambil di Dapur</span>
+              <span className="text-[11px] text-slate-400 truncate">Area Dapur & Antar</span>
             </div>
           </div>
         </div>
@@ -352,7 +358,7 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       {/* 3. ALUR STATUS PESANAN (Kompak, Bersih & Pas di Dalam Kotak)   */}
       {/* ============================================================== */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3 min-w-0">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3 min-w-0">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-amber-500" />
@@ -373,7 +379,7 @@ export default function AdminDashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           <Link
             href="/admin/orders?status=MENUNGGU_KONFIRMASI"
-            className="flex items-center justify-between p-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs transition border border-amber-200 shadow-2xs"
+            className="flex items-center justify-between p-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 font-bold text-xs transition border border-amber-200 shadow-2xs min-w-0 overflow-hidden"
           >
             <div className="flex items-center gap-2 min-w-0 truncate">
               <Clock className="w-4 h-4 text-amber-700 shrink-0" />
@@ -386,7 +392,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/orders?status=SEDANG_DIPROSES"
-            className="flex items-center justify-between p-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-950 font-bold text-xs transition border border-purple-200 shadow-2xs"
+            className="flex items-center justify-between p-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-950 font-bold text-xs transition border border-purple-200 shadow-2xs min-w-0 overflow-hidden"
           >
             <div className="flex items-center gap-2 min-w-0 truncate">
               <Cake className="w-4 h-4 text-purple-700 shrink-0" />
@@ -399,7 +405,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/orders?status=SIAP_DIKIRIM"
-            className="flex items-center justify-between p-3 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-950 font-bold text-xs transition border border-teal-200 shadow-2xs"
+            className="flex items-center justify-between p-3 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-950 font-bold text-xs transition border border-teal-200 shadow-2xs min-w-0 overflow-hidden"
           >
             <div className="flex items-center gap-2 min-w-0 truncate">
               <Truck className="w-4 h-4 text-teal-700 shrink-0" />
@@ -412,7 +418,7 @@ export default function AdminDashboardPage() {
 
           <Link
             href="/admin/orders?status=SELESAI"
-            className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-bold text-xs transition border border-emerald-200 shadow-2xs"
+            className="flex items-center justify-between p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-bold text-xs transition border border-emerald-200 shadow-2xs min-w-0 overflow-hidden"
           >
             <div className="flex items-center gap-2 min-w-0 truncate">
               <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
@@ -428,9 +434,9 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       {/* 4. GRAFIK TREN PENJUALAN & DISTRIBUSI KATEGORI                 */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-w-0">
         {/* Left Column: Weekly Sales & Orders Chart (7 cols) */}
-        <div className="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5 min-w-0">
+        <div className="lg:col-span-7 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4 min-w-0 flex flex-col justify-between">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div>
               <h2 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
@@ -470,7 +476,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Bar Chart Visualization (Kompak & Responsif) */}
-          <div className="h-48 pt-2 flex items-end justify-between gap-2 sm:gap-4 border-b border-slate-100 pb-2 overflow-x-auto min-w-0">
+          <div className="h-44 pt-2 flex items-end justify-between gap-2 sm:gap-3 border-b border-slate-100 pb-2 overflow-x-auto min-w-0">
             {weeklyTrend.length === 0 ? (
               <div className="w-full h-full flex items-center justify-center text-xs text-slate-400">
                 Memuat data grafik tren penjualan...
@@ -482,8 +488,8 @@ export default function AdminDashboardPage() {
                 const percentHeight = Math.max(Math.round((value / maxValue) * 100), 8);
 
                 return (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group min-w-[36px]">
-                    <div className="w-full max-w-[36px] bg-slate-100 rounded-t-lg overflow-hidden flex flex-col justify-end h-32">
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group min-w-[34px]">
+                    <div className="w-full max-w-[36px] bg-slate-100 rounded-t-lg overflow-hidden flex flex-col justify-end h-28">
                       <div
                         style={{ height: `${percentHeight}%` }}
                         className={`w-full rounded-t-lg transition-all duration-500 ${
@@ -495,7 +501,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="text-center">
                       <span className="block text-[11px] font-bold text-slate-800">{day.dayName}</span>
-                      <span className="block text-[9.5px] text-slate-400">{day.date.slice(5)}</span>
+                      <span className="block text-[9.5px] text-slate-400">{day.date.slice(5).replace("-", "/")}</span>
                     </div>
                   </div>
                 );
@@ -503,7 +509,7 @@ export default function AdminDashboardPage() {
             )}
           </div>
 
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-0.5">
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
             <span className="truncate">
               Total 7 Hari: <strong>{formatPrice(totalWeeklyRevenue)}</strong> ({totalWeeklyOrders} pesanan)
             </span>
@@ -512,7 +518,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Right Column: Top Categories (5 cols) */}
-        <div className="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4 min-w-0">
+        <div className="lg:col-span-5 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4 min-w-0 flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <h2 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
@@ -585,12 +591,12 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       {/* 5. TABEL TRANSAKSI & PESANAN TERBARU (Rapi & Bebas Keluar Kotak)*/}
       {/* ============================================================== */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-4 min-w-0">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-5 sm:p-6 space-y-4 min-w-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
             <h2 className="font-bold text-base sm:text-lg text-slate-900 flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-[#4A0E4E]" />
-              <span>Transaksi &amp; Pesanan Terbaru</span>
+              <span>Transaksi & Pesanan Terbaru</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Daftar pesanan masuk yang dibuat pelanggan melalui website.
@@ -624,18 +630,18 @@ export default function AdminDashboardPage() {
             {orderSearchTerm ? "Tidak ada pesanan yang cocok dengan pencarian." : "Belum ada transaksi pesanan tercatat."}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-slate-100">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+          <div className="w-full overflow-x-auto rounded-xl border border-slate-200/80 bg-white">
+            <table className="w-full min-w-[820px] text-left text-xs divide-y divide-slate-100">
+              <thead className="bg-slate-50/80 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-2.5 px-3">No. Ref</th>
-                  <th className="py-2.5 px-3">Waktu</th>
-                  <th className="py-2.5 px-3">Pelanggan</th>
-                  <th className="py-2.5 px-3">Metode &amp; Alamat</th>
-                  <th className="py-2.5 px-3">Item Kue</th>
-                  <th className="py-2.5 px-3">Total Tagihan</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3 text-right">Aksi</th>
+                  <th className="py-3 px-3.5 w-28 whitespace-nowrap">No. Ref</th>
+                  <th className="py-3 px-3 w-32 whitespace-nowrap">Waktu</th>
+                  <th className="py-3 px-3 min-w-[140px]">Pelanggan</th>
+                  <th className="py-3 px-3 min-w-[140px]">Metode & Alamat</th>
+                  <th className="py-3 px-3 min-w-[140px]">Item Kue</th>
+                  <th className="py-3 px-3 w-32 whitespace-nowrap">Total Tagihan</th>
+                  <th className="py-3 px-3 min-w-[140px] whitespace-nowrap">Status</th>
+                  <th className="py-3 px-3.5 text-right w-28 whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -644,10 +650,10 @@ export default function AdminDashboardPage() {
 
                   return (
                     <tr key={ord.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3 px-3 font-mono font-bold text-slate-900 whitespace-nowrap">
+                      <td className="py-3.5 px-3.5 font-mono font-bold text-slate-900 whitespace-nowrap">
                         {ord.orderCode}
                       </td>
-                      <td className="py-3 px-3 text-slate-500 whitespace-nowrap">
+                      <td className="py-3.5 px-3 text-slate-500 whitespace-nowrap text-[11px]">
                         {new Date(ord.createdAt).toLocaleDateString("id-ID", {
                           day: "numeric",
                           month: "short",
@@ -655,49 +661,49 @@ export default function AdminDashboardPage() {
                           minute: "2-digit",
                         })}
                       </td>
-                      <td className="py-3 px-3">
-                        <div className="font-bold text-slate-900 max-w-[130px] truncate" title={ord.customerName}>
+                      <td className="py-3.5 px-3">
+                        <div className="font-bold text-slate-900 max-w-[140px] truncate" title={ord.customerName}>
                           {ord.customerName}
                         </div>
                         <div className="text-[11px] text-slate-400 font-mono truncate">{ord.customerPhone}</div>
                       </td>
-                      <td className="py-3 px-3 text-slate-700">
-                        <div className="flex items-center gap-1 font-semibold whitespace-nowrap">
+                      <td className="py-3.5 px-3 text-slate-700">
+                        <div className="flex items-center gap-1.5 font-semibold whitespace-nowrap">
                           {isDelivery ? (
                             <>
-                              <Truck className="w-3.5 h-3.5 text-purple-700" />
-                              <span>Diantar ke Rumah</span>
+                              <Truck className="w-3.5 h-3.5 text-purple-700 shrink-0" />
+                              <span>Diantar</span>
                             </>
                           ) : (
                             <>
-                              <Store className="w-3.5 h-3.5 text-emerald-700" />
+                              <Store className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                               <span>Ambil di Dapur</span>
                             </>
                           )}
                         </div>
                         {isDelivery && ord.deliveryAddress && (
-                          <div className="text-[10px] text-slate-400 truncate max-w-[160px]" title={ord.deliveryAddress}>
+                          <div className="text-[10px] text-slate-400 truncate max-w-[150px] mt-0.5" title={ord.deliveryAddress}>
                             {ord.deliveryAddress}
                           </div>
                         )}
                       </td>
-                      <td className="py-3 px-3 text-slate-600">
+                      <td className="py-3.5 px-3 text-slate-600">
                         <span className="font-semibold text-slate-800 whitespace-nowrap block">
                           {ord.items?.length || 0} Macam Kue
                         </span>
                         {ord.items?.[0] && (
-                          <span className="text-[10px] text-slate-400 block truncate max-w-[140px]" title={ord.items[0].productName}>
+                          <span className="text-[10px] text-slate-400 block truncate max-w-[140px] mt-0.5" title={ord.items[0].productName}>
                             {ord.items[0].productName} x {ord.items[0].quantity}
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-3 font-bold text-slate-900 whitespace-nowrap font-mono">
+                      <td className="py-3.5 px-3 font-bold text-slate-900 whitespace-nowrap font-mono">
                         {formatPrice(ord.totalAmount)}
                       </td>
-                      <td className="py-3 px-3 whitespace-nowrap">
+                      <td className="py-3.5 px-3 whitespace-nowrap">
                         {getStatusBadge(ord.status)}
                       </td>
-                      <td className="py-3 px-3 text-right whitespace-nowrap">
+                      <td className="py-3.5 px-3.5 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
                           <a
                             href={`https://wa.me/62${ord.customerPhone.replace(/^0/, "")}`}
@@ -710,7 +716,7 @@ export default function AdminDashboardPage() {
                           </a>
                           <Link
                             href={`/admin/orders?search=${ord.orderCode}`}
-                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-lg transition text-[11px] flex items-center gap-1"
+                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg transition text-[11px] inline-flex items-center gap-1"
                           >
                             <Eye className="w-3 h-3" />
                             <span>Detail</span>
@@ -729,9 +735,9 @@ export default function AdminDashboardPage() {
       {/* ============================================================== */}
       {/* 6. PERINGATAN STOK MINIM & PINTASAN MENU CEPAT                 */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 min-w-0">
         {/* Card 1: Peringatan Stok Kue Minim */}
-        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3.5 min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5 min-w-0 flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center shrink-0">
@@ -739,7 +745,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="min-w-0">
                 <h3 className="font-bold text-slate-900 text-sm truncate">Peringatan Inventaris Stok</h3>
-                <p className="text-[11px] text-slate-400 truncate">Kue dengan sisa stok minim (&le; 15 pcs)</p>
+                <p className="text-[11px] text-slate-400 truncate">Kue dengan sisa stok minim (≤ 15 pcs)</p>
               </div>
             </div>
             <Link
@@ -760,11 +766,15 @@ export default function AdminDashboardPage() {
               lowStockProducts.slice(0, 4).map((prod) => (
                 <div
                   key={prod.id}
-                  className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs gap-2 min-w-0"
+                  className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs gap-2.5 min-w-0"
                 >
-                  <div className="min-w-0">
-                    <span className="font-bold text-slate-900 block truncate" title={prod.name}>{prod.name}</span>
-                    <span className="text-[10.5px] text-slate-400">{formatPrice(prod.price)} / {prod.unit}</span>
+                  <div className="min-w-0 flex-1">
+                    <span className="font-bold text-slate-900 block truncate" title={prod.name}>
+                      {prod.name}
+                    </span>
+                    <span className="text-[10.5px] text-slate-400">
+                      {formatPrice(prod.price)} / {prod.unit}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <span
@@ -790,7 +800,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Card 2: Pintasan Menu Pengelolaan Cepat */}
-        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-3.5 min-w-0 flex flex-col justify-between">
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5 min-w-0 flex flex-col justify-between">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center shrink-0">
@@ -806,9 +816,9 @@ export default function AdminDashboardPage() {
           <div className="grid grid-cols-2 gap-2.5">
             <Link
               href="/admin/products"
-              className="p-3 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all flex flex-col justify-between group min-w-0"
+              className="p-3.5 rounded-xl border border-slate-200 hover:border-[#4A0E4E]/40 hover:bg-purple-50/20 transition-all flex flex-col justify-between group min-w-0 h-24 shadow-2xs"
             >
-              <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center mb-1.5 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center shrink-0">
                 <Cake className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -816,16 +826,16 @@ export default function AdminDashboardPage() {
                   Katalog Kue
                 </span>
                 <span className="text-[10.5px] text-slate-400 block mt-0.5 truncate">
-                  Tambah &amp; harga kue
+                  Tambah & harga kue
                 </span>
               </div>
             </Link>
 
             <Link
               href="/admin/homepage"
-              className="p-3 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all flex flex-col justify-between group min-w-0"
+              className="p-3.5 rounded-xl border border-slate-200 hover:border-[#4A0E4E]/40 hover:bg-purple-50/20 transition-all flex flex-col justify-between group min-w-0 h-24 shadow-2xs"
             >
-              <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-800 flex items-center justify-center mb-1.5 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-800 flex items-center justify-center shrink-0">
                 <Palette className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -840,9 +850,9 @@ export default function AdminDashboardPage() {
 
             <Link
               href="/admin/gallery"
-              className="p-3 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all flex flex-col justify-between group min-w-0"
+              className="p-3.5 rounded-xl border border-slate-200 hover:border-[#4A0E4E]/40 hover:bg-purple-50/20 transition-all flex flex-col justify-between group min-w-0 h-24 shadow-2xs"
             >
-              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-1.5 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0">
                 <ImageIcon className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -857,9 +867,9 @@ export default function AdminDashboardPage() {
 
             <Link
               href="/admin/settings"
-              className="p-3 rounded-xl border border-slate-200 hover:border-purple-300 hover:bg-purple-50/30 transition-all flex flex-col justify-between group min-w-0"
+              className="p-3.5 rounded-xl border border-slate-200 hover:border-[#4A0E4E]/40 hover:bg-purple-50/20 transition-all flex flex-col justify-between group min-w-0 h-24 shadow-2xs"
             >
-              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center mb-1.5 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center shrink-0">
                 <Settings className="w-3.5 h-3.5" />
               </div>
               <div className="min-w-0">
@@ -867,7 +877,7 @@ export default function AdminDashboardPage() {
                   Pengaturan
                 </span>
                 <span className="text-[10.5px] text-slate-400 block mt-0.5 truncate">
-                  Nomor WA &amp; sandi admin
+                  Nomor WA & sandi admin
                 </span>
               </div>
             </Link>
