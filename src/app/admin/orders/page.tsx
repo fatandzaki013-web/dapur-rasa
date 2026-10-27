@@ -21,6 +21,10 @@ import {
   Truck,
   Store,
   RefreshCw,
+  Clock,
+  CheckCircle2,
+  Cake,
+  MapPin,
 } from "lucide-react";
 
 interface OrderItem {
@@ -359,23 +363,99 @@ Terima kasih atas pesanannya!
     }).format(amount);
   };
 
+  const formatPaymentBadge = (method?: string | null, fulfillment?: string) => {
+    const raw = (method || "").trim();
+    const isTransfer =
+      raw.toLowerCase().includes("transfer") ||
+      raw.toLowerCase().includes("bca") ||
+      raw.toLowerCase().includes("mandiri") ||
+      raw.toLowerCase().includes("bri") ||
+      raw.toLowerCase().includes("bank");
+    const isCod =
+      raw.toLowerCase().includes("cod") ||
+      raw.toLowerCase().includes("tunai") ||
+      raw.toLowerCase().includes("saat diterima") ||
+      raw.toLowerCase().includes("saat diantar") ||
+      raw.toLowerCase().includes("saat diambil") ||
+      (!raw && fulfillment === "DELIVERY");
+
+    if (isTransfer) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-blue-50 text-blue-900 border border-blue-200/80 whitespace-nowrap shrink-0 shadow-2xs">
+          <span>🏦</span>
+          <span>Transfer Bank</span>
+        </span>
+      );
+    }
+
+    if (isCod) {
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-200/80 whitespace-nowrap shrink-0 shadow-2xs">
+          <span>💵</span>
+          <span>Bayar di Tempat (COD)</span>
+        </span>
+      );
+    }
+
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-50 text-slate-800 border border-slate-200 whitespace-nowrap shrink-0 shadow-2xs">
+        <span>💳</span>
+        <span>{raw || "Bayar di Dapur"}</span>
+      </span>
+    );
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "MENUNGGU_KONFIRMASI":
-        return <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold">Menunggu Konfirmasi</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <Clock className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+            <span>Menunggu Konfirmasi</span>
+          </span>
+        );
       case "DIKONFIRMASI":
-        return <span className="px-2.5 py-1 rounded-full bg-blue-100 text-blue-900 text-[11px] font-bold">Dikonfirmasi</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-900 border border-blue-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+            <span>Dikonfirmasi</span>
+          </span>
+        );
       case "SEDANG_DIPROSES":
-        return <span className="px-2.5 py-1 rounded-full bg-purple-100 text-purple-900 text-[11px] font-bold">Sedang Diproses</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-900 border border-purple-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <Cake className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+            <span>Diproses Dapur</span>
+          </span>
+        );
       case "SIAP_DIAMBIL":
       case "SIAP_DIKIRIM":
-        return <span className="px-2.5 py-1 rounded-full bg-teal-100 text-teal-900 text-[11px] font-bold">Siap Antar/Ambil</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-900 border border-teal-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <Truck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+            <span>Siap Antar / Ambil</span>
+          </span>
+        );
       case "SELESAI":
-        return <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-bold">Selesai</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span>Selesai</span>
+          </span>
+        );
       case "DIBATALKAN":
-        return <span className="px-2.5 py-1 rounded-full bg-red-100 text-red-900 text-[11px] font-bold">Dibatalkan</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-900 border border-red-200 text-xs font-bold whitespace-nowrap shrink-0 shadow-2xs">
+            <AlertCircle className="w-3.5 h-3.5 text-red-600 shrink-0" />
+            <span>Dibatalkan</span>
+          </span>
+        );
       default:
-        return <span className="px-2.5 py-1 rounded-full bg-stone-100 text-stone-700 text-[11px]">{status}</span>;
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium whitespace-nowrap shrink-0 shadow-2xs">
+            {status}
+          </span>
+        );
     }
   };
 
@@ -489,80 +569,128 @@ Terima kasih atas pesanannya!
       </div>
 
       {/* Table Pesanan */}
-      <div className="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-2xs overflow-hidden">
         {isLoading ? (
-          <div className="p-8 text-center text-xs text-stone-500">Memuat pesanan...</div>
+          <div className="p-8 text-center text-xs text-slate-500">Memuat pesanan...</div>
         ) : orders.length === 0 ? (
-          <div className="p-12 text-center text-xs text-stone-500">Belum ada pesanan yang sesuai filter.</div>
+          <div className="p-12 text-center text-xs text-slate-500">Belum ada pesanan yang sesuai filter.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-stone-50 border-b border-stone-200 text-stone-500 font-bold uppercase tracking-wider">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full min-w-[1080px] text-left text-xs divide-y divide-slate-100">
+              <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="py-3 px-4">No. Pesanan</th>
-                  <th className="py-3 px-4">Tanggal Masuk</th>
-                  <th className="py-3 px-4">Pelanggan</th>
-                  <th className="py-3 px-4">Metode &amp; Alamat</th>
-                  <th className="py-3 px-4">Item Kue</th>
-                  <th className="py-3 px-4">Total Tagihan</th>
-                  <th className="py-3 px-4">Status Pesanan</th>
-                  <th className="py-3 px-4 text-right">Aksi</th>
+                  <th className="py-3 px-4 w-36 whitespace-nowrap">No. Pesanan</th>
+                  <th className="py-3 px-4 w-32 whitespace-nowrap">Tanggal Masuk</th>
+                  <th className="py-3 px-4 w-44 min-w-[150px]">Pelanggan</th>
+                  <th className="py-3 px-4 w-60 min-w-[210px]">Metode &amp; Alamat</th>
+                  <th className="py-3 px-4 w-48 min-w-[160px]">Item Kue</th>
+                  <th className="py-3 px-4 w-32 whitespace-nowrap">Total Tagihan</th>
+                  <th className="py-3 px-4 w-44 min-w-[160px] whitespace-nowrap">Status Pesanan</th>
+                  <th className="py-3 px-4 text-right w-28 whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-slate-100">
                 {orders.map((ord) => (
-                  <tr key={ord.id} className="hover:bg-stone-50/70 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-stone-900">
-                      {ord.orderCode}
-                    </td>
-                    <td className="py-3 px-4 text-stone-500">
-                      {new Date(ord.createdAt).toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="font-bold text-stone-900">{ord.customerName}</div>
-                      <div className="text-[11px] text-stone-500 font-mono">{ord.customerPhone}</div>
-                    </td>
-                    <td className="py-3 px-4 text-stone-600">
-                      <div className="font-semibold text-stone-900 flex items-center gap-1">
-                        {ord.fulfillmentType === "DELIVERY" ? (
-                          <>
-                            <Truck className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>Diantar (Griya Cileungsi 5)</span>
-                          </>
-                        ) : (
-                          <>
-                            <Store className="w-3.5 h-3.5 text-amber-700" />
-                            <span>Ambil di Toko</span>
-                          </>
-                        )}
-                      </div>
-                      {ord.deliveryAddress && (
-                        <div className="text-[11px] text-stone-500 truncate max-w-[200px]" title={ord.deliveryAddress}>
-                          {ord.deliveryAddress}
-                        </div>
-                      )}
-                      <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 bg-emerald-100 text-emerald-800">
-                        {ord.paymentMethod || (ord.fulfillmentType === "DELIVERY" ? "Bayar saat Diantar" : "Bayar saat Diambil")}
+                  <tr key={ord.id} className="hover:bg-slate-50/70 transition-colors">
+                    {/* 1. No. Pesanan */}
+                    <td className="py-3.5 px-4 font-mono font-bold text-slate-900 whitespace-nowrap">
+                      <span className="px-2.5 py-1 rounded-md bg-slate-100 border border-slate-200/60 text-xs">
+                        {ord.orderCode}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-stone-700">
-                      <span className="font-semibold">{ord.items.length} Macam Kue</span>
-                      <div className="text-[10px] text-stone-400 truncate max-w-[150px]">
+
+                    {/* 2. Tanggal Masuk */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-slate-600">
+                      <div className="font-semibold text-xs text-slate-800">
+                        {new Date(ord.createdAt).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </div>
+                      <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        {new Date(ord.createdAt).toLocaleTimeString("id-ID", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })} WIB
+                      </div>
+                    </td>
+
+                    {/* 3. Pelanggan */}
+                    <td className="py-3.5 px-4">
+                      <div className="font-bold text-xs text-slate-900 max-w-[150px] truncate" title={ord.customerName}>
+                        {ord.customerName}
+                      </div>
+                      <div className="text-[11px] text-slate-400 font-mono truncate mt-0.5">
+                        {ord.customerPhone}
+                      </div>
+                    </td>
+
+                    {/* 4. Metode & Alamat (Clean, Crisp, Professional) */}
+                    <td className="py-3.5 px-4 text-slate-700">
+                      <div className="space-y-1.5 min-w-[200px]">
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900 whitespace-nowrap">
+                          {ord.fulfillmentType === "DELIVERY" ? (
+                            <>
+                              <div className="w-5 h-5 rounded-md bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+                                <Truck className="w-3 h-3" />
+                              </div>
+                              <span>Diantar ke Rumah</span>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-5 h-5 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                                <Store className="w-3 h-3" />
+                              </div>
+                              <span>Ambil di Dapur</span>
+                            </>
+                          )}
+                        </div>
+
+                        {ord.fulfillmentType === "DELIVERY" ? (
+                          ord.deliveryAddress ? (
+                            <div className="flex items-start gap-1 text-[11px] text-slate-500 font-medium">
+                              <MapPin className="w-3 h-3 text-slate-400 shrink-0 mt-0.5" />
+                              <span className="truncate max-w-[210px] leading-tight" title={ord.deliveryAddress}>
+                                {ord.deliveryAddress}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-[10.5px] text-slate-400 block pl-6">Area Griya Cileungsi 5</span>
+                          )
+                        ) : (
+                          <span className="text-[10.5px] text-slate-400 block pl-6">Perum Griya Cileungsi 5 Blok A8</span>
+                        )}
+
+                        <div className="pt-0.5">
+                          {formatPaymentBadge(ord.paymentMethod, ord.fulfillmentType)}
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* 5. Item Kue */}
+                    <td className="py-3.5 px-4 text-slate-700">
+                      <span className="font-bold text-xs text-slate-900 block whitespace-nowrap">
+                        {ord.items.length} Macam Kue
+                      </span>
+                      <div className="text-[11px] text-slate-500 truncate max-w-[170px] mt-0.5" title={ord.items.map((it) => `${it.productName} (x${it.quantity})`).join(", ")}>
                         {ord.items.map((it) => it.productName).join(", ")}
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-bold text-stone-900 font-heading">
+
+                    {/* 6. Total Tagihan */}
+                    <td className="py-3.5 px-4 font-mono font-bold text-sm text-slate-900 whitespace-nowrap">
                       {formatPrice(ord.totalAmount)}
                     </td>
-                    <td className="py-3 px-4">{getStatusBadge(ord.status)}</td>
-                    <td className="py-3 px-4 text-right">
+
+                    {/* 7. Status Pesanan (Sleek Tag, Non-wrapping) */}
+                    <td className="py-3.5 px-4 whitespace-nowrap min-w-[160px]">
+                      {getStatusBadge(ord.status)}
+                    </td>
+
+                    {/* 8. Aksi */}
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
-                        {/* Tombol Cetak Struk Cepat */}
                         <button
                           onClick={() => setPrintingOrder(ord)}
                           className="p-1.5 bg-purple-50 text-[#4A0E4E] hover:bg-purple-100 rounded-lg transition-colors cursor-pointer"
@@ -570,8 +698,6 @@ Terima kasih atas pesanannya!
                         >
                           <Printer className="w-3.5 h-3.5" />
                         </button>
-
-                        {/* Tombol Chat WA Pelanggan */}
                         <button
                           onClick={() => handleChatCustomer(ord)}
                           className="p-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-lg transition-colors cursor-pointer"
@@ -579,11 +705,9 @@ Terima kasih atas pesanannya!
                         >
                           <Phone className="w-3.5 h-3.5" />
                         </button>
-
-                        {/* Tombol Detail & Status */}
                         <button
                           onClick={() => openDetailModal(ord)}
-                          className="px-2.5 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg transition-colors inline-flex items-center gap-1 cursor-pointer text-xs"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Detail</span>
@@ -632,9 +756,7 @@ Terima kasih atas pesanannya!
                   {selectedOrder.fulfillmentType === "DELIVERY" ? "Pengantaran (Perum Griya Cileungsi 5)" : "Ambil Sendiri di Dapur"}
                 </div>
                 <div className="mt-1">
-                  <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                    {selectedOrder.paymentMethod || (selectedOrder.fulfillmentType === "DELIVERY" ? "Bayar saat Diantar" : "Bayar saat Diambil")}
-                  </span>
+                  {formatPaymentBadge(selectedOrder.paymentMethod, selectedOrder.fulfillmentType)}
                 </div>
                 {selectedOrder.deliveryAddress && (
                   <p className="text-stone-700 mt-1.5 leading-relaxed text-xs bg-white p-2 rounded-lg border border-stone-200">
