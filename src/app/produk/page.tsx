@@ -277,25 +277,21 @@ function ProductsContent() {
                       alt={prod.name}
                       className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
                       loading="lazy"
+                      onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80"; }}
                     />
                   </Link>
 
-                  {/* Badges di pojok kiri atas */}
-                  <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
-                    {prod.isAvailable ? (
-                      <span className="px-1.5 py-0.5 rounded-md bg-emerald-600/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
-                        Tersedia
-                      </span>
-                    ) : (
-                      <span className="px-1.5 py-0.5 rounded-md bg-red-600/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                  {/* Status Badge Esensial (Fokus ke kelezatan foto kue) */}
+                  <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+                    {isOutOfStock ? (
+                      <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
                         Habis
                       </span>
-                    )}
-                    {prod.isBestSeller && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-amber-500/95 text-white text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
-                        Best Seller
+                    ) : prod.isBestSeller ? (
+                      <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                        Favorit
                       </span>
-                    )}
+                    ) : null}
                   </div>
 
                   {/* Tombol Like di pojok kanan atas */}

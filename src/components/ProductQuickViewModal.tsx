@@ -144,7 +144,7 @@ export default function ProductQuickViewModal({
                 </span>
                 <button
                   type="button"
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
                   className="px-2.5 h-full text-stone-600 hover:bg-stone-100 flex items-center justify-center cursor-pointer"
                   aria-label="Tambah"
                 >

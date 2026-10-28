@@ -7,6 +7,7 @@ import { useCart } from "@/context/CartContext";
 import ProductLikeButton from "@/components/ProductLikeButton";
 import {
   ShoppingBag,
+  Truck,
   Phone,
   CheckCircle,
   ShieldCheck,
@@ -411,22 +412,15 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             </button>
           </div>
 
-          {/* Badge Pengantaran & Pembayaran */}
-          <div className="p-3 bg-stone-50 rounded-2xl border border-stone-200/80 space-y-1.5 text-xs text-stone-600">
-            <div className="font-bold text-stone-900 flex items-center gap-1.5 text-xs">
+          {/* Pilihan Pengantaran & Pembayaran (Clean Inline Row) */}
+          <div className="py-2.5 border-y border-stone-200/60 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-stone-600">
+            <div className="flex items-center gap-1.5 text-emerald-800 font-medium">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Pilihan Pengantaran &amp; Pembayaran:</span>
+              <span>Ambil di Dapur Toko / Bayar di Tempat (COD)</span>
             </div>
-            <div className="flex flex-wrap gap-1.5 pt-0.5">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-50 text-[#4A0E4E] font-bold text-[10px] sm:text-[11px] border border-purple-200/80">
-                Ambil di Dapur (Gratis)
-              </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 font-bold text-[10px] sm:text-[11px] border border-amber-200/80">
-                Free Ongkir Griya Cileungsi 5
-              </span>
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-[10px] sm:text-[11px] border border-emerald-200/80">
-                Bayar di Tempat (COD)
-              </span>
+            <div className="flex items-center gap-1.5 text-amber-800 font-medium">
+              <Truck className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>Free Ongkir Area Griya Cileungsi 5</span>
             </div>
           </div>
 
@@ -441,51 +435,57 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               {product.description}
             </p>
 
-            {/* Spesifikasi Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs pt-1">
+            {/* Spesifikasi Produk Bersih & Elegan (Clean Key-Value List Tanpa Kotak Bertumpuk) */}
+            <div className="divide-y divide-stone-100 text-xs text-stone-700 pt-2 border-t border-stone-100">
               {product.weightGrams && (
-                <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/90 flex items-center gap-2 text-xs text-stone-700">
-                  <Package className="w-4 h-4 text-stone-500 shrink-0" />
-                  <span>Berat Bersih: <strong className="text-stone-900 font-bold">{product.weightGrams} gram</strong></span>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-stone-500 flex items-center gap-2">
+                    <Package className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Berat Bersih</span>
+                  </span>
+                  <span className="font-semibold text-stone-900">{product.weightGrams} gram</span>
                 </div>
               )}
               {product.piecesPerPack && (
-                <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/90 flex items-center gap-2 text-xs text-stone-700">
-                  <Sparkles className="w-4 h-4 text-stone-500 shrink-0" />
-                  <span>Isi Kemasan: <strong className="text-stone-900 font-bold">{product.piecesPerPack} {product.unit}</strong></span>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-stone-500 flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Isi Kemasan</span>
+                  </span>
+                  <span className="font-semibold text-stone-900">{product.piecesPerPack} {product.unit}</span>
                 </div>
               )}
               {product.shelfLife && (
-                <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/90 flex items-start gap-2 text-xs text-stone-700">
-                  <Clock className="w-4 h-4 text-stone-500 shrink-0 mt-0.5" />
-                  <div className="leading-snug">
-                    <span>Masa Simpan: </span>
-                    <strong className="text-stone-900 font-bold block sm:inline">{product.shelfLife}</strong>
-                  </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-stone-500 flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Masa Simpan</span>
+                  </span>
+                  <span className="font-semibold text-stone-900 text-right">{product.shelfLife}</span>
                 </div>
               )}
               {product.allergens && (
-                <div className="p-2.5 bg-stone-50 rounded-xl border border-stone-200/90 flex items-start gap-2 text-xs text-stone-700">
-                  <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <div className="leading-snug">
-                    <span>Informasi Alergen: </span>
-                    <strong className="text-stone-900 font-bold block sm:inline">{product.allergens}</strong>
-                  </div>
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="text-stone-500 flex items-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Informasi Alergen</span>
+                  </span>
+                  <span className="font-semibold text-amber-900 text-right">{product.allergens}</span>
                 </div>
               )}
             </div>
 
             {product.ingredients && (
-              <div className="p-3 sm:p-4 bg-amber-50/50 rounded-2xl border border-amber-200/60 text-xs text-stone-700 space-y-1 break-words">
-                <span className="font-bold text-amber-900 block text-xs">Komposisi Bahan:</span>
-                <p className="leading-relaxed">{product.ingredients}</p>
+              <div className="pt-3 text-xs text-stone-700 space-y-1 border-t border-stone-100">
+                <span className="font-bold text-stone-900 block text-xs">Komposisi Bahan:</span>
+                <p className="leading-relaxed text-stone-600">{product.ingredients}</p>
               </div>
             )}
 
             {product.storageGuide && (
-              <div className="p-3 sm:p-4 bg-stone-50 rounded-2xl border border-stone-200 text-xs text-stone-700 space-y-1 break-words">
+              <div className="pt-3 text-xs text-stone-700 space-y-1 border-t border-stone-100">
                 <span className="font-bold text-stone-900 block text-xs">Saran Penyimpanan &amp; Penyajian:</span>
-                <p className="leading-relaxed">{product.storageGuide}</p>
+                <p className="leading-relaxed text-stone-600">{product.storageGuide}</p>
               </div>
             )}
           </div>

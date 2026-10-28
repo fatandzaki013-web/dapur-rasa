@@ -22,7 +22,8 @@ export const metadata: Metadata = {
   description:
     "Toko online & retail frozen food dan aneka kue rumahan berkualitas. Menyajikan aneka pastel crispy, risol mayo lumer, sosis solo, brownies panggang, dan kebutuhan snack box higienis.",
   keywords: [
-    "shofi frozen",
+    "dapur rasa",
+    "kue rumahan cileungsi",
     "dapur rasa",
     "kue rumahan",
     "frozen food",
