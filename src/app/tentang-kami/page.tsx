@@ -27,7 +27,7 @@ export default function AboutPage() {
   const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-16 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-24 sm:pb-16 space-y-16">
       {/* Hero Section Tentang Kami */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A0E4E]/10 text-[#4A0E4E] text-xs font-bold uppercase tracking-wider">

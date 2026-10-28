@@ -537,7 +537,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       {/* ============================================================== */}
       {/* MOBILE STICKY BOTTOM BAR (TETAP TERLIHAT DI LAYAR HP TANPA TERPOTONG) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-[0_-4px_25px_rgba(0,0,0,0.12)] p-2.5 px-3.5">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-[0_-4px_25px_rgba(0,0,0,0.12)] px-3.5 pt-2.5 pb-[max(0.65rem,env(safe-area-inset-bottom,0.65rem))]">
         <div className="flex items-center justify-between gap-2.5 max-w-lg mx-auto">
           {/* Info Harga & Kuantitas */}
           <div className="min-w-0 flex-1">

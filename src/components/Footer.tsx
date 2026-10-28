@@ -38,7 +38,7 @@ export default function Footer() {
   const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
-    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-8 mt-auto w-full max-w-full overflow-hidden font-sans">
+    <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-24 sm:pb-8 mt-auto w-full max-w-full overflow-hidden font-sans">
       {/* ============================================================== */}
       {/* 1. TOP VALUE BADGES (Kompak & Rapi 2x2 di HP, 4 Kolom di PC)    */}
       {/* ============================================================== */}

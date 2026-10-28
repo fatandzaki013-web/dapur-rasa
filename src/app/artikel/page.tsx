@@ -1,8 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import { BookOpen, Calendar, User, ArrowRight, Sparkles } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -21,9 +20,7 @@ export default async function PublicArticlesPage() {
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] flex flex-col font-sans text-slate-800">
-      <Navbar />
-
-      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 w-full">
+      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-24 sm:pb-16 w-full">
         {/* Hero Section */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-3">
@@ -115,8 +112,6 @@ export default async function PublicArticlesPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

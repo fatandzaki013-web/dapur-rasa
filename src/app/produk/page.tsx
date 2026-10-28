@@ -91,7 +91,7 @@ function ProductsContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-14 w-full max-w-full overflow-hidden">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-14 w-full max-w-full overflow-hidden">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-amber-600/30">

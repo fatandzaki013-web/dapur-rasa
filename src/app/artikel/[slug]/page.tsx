@@ -2,8 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import {
   Calendar,
   User,
@@ -54,9 +53,7 @@ export default async function ArticleDetailPage({
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] flex flex-col font-sans text-slate-800">
-      <Navbar />
-
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
+      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-24 sm:pb-16 w-full">
         {/* Back Link */}
         <div className="mb-6">
           <Link
@@ -226,8 +223,6 @@ export default async function ArticleDetailPage({
           </section>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }

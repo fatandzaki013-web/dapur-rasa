@@ -243,7 +243,7 @@ export default function HomePage() {
 
 
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
-      <main className="flex-1 pt-[72px] sm:pt-24 pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
+      <main className="flex-1 pt-[72px] sm:pt-24 pb-24 sm:pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
         {/* SECTION 1: HERO SLIDER CAROUSEL (App-Style Responsive Banner)   */}
         {/* ============================================================== */}
@@ -305,38 +305,38 @@ export default function HomePage() {
                   </div>
 
                   {/* Mobile Aspect Ratio 16:10 - Clean, Beautiful, Doesn't hijack viewport */}
-                  <div className="block md:hidden relative w-full aspect-square overflow-hidden bg-gray-900">
+                  <div className="block md:hidden relative w-full aspect-[4/3] xs:aspect-[16/10] overflow-hidden bg-gray-900">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       alt={slide.title}
                       src={slide.mobileImg}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent flex flex-col justify-end p-4 text-white space-y-1.5">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[9.5px] font-bold tracking-wide uppercase self-start shadow-sm">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent flex flex-col justify-end p-3.5 text-white space-y-1">
+                      <span className="inline-block px-2 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[9px] font-bold tracking-wide uppercase self-start shadow-sm">
                         {slide.badge}
                       </span>
-                      <h2 className="text-base sm:text-xl font-extrabold tracking-tight leading-snug line-clamp-2">
+                      <h2 className="text-sm xs:text-base font-extrabold tracking-tight leading-snug line-clamp-2">
                         {slide.title}
                       </h2>
-                      <p className="text-[11px] sm:text-xs text-gray-200 line-clamp-1">
+                      <p className="text-[10px] xs:text-[11px] text-gray-200 line-clamp-1">
                         {slide.subtitle}
                       </p>
                       <div className="pt-1 flex items-center gap-2">
                         <Link
                           href={slide.buttonLink || "/produk"}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-xs shadow-sm active:scale-95 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
                         >
                           <span>Lihat Menu</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
+                          <ChevronRight className="w-3 h-3" />
                         </Link>
                         <a
                           href="https://wa.me/6285888159765?text=Halo%20Dapur%20Rasa,%20saya%20ingin%20pesan%20kue"
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-sm active:scale-95 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
                         >
-                          <Phone className="w-3.5 h-3.5" />
+                          <Phone className="w-3 h-3" />
                           <span>WhatsApp</span>
                         </a>
                       </div>
@@ -347,29 +347,35 @@ export default function HomePage() {
             </div>
 
             {/* Prev Navigation Button */}
+            {/* Mobile Slide Counter Badge in top-right (zero collision with buttons) */}
+            <div className="md:hidden absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono font-bold tracking-wider">
+              {activeSlide + 1} / {heroSlides.length}
+            </div>
+
+            {/* Prev Navigation Button (Desktop only) */}
             <button
               type="button"
               onClick={() =>
                 setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
               }
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
               aria-label="Slide sebelumnya"
             >
               <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
             </button>
 
-            {/* Next Navigation Button */}
+            {/* Next Navigation Button (Desktop only) */}
             <button
               type="button"
               onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md flex items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
               aria-label="Slide berikutnya"
             >
               <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
             </button>
 
-            {/* Dots Indicator */}
-            <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5 sm:gap-2">
+            {/* Dots Indicator (Desktop only) */}
+            <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 gap-2">
               {heroSlides.map((_, i) => (
                 <button
                   key={i}
@@ -391,47 +397,47 @@ export default function HomePage() {
         {/* SECTION 2: 3 FITUR UNGGULAN (Trust Badges Mobile-Optimized)     */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-6">
             {/* Fitur 1: Ambil di Toko / Antar Griya Cileungsi 5 */}
-            <div className="bg-purple-50/70 border border-purple-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-purple-100">
-                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#4A0E4E]" />
+            <div className="bg-purple-50/70 border border-purple-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-purple-100">
+                <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-[#4A0E4E]" />
               </div>
-              <div className="space-y-0.5 sm:space-y-1">
-                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
-                  Ambil Sendiri / Antar Griya Cileungsi 5
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
+                  Ambil / Antar Griya 5
                 </h3>
-                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Pilih kue favorit Anda, ambil langsung di dapur atau diantar khusus area Perum Griya Cileungsi 5.
                 </p>
               </div>
             </div>
 
             {/* Fitur 2: 100% Halal & Higienis */}
-            <div className="bg-emerald-50/70 border border-emerald-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
-                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#15803D]" />
+            <div className="bg-emerald-50/70 border border-emerald-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
+                <ShieldCheck className="w-4 h-4 sm:w-6 sm:h-6 text-[#15803D]" />
               </div>
-              <div className="space-y-0.5 sm:space-y-1">
-                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
                   100% Halal &amp; Higienis
                 </h3>
-                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Seluruh olahan kue dibuat higienis dengan bahan segar berkualitas tanpa bahan pengawet berbahaya.
                 </p>
               </div>
             </div>
 
-            {/* Fitur 3: Kualitas & Harga Terbaik */}
-            <div className="bg-amber-50/70 border border-amber-100/60 p-4 sm:p-6 rounded-2xl shadow-xs flex items-center md:items-start gap-3.5 hover:shadow-sm transition-all duration-300">
-              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
-                <Award className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+            {/* Fitur 3: Kualitas & Rasa Terbaik */}
+            <div className="bg-amber-50/70 border border-amber-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
+                <Award className="w-4 h-4 sm:w-6 sm:h-6 text-amber-600" />
               </div>
-              <div className="space-y-0.5 sm:space-y-1">
-                <h3 className="font-bold text-xs sm:text-base text-gray-900 leading-snug">
-                  Kualitas &amp; Rasa Terbaik
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
+                  Kualitas &amp; Rasa
                 </h3>
-                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Dibuat fresh setiap hari dengan resep autentik rumahan untuk cita rasa istimewa terjangkau.
                 </p>
               </div>
@@ -473,7 +479,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white border border-stone-200/80 shadow-2xs flex items-center justify-center text-stone-700 group-hover:bg-[#4A0E4E] group-hover:text-white group-hover:border-[#4A0E4E] transition-all duration-300">
                     <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <p className="font-semibold text-[10px] sm:text-xs text-stone-700 group-hover:text-[#4A0E4E] text-center leading-tight line-clamp-1 sm:line-clamp-2 px-0.5 transition-colors">
+                  <p className="font-semibold text-[9.5px] sm:text-xs text-stone-700 group-hover:text-[#4A0E4E] text-center leading-tight line-clamp-2 min-h-[26px] flex items-center justify-center px-0.5 transition-colors">
                     {cat.name}
                   </p>
                 </Link>
@@ -568,31 +574,58 @@ export default function HomePage() {
                     </div>
 
                     {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                    <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between gap-1.5 mt-auto min-w-0">
-                      <div className="min-w-0">
-                        <p className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
-                          {formatPrice(currentPrice)}
-                        </p>
+                    <div className="pt-1.5 border-t border-slate-100 mt-auto min-w-0">
+                      {/* Mobile Layout (< sm): Harga Jelas & Tombol Full-Width Anti-Potong */}
+                      <div className="sm:hidden space-y-1.5">
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-xs font-black text-[#4A0E4E] font-mono leading-none">
+                            {formatPrice(currentPrice)}
+                          </span>
+                          <span className="text-[9px] text-slate-400 font-medium">/{prod.unit}</span>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={isOutOfStock}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleQuickAdd(prod);
+                          }}
+                          className={`w-full h-7 rounded-xl text-[10px] font-extrabold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer ${
+                            isOutOfStock
+                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                              : "bg-[#4A0E4E] text-white hover:bg-[#5C1261]"
+                          }`}
+                        >
+                          <ShoppingCart className="w-3 h-3" />
+                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                        </button>
                       </div>
 
-                      <button
-                        type="button"
-                        disabled={isOutOfStock}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleQuickAdd(prod);
-                        }}
-                        className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
-                          isOutOfStock
-                            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                            : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
-                        }`}
-                        title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
-                      >
-                        <ShoppingCart className="w-3 h-3" />
-                        <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
-                      </button>
+                      {/* Desktop Layout (>= sm): Berdampingan Rapi */}
+                      <div className="hidden sm:flex items-center justify-between gap-1.5">
+                        <p className="text-sm md:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
+                          {formatPrice(currentPrice)}
+                        </p>
+                        <button
+                          type="button"
+                          disabled={isOutOfStock}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleQuickAdd(prod);
+                          }}
+                          className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
+                            isOutOfStock
+                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                              : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
+                          }`}
+                          title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
+                        >
+                          <ShoppingCart className="w-3 h-3" />
+                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </article>

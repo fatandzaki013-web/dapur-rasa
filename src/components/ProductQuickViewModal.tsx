@@ -84,7 +84,7 @@ export default function ProductQuickViewModal({
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-6 items-start">
           {/* Photo: Desain Mirip Fitur Tentang Kami (rounded-2xl, aspect-4/3, border-white, shadow, object-cover) */}
           <div style={{ aspectRatio: "4 / 3" }}
-            className="sm:col-span-5 aspect-4/3 aspect-[4/3] rounded-2xl overflow-hidden bg-stone-100 shadow-md border-2 sm:border-4 border-white relative group">
+            className="sm:col-span-5 aspect-4/3 aspect-[4/3] rounded-2xl overflow-hidden bg-stone-100 shadow-md border-2 sm:border-4 border-white relative group max-h-52 sm:max-h-none">
             <ProductLikeButton product={product} className="absolute top-2.5 right-2.5 z-10" />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -154,7 +154,7 @@ export default function ProductQuickViewModal({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-stone-100">
+            <div className="flex items-center gap-2 pt-2 border-t border-stone-100">
               <button
                 type="button"
                 onClick={handleAddToCart}
@@ -179,7 +179,7 @@ export default function ProductQuickViewModal({
                 href={`/produk/${product.slug}`}
                 prefetch={true}
                 onClick={onClose}
-                className="py-2.5 px-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs rounded-xl flex items-center gap-1"
+                className="py-2.5 px-3 bg-stone-100 hover:bg-stone-200 text-stone-800 font-semibold text-xs rounded-xl flex items-center justify-center gap-1 shrink-0"
               >
                 <span>Detail</span>
                 <ArrowRight className="w-3 h-3" />

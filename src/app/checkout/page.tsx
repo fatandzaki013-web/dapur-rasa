@@ -493,16 +493,6 @@ Terima kasih banyak telah memesan di ${brandName}!
 
         {/* Action Buttons */}
         <div className="space-y-3">
-          {completedOrder.whatsappUrl && (
-            <a
-              href={completedOrder.whatsappUrl}
-              className="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg flex items-center justify-center gap-2.5 transition-all text-sm sm:text-base cursor-pointer hover:shadow-xl active:scale-[0.99]"
-            >
-              <Phone className="w-5 h-5" />
-              <span>Buka Ruang Chat WhatsApp Penjual Sekarang</span>
-              <ExternalLink className="w-4 h-4 ml-1 opacity-80" />
-            </a>
-          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
@@ -590,7 +580,7 @@ Terima kasih banyak telah memesan di ${brandName}!
   // VIEW: FORMULIR CHECKOUT RAPI & LENGKAP
   // ==============================================================
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-28 pb-28 lg:pb-16 animate-fadeIn">
+    <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-28 pb-32 lg:pb-16 animate-fadeIn">
       {/* Top Breadcrumb & Link Kembali */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
         <div className="flex items-center gap-1.5 text-xs text-stone-500 font-medium">
@@ -1131,7 +1121,7 @@ Terima kasih banyak telah memesan di ${brandName}!
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full py-4 px-6 rounded-2xl font-extrabold text-white flex items-center justify-center gap-2.5 shadow-lg transition-all text-sm sm:text-base cursor-pointer ${
+              className={`hidden lg:flex w-full py-4 px-6 rounded-2xl font-extrabold text-white items-center justify-center gap-2.5 shadow-lg transition-all text-sm sm:text-base cursor-pointer ${
                 isSubmitting
                   ? "bg-stone-400 cursor-not-allowed"
                   : "bg-emerald-600 hover:bg-emerald-700 hover:shadow-xl active:scale-[0.99]"
@@ -1161,7 +1151,7 @@ Terima kasih banyak telah memesan di ${brandName}!
       {/* ============================================================== */}
       {/* MOBILE FLOATING BOTTOM BAR (AGAR FITUR TIDAK PERNAH TERPOTONG) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] p-3 px-4">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
         <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
           <div>
             <span className="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">

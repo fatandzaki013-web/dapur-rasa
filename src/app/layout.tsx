@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import DynamicTheme from "@/components/DynamicTheme";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -91,6 +92,7 @@ export default async function RootLayout({
               <Footer />
               <CartDrawer />
               <WishlistDrawer />
+              <MobileBottomNav />
             </CartProvider>
           </WishlistProvider>
         </StoreProvider>

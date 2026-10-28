@@ -158,10 +158,10 @@ export default function Navbar() {
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="font-extrabold text-sm sm:text-xl tracking-tight text-[#4A0E4E] leading-tight">
+                <span className="font-extrabold text-sm sm:text-xl tracking-tight text-[#4A0E4E] leading-tight truncate max-w-[140px] sm:max-w-none">
                   {brandName}
                 </span>
-                <span className="text-[8.5px] sm:text-[9px] text-gray-400 font-semibold -mt-0.5 tracking-wider uppercase hidden xs:inline">
+                <span className="text-[8.5px] sm:text-[9px] text-gray-400 font-semibold -mt-0.5 tracking-wider uppercase hidden sm:inline">
                   Kue &amp; Camilan Rumahan
                 </span>
               </div>

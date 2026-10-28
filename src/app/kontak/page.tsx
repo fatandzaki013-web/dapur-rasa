@@ -13,7 +13,7 @@ export default function ContactPage() {
   const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-16">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <span className="text-xs font-bold text-amber-800 tracking-wider uppercase">
           Layanan Pelanggan
