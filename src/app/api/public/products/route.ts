@@ -36,7 +36,24 @@ export async function GET(req: NextRequest) {
     }
 
     if (categorySlug) {
-      where.category = { slug: categorySlug };
+      if (categorySlug === "kue") {
+        where.OR = [
+          { category: { slug: { in: ["aneka-kue-basah", "pastel", "risol", "sosis-solo", "brownies-bolu", "kue-kering"] } } },
+          { name: { contains: "kue" } },
+        ];
+      } else if (categorySlug === "nasi") {
+        where.OR = [
+          { category: { slug: "nasi" } },
+          { name: { contains: "nasi" } },
+          { description: { contains: "nasi" } },
+        ];
+      } else if (categorySlug === "frozen" || categorySlug === "frozen-food") {
+        where.category = { slug: "frozen-food" };
+      } else if (categorySlug === "snack-box") {
+        where.category = { slug: "snack-box" };
+      } else {
+        where.category = { slug: categorySlug };
+      }
     }
 
     if (featured) where.isFeatured = true;

@@ -37,6 +37,35 @@ export interface GalleryItem {
 
 export const DEFAULT_PRODUCTS: ProductItem[] = [
   {
+    "id": "cmvj6v8er000nasi001",
+    "name": "Paket Nasi Box Ayam Bakar Komplit",
+    "slug": "paket-nasi-box-ayam-bakar-komplit",
+    "shortDescription": "Nasi pulen wangi, ayam bakar bumbu rempah meresap, sambal bajak, lalapan segar, tahu tempe, dan kerupuk.",
+    "description": "Paket hidangan nasi box higienis dan praktis khas Dapur Rasa. Dibuat dari beras pilihan berkualitas dengan lauk ayam bakar empuk berbalut kecap rempah tradisional, tahu tempe goreng gurih, sambal bajak pedas mantap, serta lalapan mentimun dan kemangi segar. Sangat cocok untuk acara syukuran, arisan keluarga, pengajian, dan konsumsi rapat kantor.",
+    "price": 25000,
+    "promoPrice": null,
+    "unit": "box",
+    "stock": 50,
+    "isAvailable": true,
+    "isBestSeller": true,
+    "isFeatured": true,
+    "isNew": true,
+    "showOnHome": true,
+    "displayOrder": 0,
+    "category": {
+      "id": "cmvj6v8bx000nasi",
+      "name": "Nasi",
+      "slug": "nasi"
+    },
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80",
+        "alt": "Paket Nasi Box Ayam Bakar Komplit Dapur Rasa",
+        "isPrimary": true
+      }
+    ]
+  },
+  {
     "id": "cmvj6v8er000bwk9c8y6uk6dx",
     "name": "Pastel Ayam Telur Sayur (Crispy)",
     "slug": "pastel-ayam-telur-sayur",

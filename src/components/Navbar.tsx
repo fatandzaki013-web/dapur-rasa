@@ -117,13 +117,10 @@ export default function Navbar() {
   ];
 
     const categoryShortcuts = [
-    { name: "Pastel Crispy", slug: "pastel" },
-    { name: "Risol Mayo", slug: "risol" },
-    { name: "Sosis Solo", slug: "sosis-solo" },
-    { name: "Brownies", slug: "brownies-bolu" },
-    { name: "Kue Basah", slug: "aneka-kue-basah" },
+    { name: "Nasi", slug: "nasi" },
+    { name: "Kue", slug: "kue" },
+    { name: "Frozen", slug: "frozen-food" },
     { name: "Snack Box", slug: "snack-box" },
-    { name: "Frozen Food", slug: "frozen-food" },
   ];
 
   return (

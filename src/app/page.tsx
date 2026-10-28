@@ -136,18 +136,32 @@ export default function HomePage() {
     return defaultHeroSlides;
   }, [heroSection?.customConfig]);
 
-  // 10 Kategori Produk (Shofi Frozen Circle Style)
+  // 4 Kategori Produk Utama (Nasi, Kue, Frozen, Snack Box)
   const categoryCircles = [
-    { name: "Pastel", slug: "pastel", icon: UtensilsCrossed },
-    { name: "Risol", slug: "risol", icon: Sparkles },
-    { name: "Sosis Solo", slug: "sosis-solo", icon: Flame },
-    { name: "Brownies", slug: "brownies-bolu", icon: Cake },
-    { name: "Kue Basah", slug: "aneka-kue-basah", icon: Heart },
-    { name: "Klepon", slug: "aneka-kue-basah", icon: Sparkles },
-    { name: "Kue Kering", slug: "kue-kering", icon: Cookie },
-    { name: "Snack Box", slug: "snack-box", icon: PackageCheck },
-    { name: "Frozen Food", slug: "frozen-food", icon: Snowflake },
-    { name: "Paket Hemat", slug: "paket-hemat", icon: Award },
+    {
+      name: "Nasi",
+      slug: "nasi",
+      icon: UtensilsCrossed,
+      desc: "Nasi Box & Tumpeng",
+    },
+    {
+      name: "Kue",
+      slug: "kue",
+      icon: Cake,
+      desc: "Kue Basah & Brownies",
+    },
+    {
+      name: "Frozen",
+      slug: "frozen-food",
+      icon: Snowflake,
+      desc: "Pastel & Risol Beku",
+    },
+    {
+      name: "Snack Box",
+      slug: "snack-box",
+      icon: PackageCheck,
+      desc: "Paket Rapat & Acara",
+    },
   ];
 
   // Fetch all products & gallery items
@@ -467,20 +481,24 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-5 md:grid-cols-10 gap-2 sm:gap-3">
+          {/* 4 Kolom di Mobile dan Desktop: Tampil Bersih, Mewah & Proporsional */}
+          <div className="grid grid-cols-4 gap-2 sm:gap-5">
             {categoryCircles.map((cat) => {
               const IconComponent = cat.icon;
               return (
                 <Link
                   key={cat.name}
-                  className="group flex flex-col items-center gap-1.5"
+                  className="group flex flex-col items-center justify-center p-2.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-stone-200/90 shadow-2xs hover:shadow-md hover:border-purple-300 transition-all duration-300 text-center active:scale-95"
                   href={`/produk?category=${cat.slug}`}
                 >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white border border-stone-200/80 shadow-2xs flex items-center justify-center text-stone-700 group-hover:bg-[#4A0E4E] group-hover:text-white group-hover:border-[#4A0E4E] transition-all duration-300">
-                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-stone-50 border border-stone-200/80 flex items-center justify-center text-stone-700 group-hover:bg-[#4A0E4E] group-hover:text-white group-hover:border-[#4A0E4E] group-hover:scale-105 transition-all duration-300 shadow-2xs mb-1.5 sm:mb-2.5">
+                    <IconComponent className="w-5 h-5 sm:w-7 sm:h-7 transition-transform group-hover:scale-110" />
                   </div>
-                  <p className="font-semibold text-[9.5px] sm:text-xs text-stone-700 group-hover:text-[#4A0E4E] text-center leading-tight line-clamp-2 min-h-[26px] flex items-center justify-center px-0.5 transition-colors">
+                  <h3 className="font-extrabold text-xs sm:text-base text-stone-900 group-hover:text-[#4A0E4E] transition-colors leading-tight">
                     {cat.name}
+                  </h3>
+                  <p className="text-[11px] text-stone-400 font-medium hidden md:block mt-1 leading-snug">
+                    {cat.desc}
                   </p>
                 </Link>
               );

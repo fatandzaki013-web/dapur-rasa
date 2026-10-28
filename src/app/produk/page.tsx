@@ -202,7 +202,12 @@ function ProductsContent() {
           >
             {selectedCategory === "" ? `Semua Menu (${products.length})` : "Semua Menu"}
           </button>
-          {categories.map((cat) => {
+          {[
+            { id: "cat-nasi", name: "Nasi", slug: "nasi" },
+            { id: "cat-kue", name: "Kue", slug: "kue" },
+            { id: "cat-frozen", name: "Frozen", slug: "frozen-food" },
+            { id: "cat-snack", name: "Snack Box", slug: "snack-box" },
+          ].map((cat) => {
             const isSelected = selectedCategory === cat.slug;
             return (
               <button
