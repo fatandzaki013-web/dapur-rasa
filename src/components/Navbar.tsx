@@ -116,14 +116,14 @@ export default function Navbar() {
     { label: "Kontak", href: "/kontak", icon: Phone, desc: "Lokasi & nomor WhatsApp" },
   ];
 
-  const categoryShortcuts = [
-    { name: "Pastel", slug: "pastel", emoji: "🥟" },
-    { name: "Risol", slug: "risol", emoji: "🌯" },
-    { name: "Sosis Solo", slug: "sosis-solo", emoji: "🥖" },
-    { name: "Brownies", slug: "brownies-bolu", emoji: "🍫" },
-    { name: "Kue Basah", slug: "aneka-kue-basah", emoji: "🍰" },
-    { name: "Snack Box", slug: "snack-box", emoji: "🍱" },
-    { name: "Frozen", slug: "frozen-food", emoji: "❄️" },
+    const categoryShortcuts = [
+    { name: "Pastel Crispy", slug: "pastel" },
+    { name: "Risol Mayo", slug: "risol" },
+    { name: "Sosis Solo", slug: "sosis-solo" },
+    { name: "Brownies", slug: "brownies-bolu" },
+    { name: "Kue Basah", slug: "aneka-kue-basah" },
+    { name: "Snack Box", slug: "snack-box" },
+    { name: "Frozen Food", slug: "frozen-food" },
   ];
 
   return (
@@ -282,7 +282,7 @@ export default function Navbar() {
           {/* Drawer Slide-down Card */}
           <div className="fixed inset-x-2.5 top-16 bottom-4 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col z-50 animate-slideDown">
             {/* Header Drawer */}
-            <div className="p-4 bg-gradient-to-r from-[#4A0E4E] to-[#6A1B6E] text-white flex items-center justify-between shadow-xs shrink-0">
+            <div className="p-4 bg-[#4A0E4E] text-white flex items-center justify-between shadow-xs shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center text-amber-300 border border-white/20">
                   <UtensilsCrossed className="w-5 h-5" />
@@ -340,9 +340,8 @@ export default function Navbar() {
                       key={cat.slug}
                       href={`/produk?category=${cat.slug}`}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-3 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 text-[#4A0E4E] text-[11px] font-bold shrink-0 border border-purple-100 flex items-center gap-1 transition shadow-2xs"
+                      className="px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-[#4A0E4E] hover:text-white text-stone-700 text-xs font-medium shrink-0 transition-colors"
                     >
-                      <span>{cat.emoji}</span>
                       <span>{cat.name}</span>
                     </Link>
                   ))}
@@ -369,7 +368,7 @@ export default function Navbar() {
                         className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
                           isActive
                             ? "bg-[#4A0E4E] text-white shadow-xs"
-                            : "hover:bg-purple-50/70 text-gray-700 bg-gray-50/60 border border-gray-100"
+                            : "hover:bg-stone-100 text-stone-800"
                         }`}
                       >
                         <div className="flex items-center gap-3">

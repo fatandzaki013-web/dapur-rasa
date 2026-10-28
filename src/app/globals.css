@@ -2,11 +2,11 @@
 
 :root {
   --color-primary: #4A0E4E;
-  --color-secondary: #4B95FF;
-  --color-bg: #FFFFFF;
+  --color-secondary: #D97706;
+  --color-bg: #FAF8F5;
   --color-surface: #FFFFFF;
-  --color-accent: #FAF5FF;
-  --color-text: #0F172A;
+  --color-accent: #FDF6EE;
+  --color-text: #2D1A12;
   --color-success: #15803D;
   --color-error: #B91C1C;
 }
@@ -18,8 +18,8 @@ html {
 }
 
 body {
-  background-color: var(--color-bg, #FAF5EF);
-  color: var(--color-text, #211A16);
+  background-color: var(--color-bg, #FAF8F5);
+  color: var(--color-text, #2D1A12);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
   max-width: 100vw;

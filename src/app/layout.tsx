@@ -47,10 +47,10 @@ export default async function RootLayout({
 
   const primary = theme?.primaryColor || "#4B291B";
   const secondary = theme?.secondaryColor || "#A9683B";
-  const bg = theme?.backgroundColor || "#F4F8F4";
-  const surface = theme?.surfaceColor || "#FFFDF9";
-  const accent = theme?.accentColor || "#EBD9C7";
-  const text = theme?.textColor || "#211A16";
+  const bg = theme?.backgroundColor || "#FAF8F5";
+  const surface = theme?.surfaceColor || "#FFFFFF";
+  const accent = theme?.accentColor || "#FDF6EE";
+  const text = theme?.textColor || "#2D1A12";
 
   return (
     <html lang="id">
@@ -72,15 +72,9 @@ export default async function RootLayout({
               body,
               main,
               #main-content,
-              .bg-theme-bg,
-              .bg-gray-50,
-              .bg-gray-50\/40,
-              .bg-gray-50\/50,
-              .bg-slate-50,
-              .bg-stone-50,
-              .bg-white\/90 {
-                background-color: ${bg} !important;
-                color: ${text} !important;
+              .bg-theme-bg {
+                background-color: ${bg};
+                color: ${text};
               }
             `,
           }}

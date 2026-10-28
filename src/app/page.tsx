@@ -6,6 +6,10 @@ import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import {
+  Flame,
+  Snowflake,
+  Cake,
+  Cookie,
   ChevronLeft,
   ChevronRight,
   ShoppingCart,
@@ -134,16 +138,16 @@ export default function HomePage() {
 
   // 10 Kategori Produk (Shofi Frozen Circle Style)
   const categoryCircles = [
-    { name: "Pastel", slug: "pastel", emoji: "🥟" },
-    { name: "Risol", slug: "risol", emoji: "🌯" },
-    { name: "Sosis Solo", slug: "sosis-solo", emoji: "🥖" },
-    { name: "Brownies", slug: "brownies-bolu", emoji: "🍫" },
-    { name: "Kue Basah", slug: "aneka-kue-basah", emoji: "🍰" },
-    { name: "Klepon", slug: "aneka-kue-basah", emoji: "🍡" },
-    { name: "Kue Kering", slug: "kue-kering", emoji: "🍪" },
-    { name: "Snack Box", slug: "snack-box", emoji: "🍱" },
-    { name: "Frozen Food", slug: "frozen-food", emoji: "❄️" },
-    { name: "Paket Hemat", slug: "paket-hemat", emoji: "🎁" },
+    { name: "Pastel", slug: "pastel", icon: UtensilsCrossed },
+    { name: "Risol", slug: "risol", icon: Sparkles },
+    { name: "Sosis Solo", slug: "sosis-solo", icon: Flame },
+    { name: "Brownies", slug: "brownies-bolu", icon: Cake },
+    { name: "Kue Basah", slug: "aneka-kue-basah", icon: Heart },
+    { name: "Klepon", slug: "aneka-kue-basah", icon: Sparkles },
+    { name: "Kue Kering", slug: "kue-kering", icon: Cookie },
+    { name: "Snack Box", slug: "snack-box", icon: PackageCheck },
+    { name: "Frozen Food", slug: "frozen-food", icon: Snowflake },
+    { name: "Paket Hemat", slug: "paket-hemat", icon: Award },
   ];
 
   // Fetch all products & gallery items
@@ -277,14 +281,23 @@ export default function HomePage() {
                           <p className="text-sm lg:text-base text-gray-200 leading-relaxed">
                             {slide.subtitle}
                           </p>
-                          <div className="pt-2">
+                          <div className="pt-2 flex items-center gap-3">
                             <Link
                               href={slide.buttonLink || "/produk"}
                               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-sm shadow-md transition-all active:scale-95"
                             >
-                              <span>{slide.buttonText || "Belanja Sekarang"}</span>
+                              <span>{slide.buttonText || "Lihat Menu Kue"}</span>
                               <ChevronRight className="w-4 h-4" />
                             </Link>
+                            <a
+                              href="https://wa.me/6285888159765?text=Halo%20Dapur%20Rasa,%20saya%20ingin%20konsultasi%20pemesanan%20kue%20/%20snack%20box"
+                              target="_blank"
+                              rel="noreferrer"
+                              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm backdrop-blur-xs border border-white/25 transition-all active:scale-95"
+                            >
+                              <Phone className="w-4 h-4 text-emerald-400" />
+                              <span>Pesan via WhatsApp</span>
+                            </a>
                           </div>
                         </div>
                       </div>
@@ -309,14 +322,23 @@ export default function HomePage() {
                       <p className="text-[11px] sm:text-xs text-gray-200 line-clamp-1">
                         {slide.subtitle}
                       </p>
-                      <div className="pt-1">
+                      <div className="pt-1 flex items-center gap-2">
                         <Link
                           href={slide.buttonLink || "/produk"}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-xs shadow-sm active:scale-95 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-xs shadow-sm active:scale-95 transition"
                         >
-                          <span>{slide.buttonText || "Belanja Sekarang"}</span>
+                          <span>Lihat Menu</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </Link>
+                        <a
+                          href="https://wa.me/6285888159765?text=Halo%20Dapur%20Rasa,%20saya%20ingin%20pesan%20kue"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-xs shadow-sm active:scale-95 transition"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>WhatsApp</span>
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -440,20 +462,23 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-5 md:grid-cols-10 gap-2 sm:gap-3">
-            {categoryCircles.map((cat) => (
-              <Link
-                key={cat.name}
-                className="group flex flex-col items-center gap-1.5"
-                href={`/produk?category=${cat.slug}`}
-              >
-                <div className="w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-105 group-hover:border-[#4A0E4E]/40 group-hover:shadow-sm transition-all duration-300">
-                  {cat.emoji}
-                </div>
-                <p className="font-bold text-[9.5px] sm:text-xs text-gray-700 text-center leading-tight line-clamp-1 sm:line-clamp-2 px-0.5">
-                  {cat.name}
-                </p>
-              </Link>
-            ))}
+            {categoryCircles.map((cat) => {
+              const IconComponent = cat.icon;
+              return (
+                <Link
+                  key={cat.name}
+                  className="group flex flex-col items-center gap-1.5"
+                  href={`/produk?category=${cat.slug}`}
+                >
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white border border-stone-200/80 shadow-2xs flex items-center justify-center text-stone-700 group-hover:bg-[#4A0E4E] group-hover:text-white group-hover:border-[#4A0E4E] transition-all duration-300">
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <p className="font-semibold text-[10px] sm:text-xs text-stone-700 group-hover:text-[#4A0E4E] text-center leading-tight line-clamp-1 sm:line-clamp-2 px-0.5 transition-colors">
+                    {cat.name}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
 
         </section>
@@ -510,22 +535,17 @@ export default function HomePage() {
                       />
                     </Link>
 
-                    {/* Badges pojok kiri atas */}
-                    <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
-                      {prod.isAvailable ? (
-                        <span className="rounded-md bg-emerald-600/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase shadow-2xs">
-                          Tersedia
-                        </span>
-                      ) : (
-                        <span className="rounded-md bg-red-600/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold shadow-2xs uppercase">
+                    {/* Status Badge Esensial (Tidak menutupi kelezatan foto kue) */}
+                    <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+                      {isOutOfStock ? (
+                        <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
                           Habis
                         </span>
-                      )}
-                      {prod.isBestSeller && (
-                        <span className="rounded-md bg-amber-500/95 text-white px-1.5 py-0.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-wide shadow-2xs">
-                          Best Seller
+                      ) : prod.isBestSeller ? (
+                        <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                          Favorit
                         </span>
-                      )}
+                      ) : null}
                     </div>
 
                     {/* Tombol Like pojok kanan atas */}
