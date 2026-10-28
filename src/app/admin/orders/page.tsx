@@ -4,6 +4,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ShoppingBag,
+  Edit3,
+  Trash2,
+  ChevronDown,
   Search,
   Phone,
   Eye,
@@ -80,6 +83,94 @@ function AdminOrdersContent() {
   const [adminNotes, setAdminNotes] = useState("");
   const [reduceStockOnConfirm, setReduceStockOnConfirm] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+
+  const getStatusLabel = (st: string) => {
+    switch (st) {
+      case "MENUNGGU_KONFIRMASI": return "Menunggu Konfirmasi";
+      case "DIKONFIRMASI": return "Dikonfirmasi";
+      case "SEDANG_DIPROSES": return "Sedang Diproses";
+      case "SIAP_DIAMBIL":
+      case "SIAP_DIKIRIM": return "Siap Dikirim / Diambil";
+      case "SELESAI": return "Selesai";
+      case "DIBATALKAN": return "Dibatalkan";
+      default: return st;
+    }
+  };
+
+  const getStatusSelectStyle = (st: string) => {
+    switch (st) {
+      case "MENUNGGU_KONFIRMASI":
+        return "bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100/90";
+      case "DIKONFIRMASI":
+        return "bg-blue-50 text-blue-900 border-blue-300 hover:bg-blue-100/90";
+      case "SEDANG_DIPROSES":
+        return "bg-purple-50 text-purple-900 border-purple-300 hover:bg-purple-100/90";
+      case "SIAP_DIAMBIL":
+      case "SIAP_DIKIRIM":
+        return "bg-teal-50 text-teal-900 border-teal-300 hover:bg-teal-100/90";
+      case "SELESAI":
+        return "bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100/90";
+      case "DIBATALKAN":
+        return "bg-red-50 text-red-900 border-red-300 hover:bg-red-100/90";
+      default:
+        return "bg-stone-50 text-stone-800 border-stone-300 hover:bg-stone-100";
+    }
+  };
+
+  const handleInlineStatusChange = async (orderId: string, nextStatus: string) => {
+    setUpdatingOrderId(orderId);
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status: nextStatus } : o))
+    );
+
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: nextStatus,
+          reduceStockOnConfirm: true,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal memperbarui status.");
+
+      showToast(`✓ Status pesanan berhasil diubah ke: ${getStatusLabel(nextStatus)}`);
+    } catch (err: any) {
+      alert(err.message || "Gagal memperbarui status pesanan.");
+      fetchOrders();
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  };
+
+  const handleQuickModalStatus = (st: string) => {
+    setNewStatus(st);
+  };
+
+  const handleDeleteOrder = async (orderId: string, orderCode: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus pesanan ${orderCode}? Data pesanan ini akan dihapus permanen.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal menghapus pesanan.");
+
+      showToast(`✓ Pesanan ${orderCode} berhasil dihapus.`);
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(null);
+      }
+      fetchOrders();
+    } catch (err: any) {
+      alert(err.message || "Gagal menghapus pesanan.");
+    }
+  };
 
   // Modal Cetak Struk
   const [printingOrder, setPrintingOrder] = useState<Order | null>(null);
@@ -683,9 +774,33 @@ Terima kasih atas pesanannya!
                       {formatPrice(ord.totalAmount)}
                     </td>
 
-                    {/* 7. Status Pesanan (Sleek Tag, Non-wrapping) */}
-                    <td className="py-3.5 px-4 whitespace-nowrap min-w-[160px]">
-                      {getStatusBadge(ord.status)}
+                    {/* 7. Status Pesanan (Interactive Editable Dropdown Langsung di Tabel) */}
+                    <td className="py-3.5 px-4 whitespace-nowrap min-w-[200px]">
+                      <div className="relative inline-block w-full max-w-[195px]">
+                        <select
+                          value={ord.status}
+                          disabled={updatingOrderId === ord.id}
+                          onChange={(e) => handleInlineStatusChange(ord.id, e.target.value)}
+                          className={`w-full cursor-pointer appearance-none pl-3 pr-8 py-1.5 rounded-xl text-xs font-bold border shadow-2xs transition-all focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/30 ${getStatusSelectStyle(
+                            ord.status
+                          )}`}
+                          title="Klik untuk langsung mengubah status pesanan"
+                        >
+                          <option value="MENUNGGU_KONFIRMASI">🕒 Menunggu Konfirmasi</option>
+                          <option value="DIKONFIRMASI">✓ Dikonfirmasi</option>
+                          <option value="SEDANG_DIPROSES">🍳 Sedang Diproses</option>
+                          <option value="SIAP_DIKIRIM">📦 Siap Dikirim / Diambil</option>
+                          <option value="SELESAI">🎉 Selesai</option>
+                          <option value="DIBATALKAN">✕ Dibatalkan</option>
+                        </select>
+                        <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-current opacity-70">
+                          {updatingOrderId === ord.id ? (
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          )}
+                        </div>
+                      </div>
                     </td>
 
                     {/* 8. Aksi */}
@@ -707,10 +822,18 @@ Terima kasih atas pesanannya!
                         </button>
                         <button
                           onClick={() => openDetailModal(ord)}
-                          className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-lg transition-colors inline-flex items-center gap-1 cursor-pointer text-xs"
+                          className="px-2.5 py-1.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-lg transition-colors inline-flex items-center gap-1 cursor-pointer text-xs shadow-2xs"
+                          title="Buka rincian lengkap & edit pesanan"
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span>Detail</span>
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteOrder(ord.id, ord.orderCode)}
+                          className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors cursor-pointer"
+                          title="Hapus Pesanan"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </td>
@@ -836,6 +959,91 @@ Terima kasih atas pesanannya!
 
             {/* Status Update Form */}
             <form onSubmit={handleUpdateOrder} className="space-y-4 pt-2 border-t border-stone-100">
+              {/* Quick Status Action Bar */}
+              <div className="p-3 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
+                <span className="text-[10px] font-bold text-stone-500 uppercase tracking-wider block">
+                  Pintasan Cepat Ubah Status:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("MENUNGGU_KONFIRMASI")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "MENUNGGU_KONFIRMASI"
+                        ? "bg-amber-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>Menunggu</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("DIKONFIRMASI")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "DIKONFIRMASI"
+                        ? "bg-blue-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Konfirmasi</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("SEDANG_DIPROSES")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "SEDANG_DIPROSES"
+                        ? "bg-purple-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <Cake className="w-3.5 h-3.5" />
+                    <span>Proses Dapur</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("SIAP_DIKIRIM")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "SIAP_DIKIRIM"
+                        ? "bg-teal-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <Truck className="w-3.5 h-3.5" />
+                    <span>Siap Antar/Ambil</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("SELESAI")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "SELESAI"
+                        ? "bg-emerald-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Selesai</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleQuickModalStatus("DIBATALKAN")}
+                    className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition cursor-pointer ${
+                      newStatus === "DIBATALKAN"
+                        ? "bg-red-600 text-white shadow-xs"
+                        : "bg-white text-stone-700 border hover:bg-stone-100"
+                    }`}
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    <span>Batalkan</span>
+                  </button>
+                </div>
+              </div>
               <h3 className="font-bold text-stone-900 uppercase text-[11px]">
                 Perbarui Status Pesanan &amp; Catatan Dapur:
               </h3>
@@ -921,6 +1129,15 @@ Terima kasih atas pesanannya!
                 </div>
 
                 <div className="flex gap-2 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteOrder(selectedOrder.id, selectedOrder.orderCode)}
+                    className="px-3.5 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl flex items-center gap-1.5 transition cursor-pointer mr-auto"
+                    title="Hapus Pesanan Permanen"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Hapus Pesanan</span>
+                  </button>
                   <button
                     type="button"
                     onClick={() => setSelectedOrder(null)}

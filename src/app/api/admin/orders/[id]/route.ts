@@ -170,6 +170,7 @@ export async function DELETE(
     if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
+    await prisma.orderItem.deleteMany({ where: { orderId: id } }).catch(() => {});
     await prisma.order.delete({ where: { id } });
 
     revalidatePath("/admin/orders");
