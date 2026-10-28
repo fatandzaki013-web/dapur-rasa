@@ -107,7 +107,7 @@ export default function ProductDetailPage({
       <div className="w-full max-w-7xl mx-auto px-4 py-16 animate-pulse space-y-6">
         <div className="h-5 bg-stone-200 rounded w-1/4" />
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-6 rounded-3xl aspect-[4/3] bg-stone-200" />
+          <div style={{ aspectRatio: "4 / 3" }} className="lg:col-span-6 rounded-3xl aspect-[4/3] aspect-4/3 bg-stone-200" />
           <div className="lg:col-span-6 space-y-4">
             <div className="h-8 bg-stone-200 rounded w-3/4" />
             <div className="h-6 bg-stone-200 rounded w-1/3" />
@@ -209,12 +209,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
           {product.category.name}
         </Link>
         <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
-        <span
-          className="text-stone-900 font-semibold shrink-0 truncate max-w-[140px] sm:max-w-xs"
-          title={product.name}
-        >
-          {product.name}
-        </span>
+        <span className="text-stone-900 font-semibold shrink-0">{product.name}</span>
       </nav>
 
       {/* Main Product Layout: Grid Responsif Tanpa Overflow */}
@@ -223,7 +218,8 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
         <div className="lg:col-span-6 w-full min-w-0">
           <div
             onClick={() => setIsLightboxOpen(true)}
-            className="rounded-2xl sm:rounded-3xl overflow-hidden aspect-[4/3] sm:aspect-[4/3] max-h-[320px] sm:max-h-[460px] bg-stone-100 shadow-md sm:shadow-xl border-2 sm:border-4 border-white relative group cursor-zoom-in w-full mx-auto"
+            style={{ aspectRatio: "4 / 3" }}
+            className="rounded-3xl overflow-hidden aspect-4/3 aspect-[4/3] bg-stone-100 shadow-xl border-4 border-white relative group cursor-zoom-in w-full mx-auto"
           >
             {currentImageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
