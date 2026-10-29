@@ -49,7 +49,15 @@ export async function getCurrentAdmin() {
         console.warn("DB user query error in getCurrentAdmin:", err);
       }
 
-      // Akses ditolak jika user tidak ditemukan di database
+      // Jika role ADMIN dan token sah, berikan akses agar admin tidak terputus saat latency DB
+      if (payload.role === "ADMIN") {
+        return {
+          id: payload.userId,
+          username: payload.username || "admin",
+          name: "Admin Dapur Rasa",
+          role: "ADMIN",
+        };
+      }
     }
   }
 

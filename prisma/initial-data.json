@@ -3,8 +3,8 @@
     {
       "id": "cmvj6v89v0000wk9c2p7guqj8",
       "username": "admin",
-      "passwordHash": "$2b$10$5x3bkg3.8OYitb99Tj1V/uxGL0dqu9Gl1L7u/fBScJX3vAgwxNbhm",
-      "name": "Pengelola Dapur Rasa",
+      "passwordHash": "$2b$10$TonQzugwIKC9HvNqE4tuveR6JMWiwEr1/74BrklTfQysCG/p60jFm",
+      "name": "Admin Dapur Rasa",
       "role": "ADMIN",
       "createdAt": 1792652254623,
       "updatedAt": 1792652254623

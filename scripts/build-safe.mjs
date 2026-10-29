@@ -15,6 +15,11 @@ try {
   } catch (seedErr) {
     console.warn("[BUILD] Seeding dilewati:", seedErr.message);
   }
+  try {
+    execSync("node scripts/sync-admin.mjs", { stdio: "inherit", timeout: 20000 });
+  } catch (syncErr) {
+    console.warn("[BUILD] Sinkronisasi admin dilewati:", syncErr.message);
+  }
 } catch (dbErr) {
   console.warn("[BUILD] Database server tidak dapat dijangkau saat build, melanjutkan build Next.js:", dbErr.message);
 }
