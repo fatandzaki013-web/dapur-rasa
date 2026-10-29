@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dapur-rasa-dev-super-secret-key-replace-in-prod-2026";
+const JWT_SECRET = process.env.JWT_SECRET || "dr_sec_8f9a2e4b1c7d6e5f3a2b1c0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0";
 const COOKIE_NAME = "dr_admin_session";
 
 export interface AdminPayload {
@@ -49,16 +49,7 @@ export async function getCurrentAdmin() {
         console.warn("DB user query error in getCurrentAdmin:", err);
       }
 
-      // If token payload has role ADMIN and was verified with JWT_SECRET,
-      // grant access so admin session is never broken by DB connectivity blips
-      if (payload.role === "ADMIN") {
-        return {
-          id: payload.userId,
-          username: payload.username || "admin",
-          name: "Admin Dapur Rasa",
-          role: "ADMIN",
-        };
-      }
+      // Akses ditolak jika user tidak ditemukan di database
     }
   }
 

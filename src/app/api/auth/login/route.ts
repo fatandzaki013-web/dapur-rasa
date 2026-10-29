@@ -122,33 +122,7 @@ export async function POST(req: NextRequest) {
       console.warn("Database lookup failed during login (falling back to resilient auth):", dbError);
     }
 
-    // 2. Resilient Fallback: Jika koneksi DB bermasalah saat deploy cloud / serverless,
-    // periksa dari prisma/initial-data.json
-    if (!authenticatedUser) {
-      try {
-        const initialDataPath = path.join(process.cwd(), "prisma", "initial-data.json");
-        if (fs.existsSync(initialDataPath)) {
-          const raw = fs.readFileSync(initialDataPath, "utf8");
-          const parsed = JSON.parse(raw);
-          const matchedUser = parsed.User?.find(
-            (u: any) => u.username?.toLowerCase() === username.toLowerCase()
-          );
-          if (matchedUser && matchedUser.passwordHash) {
-            const isValid = await verifyPassword(password, matchedUser.passwordHash);
-            if (isValid) {
-              authenticatedUser = {
-                id: matchedUser.id || "admin-master-verified",
-                username: matchedUser.username,
-                name: matchedUser.name || "Admin Dapur Rasa",
-                role: matchedUser.role || "ADMIN",
-              };
-            }
-          }
-        }
-      } catch (fileErr) {
-        console.warn("Fallback initial-data.json check failed:", fileErr);
-      }
-    }
+    // 2. Tidak ada fallback lokal - hanya database resmi
 
     // 3. Hanya kredensial database terverifikasi yang diperbolehkan
 
