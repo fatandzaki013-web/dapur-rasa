@@ -150,20 +150,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Fallback default awal
-    if (!authenticatedUser) {
-      if (
-        (username === "admin" || username === "admin@dapurrasa.com") &&
-        (password === "admin123" || password === "admin")
-      ) {
-        authenticatedUser = {
-          id: "admin-master-verified",
-          username: "admin",
-          name: "Admin Dapur Rasa",
-          role: "ADMIN",
-        };
-      }
-    }
+    // 3. Hanya kredensial database terverifikasi yang diperbolehkan
 
     // Jika otentikasi gagal, catat percobaan gagal untuk rate limiting
     if (!authenticatedUser) {

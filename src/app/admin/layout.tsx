@@ -137,6 +137,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  // Jika tidak memiliki sesi admin yang sah, jangan render konten apapun
+  if (!adminUser) {
+    return null;
+  }
+
   // 1. Menu Utama Toko Dapur Rasa (100% Unik & Berfungsi, Tanpa Duplikasi)
   const primaryMenuItems = [
     { label: "Dashboard", href: "/admin", icon: LayoutGrid, exact: true },
