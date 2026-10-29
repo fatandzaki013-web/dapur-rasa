@@ -4,6 +4,55 @@ import { verifyPassword, hashPassword, signAdminToken, COOKIE_NAME } from "@/lib
 import fs from "fs";
 import path from "path";
 
+// Rate limiting in-memory map (Proteksi anti-brute force)
+interface RateLimitRecord {
+  count: number;
+  blockedUntil: number;
+}
+const rateLimitMap = new Map<string, RateLimitRecord>();
+
+function getClientIdentifier(req: NextRequest, username: string): string {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown-client";
+  return `${ip}::${username.toLowerCase()}`;
+}
+
+function checkRateLimit(key: string): { allowed: boolean; remainingMinutes?: number } {
+  const now = Date.now();
+  const record = rateLimitMap.get(key);
+
+  if (!record) return { allowed: true };
+
+  if (record.blockedUntil > now) {
+    const remainingMinutes = Math.max(1, Math.ceil((record.blockedUntil - now) / 60000));
+    return { allowed: false, remainingMinutes };
+  }
+
+  // Jika masa blokir sudah berakhir, reset
+  if (record.blockedUntil !== 0 && record.blockedUntil <= now) {
+    rateLimitMap.delete(key);
+  }
+
+  return { allowed: true };
+}
+
+function recordFailedLogin(key: string) {
+  const now = Date.now();
+  const record = rateLimitMap.get(key) || { count: 0, blockedUntil: 0 };
+  record.count += 1;
+
+  // Batas 5 kali gagal -> blokir selama 15 menit
+  if (record.count >= 5) {
+    record.blockedUntil = now + 15 * 60 * 1000;
+  }
+
+  rateLimitMap.set(key, record);
+}
+
+function clearRateLimit(key: string) {
+  rateLimitMap.delete(key);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -12,8 +61,20 @@ export async function POST(req: NextRequest) {
 
     if (!username || !password) {
       return NextResponse.json(
-        { error: "Username dan password wajib diisi." },
+        { error: "Username dan kata sandi wajib diisi." },
         { status: 400 }
+      );
+    }
+
+    const rateKey = getClientIdentifier(req, username);
+    const rateStatus = checkRateLimit(rateKey);
+
+    if (!rateStatus.allowed) {
+      return NextResponse.json(
+        {
+          error: `Terlalu banyak percobaan login gagal. Demi keamanan portal, akses dibekukan sementara. Silakan coba lagi dalam ${rateStatus.remainingMinutes} menit.`,
+        },
+        { status: 429 }
       );
     }
 
@@ -104,12 +165,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Jika otentikasi gagal, catat percobaan gagal untuk rate limiting
     if (!authenticatedUser) {
+      recordFailedLogin(rateKey);
       return NextResponse.json(
-        { error: "Username atau password salah." },
+        { error: "Username atau kata sandi tidak sesuai." },
         { status: 401 }
       );
     }
+
+    // Jika otentikasi berhasil, reset pembatasan
+    clearRateLimit(rateKey);
 
     // Buat JWT token resmi yang valid 7 hari
     const token = signAdminToken({
@@ -135,7 +201,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("Login unexpected error:", error);
     return NextResponse.json(
-      { error: "Login gagal. Periksa kembali username dan password Anda." },
+      { error: "Login gagal. Periksa kembali username dan kata sandi Anda." },
       { status: 400 }
     );
   }

@@ -111,7 +111,7 @@ export default function AdminLoginPage() {
                   type="text"
                   required
                   autoFocus
-                  autoComplete="username"
+                  autoComplete="off" spellCheck={false}
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder=""
@@ -129,7 +129,7 @@ export default function AdminLoginPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  autoComplete="current-password"
+                  autoComplete="off" spellCheck={false}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan kata sandi"

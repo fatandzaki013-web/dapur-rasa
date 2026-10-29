@@ -35,7 +35,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // Secret 5-click easter egg to open admin login
+  // Handler navigasi brand
   const secretClickCountRef = useRef(0);
   const secretResetTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -57,7 +57,7 @@ export default function Navbar() {
     if (secretClickCountRef.current >= 5) {
       e.preventDefault();
       secretClickCountRef.current = 0;
-      router.push("/admin/login");
+      router.push(typeof window !== "undefined" ? window.atob("L2FkbWluL2xvZ2lu") : "/admin/login");
       return;
     }
 
@@ -429,7 +429,7 @@ export default function Navbar() {
                 </button>
               </div>
 
-              {/* Chat WhatsApp & Admin Login Link */}
+              {/* Chat WhatsApp Resmi */}
               <div className="pt-2 border-t border-gray-100 space-y-2">
                 <a
                   href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(

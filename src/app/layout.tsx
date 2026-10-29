@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import DynamicTheme from "@/components/DynamicTheme";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import SecurityShield from "@/components/SecurityShield";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -86,6 +87,7 @@ export default async function RootLayout({
         <StoreProvider>
           <WishlistProvider>
             <CartProvider>
+              <SecurityShield />
               <DynamicTheme />
               <Navbar />
               <div className="flex-1 flex flex-col bg-theme-bg w-full max-w-full min-w-0 overflow-x-clip" style={{ backgroundColor: bg }}>{children}</div>
