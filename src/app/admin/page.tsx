@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { supabase, Product } from "@/lib/supabase";
+import SalesAnalyticsCards from "@/components/SalesAnalyticsCards";
 
 // ==========================================
 // 1. ZOD VALIDATION SCHEMA
@@ -653,6 +654,23 @@ export default function AdminDashboardPage() {
             <span>Tambah Produk Baru</span>
           </button>
         </div>
+      </div>
+
+      {/* ============================================================== */}
+      {/* 1. RINGKASAN ANALITIK PENJUALAN (SALES ANALYTICS)              */}
+      {/* ============================================================== */}
+      <SalesAnalyticsCards
+        activeProductsCount={metrics.available}
+        totalProductsCount={metrics.total}
+      />
+
+      {/* ============================================================== */}
+      {/* 2. MANAJEMEN KATALOG & STOK PRODUK                            */}
+      {/* ============================================================== */}
+      <div className="pt-2">
+        <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading tracking-tight mb-3">
+          Katalog Menu &amp; Status Ketersediaan
+        </h3>
       </div>
 
       {/* ============================================================== */}
