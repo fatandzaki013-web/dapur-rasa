@@ -25,7 +25,7 @@ export interface QuickViewProduct {
   stock: number;
   isAvailable: boolean;
   images: Array<{ url: string; alt?: string; isPrimary?: boolean }>;
-  category: { name: string; slug: string };
+  category: { name: string; slug: string } | string;
   variants?: Array<{ id: string; name: string; priceAdjustment: number; stock: number }>;
   ingredients?: string;
   storageGuide?: string;
@@ -99,7 +99,7 @@ export default function ProductQuickViewModal({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                  {product.category?.name || "Kue & Camilan"}
+                  {typeof product.category === "string" ? product.category : product.category?.name || "Kue & Camilan"}
                 </span>
                 {product.isAvailable ? (
                   <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">

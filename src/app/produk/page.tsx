@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
 import ProductLikeButton from "@/components/ProductLikeButton";
-import { DEFAULT_PRODUCTS, ProductItem as Product } from "@/lib/constants";
+import { Product, fetchProductsFromSupabase } from "@/lib/supabase";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
@@ -28,7 +28,7 @@ function ProductsContent() {
   const { categories, formatPrice } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
-  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -53,21 +53,26 @@ function ProductsContent() {
 
   const [, startTransition] = useTransition();
 
-  // Fetch products based on filters
+  // Fetch products directly from Supabase based on filters
   useEffect(() => {
     setIsLoading(true);
-    const params = new URLSearchParams();
-    if (searchTerm.trim()) params.set("search", searchTerm.trim());
-    if (selectedCategory) params.set("category", selectedCategory);
-    if (sortOption !== "order") params.set("sort", sortOption);
-    if (onlyAvailable) params.set("available", "true");
-
-    fetch(`/api/public/products?${params.toString()}`, { cache: "no-store" })
-      .then((res) => res.json())
+    fetchProductsFromSupabase({
+      category: selectedCategory,
+      search: searchTerm,
+      availableOnly: onlyAvailable,
+    })
       .then((data) => {
-        if (data.products) setProducts(data.products);
+        let sorted = [...data];
+        if (sortOption === "price-asc") {
+          sorted.sort((a, b) => a.price - b.price);
+        } else if (sortOption === "price-desc") {
+          sorted.sort((a, b) => b.price - a.price);
+        } else if (sortOption === "name-asc") {
+          sorted.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        setProducts(sorted);
       })
-      .catch((e) => console.error("Error fetching products:", e))
+      .catch((e) => console.error("Error fetching products from Supabase:", e))
       .finally(() => setIsLoading(false));
   }, [searchTerm, selectedCategory, sortOption, onlyAvailable]);
 
@@ -263,10 +268,15 @@ function ProductsContent() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
           {products.map((prod) => {
             const currentPrice = prod.price;
-            const isOutOfStock = !prod.isAvailable || prod.stock <= 0;
+            const isOutOfStock = !prod.is_available && !prod.isAvailable;
             const primaryImg =
+              prod.image_url ||
               prod.images?.[0]?.url ||
               "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80";
+            const categoryDisplay =
+              typeof prod.category === "string"
+                ? prod.category
+                : (prod.category as any)?.name || "Kue";
 
             return (
               <div
@@ -291,6 +301,10 @@ function ProductsContent() {
                     {isOutOfStock ? (
                       <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
                         Habis
+                      </span>
+                    ) : prod.badge ? (
+                      <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                        {prod.badge}
                       </span>
                     ) : prod.isBestSeller ? (
                       <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
@@ -323,7 +337,7 @@ function ProductsContent() {
                 <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between space-y-1.5 min-w-0 bg-white">
                   <div className="min-w-0">
                     <span className="text-[8.5px] sm:text-[9.5px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate block mb-0.5">
-                      {prod.category?.name || "Kue"}
+                      {categoryDisplay}
                     </span>
                     <Link
                       href={`/produk/${prod.slug}`}

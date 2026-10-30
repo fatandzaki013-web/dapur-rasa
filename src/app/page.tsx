@@ -34,11 +34,11 @@ import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQui
 import ProductLikeButton from "@/components/ProductLikeButton";
 import { HelpCircle, ChevronDown } from "lucide-react";
 import {
-  DEFAULT_PRODUCTS,
   DEFAULT_GALLERY_ITEMS,
   ProductItem,
   GalleryItem,
 } from "@/lib/constants";
+import { Product, fetchProductsFromSupabase } from "@/lib/supabase";
 
 interface HeroSlide {
   id: string | number;
@@ -55,7 +55,8 @@ export default function HomePage() {
   const { formatPrice, sections } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
-  const [products, setProducts] = useState<ProductItem[]>(DEFAULT_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
   const [selectedGalleryTag, setSelectedGalleryTag] = useState<string>("Semua");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -164,14 +165,15 @@ export default function HomePage() {
     },
   ];
 
-  // Fetch all products & gallery items
+  // Fetch all products from Supabase & gallery items
   useEffect(() => {
-    fetch("/api/public/products", { cache: "no-store" })
-      .then((res) => res.json())
+    setIsLoadingProducts(true);
+    fetchProductsFromSupabase()
       .then((data) => {
-        if (data.products && data.products.length > 0) setProducts(data.products);
+        if (data && data.length > 0) setProducts(data);
       })
-      .catch((e) => console.error("Error fetching products:", e));
+      .catch((e) => console.error("Error fetching products from Supabase:", e))
+      .finally(() => setIsLoadingProducts(false));
 
     fetch("/api/public/gallery", { cache: "no-store" })
       .then((res) => res.json())
@@ -230,7 +232,7 @@ export default function HomePage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleQuickAdd = (product: ProductItem) => {
+  const handleQuickAdd = (product: Product | ProductItem | any) => {
     const res = addItem(product, null, 1);
     showToast(res.message);
     if (res.success) {
@@ -529,14 +531,38 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 2-Column Grid Persis Galeri: Foto Penuh, Judul 2 Baris Lengkap, Tombol + Keranjang Jelas */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
-            {products.map((prod) => {
-              const currentPrice = prod.price;
-              const isOutOfStock = !prod.isAvailable || prod.stock <= 0;
-              const primaryImage =
-                prod.images?.[0]?.url ||
-                "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80";
+          {/* Skeleton loading or 2-Column Grid */}
+          {isLoadingProducts ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex flex-col rounded-2xl border border-slate-200/90 bg-white p-2.5 sm:p-3.5 space-y-2.5 animate-pulse"
+                >
+                  <div className="aspect-square w-full rounded-xl bg-slate-100" />
+                  <div className="h-3 w-16 bg-slate-100 rounded" />
+                  <div className="h-4 w-full bg-slate-100 rounded" />
+                  <div className="h-4 w-2/3 bg-slate-100 rounded" />
+                  <div className="pt-2 flex justify-between items-center mt-auto">
+                    <div className="h-4 w-16 bg-slate-100 rounded" />
+                    <div className="h-7 w-20 bg-slate-100 rounded-lg" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
+              {products.map((prod) => {
+                const currentPrice = prod.price;
+                const isOutOfStock = !prod.is_available && !prod.isAvailable;
+                const primaryImage =
+                  prod.image_url ||
+                  prod.images?.[0]?.url ||
+                  "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80";
+                const categoryDisplay =
+                  typeof prod.category === "string"
+                    ? prod.category
+                    : (prod.category as any)?.name || "Kue";
 
               return (
                 <article
@@ -582,7 +608,7 @@ export default function HomePage() {
                   <div className="p-2.5 sm:p-3.5 flex flex-1 flex-col justify-between space-y-1.5 min-w-0 bg-white">
                     <div className="min-w-0">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold uppercase text-[#4A0E4E] tracking-wide block truncate mb-0.5">
-                        {prod.category?.name || "Kue"}
+                        {categoryDisplay}
                       </span>
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0">
                         <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
@@ -648,8 +674,9 @@ export default function HomePage() {
                   </div>
                 </article>
               );
-            })}
-          </div>
+              })}
+            </div>
+          )}
         </section>
 
         {/* ============================================================== */}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import ProductLikeButton from "@/components/ProductLikeButton";
+import { supabase } from "@/lib/supabase";
 import {
   ShoppingBag,
   Truck,
@@ -77,25 +78,93 @@ export default function ProductDetailPage({
     if (!productDetailCache.has(slug)) {
       setIsLoading(true);
     }
-    fetch(`/api/public/products/${slug}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Produk tidak ditemukan.");
-        return res.json();
-      })
-      .then((data) => {
-        productDetailCache.set(slug, {
-          product: data.product,
-          relatedProducts: data.relatedProducts || [],
-        });
-        setProduct(data.product);
-        setRelatedProducts(data.relatedProducts || []);
-      })
-      .catch((e) => {
-        if (!productDetailCache.has(slug)) {
-          setError(e.message);
+
+    const loadDetail = async () => {
+      try {
+        const { data, error: supaErr } = await supabase
+          .from("products")
+          .select("*")
+          .eq("slug", slug)
+          .single();
+
+        if (data && !supaErr) {
+          const detail: ProductDetail = {
+            id: data.id,
+            name: data.name,
+            slug: data.slug,
+            description: data.description || "",
+            shortDescription: data.description || "",
+            price: data.price,
+            promoPrice: null,
+            unit: data.unit || "pcs",
+            stock: data.is_available ? 50 : 0,
+            isAvailable: data.is_available,
+            isBestSeller: data.badge?.toLowerCase().includes("favorit") || false,
+            isFeatured: true,
+            isNew: false,
+            category: {
+              id: (data.category || "kue").toLowerCase(),
+              name: data.category || "Kue",
+              slug: (data.category || "kue").toLowerCase().replace(/\s+/g, "-"),
+            },
+            images: [
+              {
+                id: "img-1",
+                url: data.image_url,
+                alt: data.name,
+                isPrimary: true,
+              },
+            ],
+            variants: [],
+          };
+
+          setProduct(detail);
+
+          const { data: relData } = await supabase
+            .from("products")
+            .select("*")
+            .neq("slug", slug)
+            .limit(4);
+
+          const rel = (relData || []).map((r: any) => ({
+            id: r.id,
+            name: r.name,
+            slug: r.slug,
+            price: r.price,
+            unit: r.unit || "pcs",
+            images: [{ url: r.image_url, isPrimary: true }],
+            category: { name: r.category, slug: (r.category || "").toLowerCase() },
+          }));
+
+          setRelatedProducts(rel);
+          productDetailCache.set(slug, {
+            product: detail,
+            relatedProducts: rel,
+          });
+          setIsLoading(false);
+          return;
         }
-      })
-      .finally(() => setIsLoading(false));
+
+        // Fallback ke API internal
+        const res = await fetch(`/api/public/products/${slug}`);
+        if (!res.ok) throw new Error("Produk tidak ditemukan.");
+        const apiData = await res.json();
+        productDetailCache.set(slug, {
+          product: apiData.product,
+          relatedProducts: apiData.relatedProducts || [],
+        });
+        setProduct(apiData.product);
+        setRelatedProducts(apiData.relatedProducts || []);
+      } catch (e: any) {
+        if (!productDetailCache.has(slug)) {
+          setError(e.message || "Gagal memuat produk.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDetail();
   }, [slug]);
 
   const showToast = (msg: string) => {

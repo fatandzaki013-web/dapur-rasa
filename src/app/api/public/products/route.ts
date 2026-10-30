@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ensureInitialData } from "@/lib/ensure-seed";
+import { fetchProductsFromSupabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -90,6 +91,20 @@ export async function GET(req: NextRequest) {
     });
 
     // Jika produk kosong dan tidak sedang filter pencarian, pastikan data awal diimpor
+    if (products.length === 0) {
+      const supa = await fetchProductsFromSupabase({
+        category: categorySlug,
+        search,
+        availableOnly: availableParam === "true",
+      });
+      if (supa.length > 0) {
+        return NextResponse.json(
+          { products: supa, total: supa.length },
+          { headers: { "Cache-Control": "no-store, no-cache, must-revalidate" } }
+        );
+      }
+    }
+
     if (products.length === 0 && !search.trim()) {
       await ensureInitialData();
       products = await prisma.product.findMany({
