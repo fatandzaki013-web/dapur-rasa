@@ -47,6 +47,12 @@ export async function GET() {
       ]);
     }
 
+    // Pastikan nomor WhatsApp resmi 085888159765 aktif jika nomor database kosong atau masih dummy template
+    const officialWa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6285888159765";
+    if (settings && (!settings.whatsappNumber || settings.whatsappNumber === "6281234567890")) {
+      settings.whatsappNumber = officialWa;
+    }
+
     return NextResponse.json(
       {
         settings,

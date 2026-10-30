@@ -52,24 +52,12 @@ interface HeroSlide {
   mobileImg: string;
 }
 
-// Category filter chips for product browsing on homepage
-const MOBILE_CATEGORIES = [
-  { label: "Semua", value: "ALL", emoji: "✨" },
-  { label: "Pastel", value: "Pastel", emoji: "🥟" },
-  { label: "Risol", value: "Risol", emoji: "🧀" },
-  { label: "Sosis Solo", value: "Sosis Solo", emoji: "🌯" },
-  { label: "Brownies", value: "Brownies", emoji: "🍫" },
-  { label: "Snack Box", value: "Snack Box", emoji: "📦" },
-  { label: "Nasi", value: "Nasi", emoji: "🍱" },
-];
-
 export default function HomePage() {
   const { formatPrice, sections, settings } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
   const [selectedGalleryTag, setSelectedGalleryTag] = useState<string>("Semua");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -196,18 +184,6 @@ export default function HomePage() {
       .catch((e) => console.error("Error fetching gallery:", e));
   }, []);
 
-  // Filter products by selected category chip on homepage
-  const filteredProducts = useMemo(() => {
-    if (selectedCategory === "ALL") return products;
-    return products.filter((prod) => {
-      const cat =
-        typeof prod.category === "string"
-          ? prod.category
-          : (prod.category as any)?.name || "";
-      return cat.toLowerCase().includes(selectedCategory.toLowerCase());
-    });
-  }, [products, selectedCategory]);
-
   // Filter gallery items by selected tag
   const filteredGalleryItems = useMemo(() => {
     if (selectedGalleryTag === "Semua") return galleryItems;
@@ -284,7 +260,7 @@ export default function HomePage() {
 
 
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
-      <main className="flex-1 pt-[68px] sm:pt-24 pb-28 sm:pb-16 space-y-5 sm:space-y-10 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
+      <main className="flex-1 pt-[72px] sm:pt-24 pb-24 sm:pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
         {/* SECTION 1: HERO SLIDER CAROUSEL (App-Style Responsive Banner)   */}
         {/* ============================================================== */}
@@ -348,28 +324,28 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Mobile Aspect Ratio 16:9 - Sleek, Beautiful, Comfortable on Small Screens */}
-                  <div className="block md:hidden relative w-full aspect-[16/9] overflow-hidden bg-gray-900">
+                  {/* Mobile Aspect Ratio 16:10 - Clean, Beautiful, Doesn't hijack viewport */}
+                  <div className="block md:hidden relative w-full aspect-[4/3] xs:aspect-[16/10] overflow-hidden bg-gray-900">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       alt={slide.title}
                       src={slide.mobileImg}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-3 xs:p-4 text-white space-y-1">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-400 text-[#4A0E4E] text-[10px] font-extrabold tracking-wide uppercase self-start shadow-xs">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent flex flex-col justify-end p-3.5 text-white space-y-1">
+                      <span className="inline-block px-2 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[9px] font-bold tracking-wide uppercase self-start shadow-sm">
                         {slide.badge}
                       </span>
-                      <h2 className="text-sm xs:text-base font-black tracking-tight leading-snug line-clamp-1 xs:line-clamp-2 drop-shadow-xs">
+                      <h2 className="text-sm xs:text-base font-extrabold tracking-tight leading-snug line-clamp-2">
                         {slide.title}
                       </h2>
-                      <p className="text-[11px] text-stone-200 line-clamp-1 font-medium">
+                      <p className="text-[10px] xs:text-[11px] text-gray-200 line-clamp-1">
                         {slide.subtitle}
                       </p>
-                      <div className="pt-0.5 flex items-center gap-2">
+                      <div className="pt-1 flex items-center gap-2">
                         <Link
                           href={slide.buttonLink || "/produk"}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-xs shadow-xs active:scale-95 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
                         >
                           <span>Lihat Menu</span>
                           <ChevronRight className="w-3 h-3" />
@@ -381,7 +357,7 @@ export default function HomePage() {
                           )}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs active:scale-95 transition"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
                         >
                           <Phone className="w-3 h-3" />
                           <span>WhatsApp</span>
@@ -441,78 +417,61 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 2: 3 FITUR UNGGULAN (Trust Badges Mobile & Desktop)    */}
+        {/* SECTION 2: 3 FITUR UNGGULAN (Trust Badges Mobile-Optimized)     */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          {/* Desktop Layout: 3 Columns Grid */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-6">
             {/* Fitur 1: Ambil di Toko / Antar Griya Cileungsi 5 */}
-            <div className="bg-purple-50/70 border border-purple-100/60 p-6 rounded-2xl shadow-xs flex items-start gap-3.5 text-left hover:shadow-sm transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-purple-100">
-                <MapPin className="w-6 h-6 text-[#4A0E4E]" />
+            <div className="bg-purple-50/70 border border-purple-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-purple-100">
+                <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-[#4A0E4E]" />
               </div>
-              <div className="space-y-1 min-w-0">
-                <h3 className="font-bold text-base text-gray-900 leading-tight">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
                   Ambil / Antar Griya 5
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Pilih kue favorit Anda, ambil langsung di dapur atau diantar khusus area Perum Griya Cileungsi 5.
                 </p>
               </div>
             </div>
 
             {/* Fitur 2: 100% Halal & Higienis */}
-            <div className="bg-emerald-50/70 border border-emerald-100/60 p-6 rounded-2xl shadow-xs flex items-start gap-3.5 text-left hover:shadow-sm transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
-                <ShieldCheck className="w-6 h-6 text-[#15803D]" />
+            <div className="bg-emerald-50/70 border border-emerald-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-emerald-100">
+                <ShieldCheck className="w-4 h-4 sm:w-6 sm:h-6 text-[#15803D]" />
               </div>
-              <div className="space-y-1 min-w-0">
-                <h3 className="font-bold text-base text-gray-900 leading-tight">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
                   100% Halal &amp; Higienis
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Seluruh olahan kue dibuat higienis dengan bahan segar berkualitas tanpa bahan pengawet berbahaya.
                 </p>
               </div>
             </div>
 
             {/* Fitur 3: Kualitas & Rasa Terbaik */}
-            <div className="bg-amber-50/70 border border-amber-100/60 p-6 rounded-2xl shadow-xs flex items-start gap-3.5 text-left hover:shadow-sm transition-all duration-300">
-              <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
-                <Award className="w-6 h-6 text-amber-600" />
+            <div className="bg-amber-50/70 border border-amber-100/60 p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-sm transition-all duration-300">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-amber-100">
+                <Award className="w-4 h-4 sm:w-6 sm:h-6 text-amber-600" />
               </div>
-              <div className="space-y-1 min-w-0">
-                <h3 className="font-bold text-base text-gray-900 leading-tight">
+              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                <h3 className="font-bold text-[10.5px] sm:text-base text-gray-900 leading-tight">
                   Kualitas &amp; Rasa
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-relaxed hidden sm:block">
                   Dibuat fresh setiap hari dengan resep autentik rumahan untuk cita rasa istimewa terjangkau.
                 </p>
               </div>
             </div>
           </div>
-
-          {/* Mobile Layout: Sleek Horizontal Scroll Strip - Nyaman di Mata & Hemat Ruang */}
-          <div className="md:hidden flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-50/80 border border-purple-100/90 text-[#4A0E4E] shrink-0 shadow-2xs">
-              <MapPin className="w-3.5 h-3.5 text-[#4A0E4E]" />
-              <span className="text-[11px] font-bold">Antar Griya Cileungsi 5</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50/80 border border-emerald-100/90 text-emerald-800 shrink-0 shadow-2xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="text-[11px] font-bold">100% Halal &amp; Higienis</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-100/90 text-amber-800 shrink-0 shadow-2xs">
-              <Award className="w-3.5 h-3.5 text-amber-600" />
-              <span className="text-[11px] font-bold">Resep Rumahan Fresh</span>
-            </div>
-          </div>
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: KATEGORI PRODUK (Desktop Grid Only)                 */}
+        {/* SECTION 3: KATEGORI PRODUK (Balanced 5-Column Grid on Mobile)  */}
         {/* ============================================================== */}
-        <section className="hidden md:block mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
@@ -531,6 +490,7 @@ export default function HomePage() {
             </Link>
           </div>
 
+          {/* 4 Kolom di Mobile dan Desktop: Tampil Bersih, Mewah & Proporsional */}
           <div className="grid grid-cols-4 gap-2 sm:gap-5">
             {categoryCircles.map((cat) => {
               const IconComponent = cat.icon;
@@ -553,74 +513,29 @@ export default function HomePage() {
               );
             })}
           </div>
+
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 4: PRODUK POPULER & MENU PILIHAN (App-Style Browsing)   */}
+        {/* SECTION 4: PRODUK POPULER (Compact 2-Col Mobile Grid)          */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-3.5 sm:space-y-6">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-100 text-[#4A0E4E] text-[10px] sm:text-xs font-bold mb-1">
-                <Sparkles className="w-3 h-3 text-[#4A0E4E]" />
-                <span>Menu Pilihan Fresh</span>
-              </div>
-              <h2 className="text-base sm:text-2xl font-extrabold text-stone-900 tracking-tight">
-                Katalog Menu Dapur Rasa
+              <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+                Produk Populer
               </h2>
-              <p className="text-[11px] sm:text-sm text-stone-500">
-                Paling banyak dicari &amp; dibuat fresh setiap hari
+              <p className="text-xs sm:text-sm text-gray-500">
+                Paling banyak dicari oleh pelanggan kami
               </p>
             </div>
             <Link
               className="text-xs sm:text-sm font-semibold text-[#4A0E4E] hover:underline flex items-center gap-0.5 shrink-0"
               href="/produk"
             >
-              <span>Semua Menu</span>
+              <span>Lihat Selengkapnya</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
-          </div>
-
-          {/* Interactive Horizontal Category Filter Chips - Sangat nyaman di mobile & tablet */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-2.5 px-2.5 sm:mx-0 sm:px-0">
-            {MOBILE_CATEGORIES.map((cat) => {
-              const isActive = selectedCategory === cat.value;
-              const count =
-                cat.value === "ALL"
-                  ? products.length
-                  : products.filter((p) => {
-                      const c =
-                        typeof p.category === "string"
-                          ? p.category
-                          : (p.category as any)?.name || "";
-                      return c.toLowerCase().includes(cat.value.toLowerCase());
-                    }).length;
-
-              return (
-                <button
-                  key={cat.value}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.value)}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 shrink-0 cursor-pointer active:scale-95 ${
-                    isActive
-                      ? "bg-[#4A0E4E] text-white shadow-xs shadow-purple-900/20"
-                      : "bg-white text-stone-700 border border-stone-200/90 hover:bg-stone-50 hover:border-stone-300"
-                  }`}
-                >
-                  <span>{cat.emoji}</span>
-                  <span>{cat.label}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                      isActive
-                        ? "bg-white/20 text-white"
-                        : "bg-stone-100 text-stone-500"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
           </div>
 
           {/* Skeleton loading or 2-Column Grid */}
@@ -629,38 +544,22 @@ export default function HomePage() {
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="flex flex-col rounded-2xl border border-stone-200/80 bg-white p-3 space-y-2.5 animate-pulse"
+                  className="flex flex-col rounded-2xl border border-slate-200/90 bg-white p-2.5 sm:p-3.5 space-y-2.5 animate-pulse"
                 >
-                  <div className="aspect-square w-full rounded-xl bg-stone-100" />
-                  <div className="h-3 w-16 bg-stone-100 rounded" />
-                  <div className="h-4 w-full bg-stone-100 rounded" />
-                  <div className="h-4 w-2/3 bg-stone-100 rounded" />
+                  <div className="aspect-square w-full rounded-xl bg-slate-100" />
+                  <div className="h-3 w-16 bg-slate-100 rounded" />
+                  <div className="h-4 w-full bg-slate-100 rounded" />
+                  <div className="h-4 w-2/3 bg-slate-100 rounded" />
                   <div className="pt-2 flex justify-between items-center mt-auto">
-                    <div className="h-4 w-16 bg-stone-100 rounded" />
-                    <div className="h-8 w-20 bg-stone-100 rounded-lg" />
+                    <div className="h-4 w-16 bg-slate-100 rounded" />
+                    <div className="h-7 w-20 bg-slate-100 rounded-lg" />
                   </div>
                 </div>
               ))}
             </div>
-          ) : filteredProducts.length === 0 ? (
-            <div className="py-12 text-center bg-white rounded-2xl border border-stone-200/80 p-6 space-y-3">
-              <div className="w-12 h-12 rounded-full bg-purple-50 text-[#4A0E4E] flex items-center justify-center mx-auto">
-                <Cake className="w-6 h-6" />
-              </div>
-              <p className="text-sm font-bold text-stone-800">
-                Belum ada produk untuk kategori ini
-              </p>
-              <button
-                type="button"
-                onClick={() => setSelectedCategory("ALL")}
-                className="px-4 py-2 rounded-xl bg-[#4A0E4E] text-white text-xs font-bold shadow-xs active:scale-95 transition"
-              >
-                Tampilkan Semua Menu
-              </button>
-            </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
-              {filteredProducts.map((prod) => {
+              {products.map((prod) => {
                 const currentPrice = prod.price;
                 const isOutOfStock = !prod.is_available && !prod.isAvailable;
                 const primaryImage =
@@ -672,120 +571,116 @@ export default function HomePage() {
                     ? prod.category
                     : (prod.category as any)?.name || "Kue";
 
-                return (
-                  <article
-                    key={prod.id}
-                    className="group relative flex flex-col min-w-0 w-full overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-2xs transition-all duration-300 hover:border-purple-300 hover:shadow-md justify-between"
-                  >
-                    {/* Photo: aspect-square agar foto kue utuh proporsional */}
-                    <div className="relative aspect-square w-full overflow-hidden bg-stone-50">
-                      <Link
-                        className="block w-full h-full"
-                        href={`/produk/${prod.slug}`}
-                        prefetch={true}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          alt={prod.name}
-                          src={primaryImage}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </Link>
+              return (
+                <article
+                  key={prod.id}
+                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-slate-200/90 bg-white shadow-2xs transition-all duration-300 hover:border-purple-200 hover:shadow-md rounded-2xl justify-between"
+                >
+                  {/* Photo: aspect-square agar foto kue utuh tidak kepotong atas/bawah */}
+                  <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
+                    <Link
+                      className="block w-full h-full"
+                      href={`/produk/${prod.slug}`}
+                      prefetch={true}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        alt={prod.name}
+                        src={primaryImage}
+                        className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </Link>
 
-                      {/* Status Badges */}
-                      <div className="absolute top-2 left-2 flex flex-col gap-1 z-10 pointer-events-none">
-                        {isOutOfStock ? (
-                          <span className="rounded-full bg-stone-900/85 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
-                            Habis
-                          </span>
-                        ) : prod.isBestSeller ? (
-                          <span className="rounded-full bg-amber-500 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
-                            ★ Favorit
-                          </span>
-                        ) : prod.badge ? (
-                          <span className="rounded-full bg-[#4A0E4E]/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
-                            {prod.badge}
-                          </span>
-                        ) : null}
-                      </div>
-
-                      {/* Tombol Like Pojok Kanan Atas */}
-                      <div className="absolute top-2 right-2 z-10">
-                        <ProductLikeButton product={prod} size="sm" />
-                      </div>
-                    </div>
-
-                    {/* Body Info: Judul Kue 2 Baris Bersih & Terbaca Jelas */}
-                    <div className="p-3 sm:p-3.5 flex flex-1 flex-col justify-between space-y-2 min-w-0 bg-white">
-                      <div className="min-w-0">
-                        <span className="text-[9.5px] sm:text-[10px] font-bold uppercase text-[#4A0E4E] tracking-wider block truncate mb-0.5">
-                          {categoryDisplay}
+                    {/* Status Badge Esensial (Tidak menutupi kelezatan foto kue) */}
+                    <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+                      {isOutOfStock ? (
+                        <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                          Habis
                         </span>
-                        <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0">
-                          <h3 className="font-extrabold text-xs sm:text-sm text-stone-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
-                            {prod.name}
-                          </h3>
-                        </Link>
+                      ) : prod.isBestSeller ? (
+                        <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                          Favorit
+                        </span>
+                      ) : null}
+                    </div>
+
+                    {/* Tombol Like pojok kanan atas */}
+                    <div className="absolute top-2 right-2 z-10">
+                      <ProductLikeButton product={prod} size="sm" />
+                    </div>
+                  </div>
+
+                  {/* Body Info: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
+                  <div className="p-2.5 sm:p-3.5 flex flex-1 flex-col justify-between space-y-1.5 min-w-0 bg-white">
+                    <div className="min-w-0">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold uppercase text-[#4A0E4E] tracking-wide block truncate mb-0.5">
+                        {categoryDisplay}
+                      </span>
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0">
+                        <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
+                          {prod.name}
+                        </h3>
+                      </Link>
+                    </div>
+
+                    {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
+                    <div className="pt-1.5 border-t border-slate-100 mt-auto min-w-0">
+                      {/* Mobile Layout (< sm): Harga Jelas & Tombol Full-Width Anti-Potong */}
+                      <div className="sm:hidden space-y-1.5">
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-xs font-black text-[#4A0E4E] font-mono leading-none">
+                            {formatPrice(currentPrice)}
+                          </span>
+                          <span className="text-[9px] text-slate-400 font-medium">/{prod.unit}</span>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={isOutOfStock}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleQuickAdd(prod);
+                          }}
+                          className={`w-full h-7 rounded-xl text-[10px] font-extrabold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer ${
+                            isOutOfStock
+                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                              : "bg-[#4A0E4E] text-white hover:bg-[#5C1261]"
+                          }`}
+                        >
+                          <ShoppingCart className="w-3 h-3" />
+                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                        </button>
                       </div>
 
-                      {/* Bottom Action Bar: Harga & Tombol + Keranjang yang Nyaman Ditekan */}
-                      <div className="pt-2 border-t border-stone-100 mt-auto min-w-0">
-                        {/* Mobile Layout (< sm): Harga Jelas & Tombol Nyaman Dilihat & Ditekan */}
-                        <div className="sm:hidden space-y-2">
-                          <div className="flex items-baseline justify-between">
-                            <span className="text-sm font-black text-[#4A0E4E] font-mono leading-none">
-                              {formatPrice(currentPrice)}
-                            </span>
-                            <span className="text-[10px] text-stone-400 font-medium">/{prod.unit}</span>
-                          </div>
-                          <button
-                            type="button"
-                            disabled={isOutOfStock}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleQuickAdd(prod);
-                            }}
-                            className={`w-full h-8.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-[0.98] transition-all cursor-pointer ${
-                              isOutOfStock
-                                ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                                : "bg-[#4A0E4E] text-white hover:bg-[#5C1261] shadow-purple-900/10"
-                            }`}
-                          >
-                            <ShoppingCart className="w-3.5 h-3.5" />
-                            <span>{isOutOfStock ? "Stok Habis" : "+ Keranjang"}</span>
-                          </button>
-                        </div>
-
-                        {/* Desktop Layout (>= sm): Berdampingan Rapi */}
-                        <div className="hidden sm:flex items-center justify-between gap-1.5">
-                          <p className="text-sm md:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
-                            {formatPrice(currentPrice)}
-                          </p>
-                          <button
-                            type="button"
-                            disabled={isOutOfStock}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              handleQuickAdd(prod);
-                            }}
-                            className={`h-8 px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
-                              isOutOfStock
-                                ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                                : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
-                            }`}
-                            title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
-                          >
-                            <ShoppingCart className="w-3.5 h-3.5" />
-                            <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
-                          </button>
-                        </div>
+                      {/* Desktop Layout (>= sm): Berdampingan Rapi */}
+                      <div className="hidden sm:flex items-center justify-between gap-1.5">
+                        <p className="text-sm md:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
+                          {formatPrice(currentPrice)}
+                        </p>
+                        <button
+                          type="button"
+                          disabled={isOutOfStock}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleQuickAdd(prod);
+                          }}
+                          className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
+                            isOutOfStock
+                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                              : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
+                          }`}
+                          title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
+                        >
+                          <ShoppingCart className="w-3 h-3" />
+                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                        </button>
                       </div>
                     </div>
-                  </article>
-                );
+                  </div>
+                </article>
+              );
               })}
             </div>
           )}
@@ -794,7 +689,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* SECTION 5: GALERI FOTO KUE & CAMILAN (Visual Showcase Dapur Rasa) */}
         {/* ============================================================== */}
-        <section id="galeri-section" className="hidden md:block mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-gray-100 scroll-mt-24">
+        <section id="galeri-section" className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-gray-100 scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#4A0E4E] mb-1">
@@ -942,7 +837,7 @@ export default function HomePage() {
         {/* ============================================================== */}
         {/* SECTION 6: CARA BELANJA MUDAH (2x2 Grid on Mobile)             */}
         {/* ============================================================== */}
-        <section className="hidden md:block mx-auto max-w-7xl px-2.5 sm:px-6 py-4 sm:py-6 border-t border-gray-100">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 py-4 sm:py-6 border-t border-gray-100">
           <div className="text-center space-y-1 sm:space-y-2 mb-6 sm:mb-10">
             <h2 className="text-lg sm:text-2xl font-extrabold text-gray-900 tracking-tight">
               Cara Belanja Mudah

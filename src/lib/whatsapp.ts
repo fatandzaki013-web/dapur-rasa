@@ -16,7 +16,8 @@ export function getWhatsAppNumber(customNumber?: string | null): string {
   const source = (customNumber && customNumber.trim()) || DEFAULT_WHATSAPP_NUMBER;
   let clean = source.replace(/[^0-9]/g, "");
 
-  if (!clean) {
+  // Jika kosong atau nomor placeholder/dummy lama bawaan template (misal 6281234567890), arahkan ke nomor resmi
+  if (!clean || clean === "6281234567890" || clean === "081234567890" || clean === "628123456789") {
     clean = DEFAULT_WHATSAPP_NUMBER.replace(/[^0-9]/g, "");
   }
 
