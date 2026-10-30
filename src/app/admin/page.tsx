@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Package,
   Plus,
@@ -23,6 +24,7 @@ import {
   UploadCloud,
   FileImage,
   Camera,
+  ShoppingBag,
 } from "lucide-react";
 import { z } from "zod";
 import { supabase, Product } from "@/lib/supabase";
@@ -622,6 +624,15 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex items-center gap-2.5 shrink-0">
+          <Link
+            href="/admin/orders"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-[#4A0E4E] text-xs font-bold transition shadow-2xs cursor-pointer"
+            title="Kelola Pesanan Masuk Pelanggan"
+          >
+            <ShoppingBag className="w-4 h-4 text-[#4A0E4E]" />
+            <span className="hidden sm:inline">Pesanan Masuk</span>
+          </Link>
+
           <button
             type="button"
             onClick={() => loadProducts(true)}

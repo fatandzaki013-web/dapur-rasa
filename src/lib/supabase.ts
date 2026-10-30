@@ -28,6 +28,40 @@ export interface Product {
   images: Array<{ url: string; alt?: string; isPrimary?: boolean }>;
 }
 
+export interface OrderItemPayload {
+  id?: string;
+  name: string;
+  variantName?: string | null;
+  price: number;
+  quantity: number;
+  subtotal: number;
+}
+
+export interface SupabaseOrder {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  delivery_address: string;
+  notes?: string | null;
+  items: OrderItemPayload[] | string;
+  total_price: number;
+  status: "pending" | "diproses" | "selesai" | string;
+  created_at?: string;
+}
+
+export function parseOrderItems(items: any): OrderItemPayload[] {
+  if (Array.isArray(items)) return items;
+  if (typeof items === "string") {
+    try {
+      const parsed = JSON.parse(items);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 export function normalizeProduct(p: any): Product {
   const isAvailable = p.is_available ?? p.isAvailable ?? true;
   const imageUrl = p.image_url || p.images?.[0]?.url || "";

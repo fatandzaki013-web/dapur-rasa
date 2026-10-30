@@ -30,7 +30,45 @@ import {
   ShieldCheck,
   ArrowLeft,
   Smartphone,
+  Loader2,
 } from "lucide-react";
+import { z } from "zod";
+import { supabase } from "@/lib/supabase";
+
+// ==========================================
+// 1. ZOD VALIDATION SCHEMA UNTUK CHECKOUT
+// ==========================================
+export const checkoutOrderSchema = z.object({
+  customer_name: z
+    .string()
+    .trim()
+    .min(3, "Nama pemesan minimal 3 karakter, wajib diisi"),
+  customer_phone: z
+    .string()
+    .trim()
+    .min(1, "Nomor WhatsApp wajib diisi")
+    .refine(
+      (val) => {
+        const clean = val.replace(/[^0-9]/g, "");
+        return clean.length >= 10 && (clean.startsWith("08") || clean.startsWith("628"));
+      },
+      {
+        message:
+          "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, hanya angka)",
+      }
+    ),
+  delivery_address: z
+    .string()
+    .trim()
+    .min(5, "Alamat / blok rumah wajib diisi (minimal 5 karakter)"),
+  notes: z.string().trim().optional(),
+  items: z
+    .array(z.any())
+    .min(1, "Keranjang belanja tidak boleh kosong"),
+  total_price: z
+    .number()
+    .positive("Total harga harus angka positif lebih dari 0"),
+});
 
 const DEFAULT_GOPAY_NUMBER = "085888159765";
 
@@ -72,6 +110,7 @@ export default function CheckoutPage() {
   const [isCopiedGopay, setIsCopiedGopay] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Completed order data for rendering official receipt
   const [completedOrder, setCompletedOrder] = useState<CompletedOrderInfo | null>(null);
@@ -185,33 +224,40 @@ Terima kasih banyak telah memesan di ${brandName}!
     e.preventDefault();
     if (isSubmitting) return;
     setErrorMessage(null);
+    setFieldErrors({});
 
-    if (!customerName.trim()) {
-      setErrorMessage("Nama pemesan wajib diisi.");
+    // Tentukan alamat pengantaran
+    const finalAddress =
+      fulfillmentType === "DELIVERY"
+        ? deliveryAddress.trim()
+        : deliveryAddress.trim() || "Diambil Sendiri di Dapur Toko";
+
+    const rawFormData = {
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      delivery_address: finalAddress,
+      notes: notes,
+      items: items,
+      total_price: totalAmount,
+    };
+
+    // 1. Validasi Input Pesanan (Zod)
+    const validation = checkoutOrderSchema.safeParse(rawFormData);
+    if (!validation.success) {
+      const errors: Record<string, string> = {};
+      validation.error.issues.forEach((issue) => {
+        const field = String(issue.path[0]);
+        errors[field] = issue.message;
+      });
+      setFieldErrors(errors);
+      setErrorMessage("Silakan lengkapi formulir pesanan yang ditandai merah.");
       return;
     }
 
-    if (!customerPhone.trim()) {
-      setErrorMessage("Nomor WhatsApp wajib diisi.");
-      return;
-    }
-
+    const validData = validation.data;
     const cleanPhone = customerPhone.replace(/[^0-9]/g, "");
-    if (cleanPhone.length < 9) {
-      setErrorMessage("Nomor WhatsApp minimal 9 digit angka (contoh: 08123456789).");
-      return;
-    }
 
-    if (fulfillmentType === "DELIVERY" && !deliveryAddress.trim()) {
-      setErrorMessage("Alamat rumah wajib diisi (mohon cantumkan Blok dan Nomor Rumah).");
-      return;
-    }
-
-    if (items.length === 0) {
-      setErrorMessage("Keranjang pesanan Anda masih kosong.");
-      return;
-    }
-
+    // 2. Tampilkan state loading ("Memproses pesanan...")
     setIsSubmitting(true);
 
     const orderItemsSnapshot = items.map((it) => ({
@@ -219,6 +265,7 @@ Terima kasih banyak telah memesan di ${brandName}!
       variantName: it.variantName || null,
       quantity: it.quantity,
       price: it.price,
+      subtotal: it.price * it.quantity,
       imageUrl: it.imageUrl || null,
     }));
 
@@ -234,71 +281,109 @@ Terima kasih banyak telah memesan di ${brandName}!
         ? "QRIS All Payment"
         : "No. Rek (Khusus GoPay)";
 
+    let generatedOrderCode = `DR-${Date.now().toString().slice(-6)}`;
+
     try {
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          customerName: customerName.trim(),
-          customerPhone: cleanPhone,
-          fulfillmentType,
-          deliveryAddress: fulfillmentType === "DELIVERY" ? deliveryAddress.trim() : null,
-          notes: notes.trim() || null,
-          paymentMethod,
-          items: items.map((it) => ({
-            productId: it.productId,
-            name: it.name,
-            variantId: it.variantId || null,
-            quantity: it.quantity,
-          })),
-        }),
-      });
+      // 3. Simpan order ke tabel Supabase public.orders dengan payload lengkap
+      const orderPayload = {
+        customer_name: validData.customer_name,
+        customer_phone: cleanPhone,
+        delivery_address: validData.delivery_address,
+        notes: validData.notes || "",
+        items: orderItemsSnapshot,
+        total_price: totalAmount,
+        status: "pending",
+      };
 
-      const data = await response.json();
+      const { data: savedOrder, error: supabaseError } = await supabase
+        .from("orders")
+        .insert([orderPayload])
+        .select();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Gagal memproses pesanan.");
+      if (supabaseError) {
+        console.warn("Gagal simpan ke Supabase orders:", supabaseError);
+      } else if (savedOrder && savedOrder[0]?.id) {
+        generatedOrderCode = `DR-${savedOrder[0].id.slice(0, 6).toUpperCase()}`;
       }
 
-      // Kosongkan keranjang di state dan localStorage seketika
+      // 4. Susun Pesan WhatsApp Rapi & Link Redirect
+      const storeWaNumber = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
+      let formattedStoreWa = storeWaNumber;
+      if (formattedStoreWa.startsWith("0")) {
+        formattedStoreWa = "62" + formattedStoreWa.slice(1);
+      } else if (!formattedStoreWa.startsWith("62")) {
+        formattedStoreWa = "62" + formattedStoreWa;
+      }
+
+      const itemsSummary = items
+        .map(
+          (it) =>
+            `• ${it.name}${it.variantName ? ` (${it.variantName})` : ""} (${it.quantity}x) - ${formatPrice(
+              it.price * it.quantity
+            )}`
+        )
+        .join("\n");
+
+      const deliveryText =
+        fulfillmentType === "DELIVERY"
+          ? `*Alamat:* ${validData.delivery_address}`
+          : `*Pengambilan:* Diambil Sendiri di Dapur Toko`;
+
+      const notesText = validData.notes ? `\n*Catatan:* ${validData.notes}` : "";
+
+      const waText = `Halo ${brandName}, saya mau pesan:
+
+${itemsSummary}
+
+*Total:* ${formatPrice(totalAmount)}
+*No. Pesanan:* ${generatedOrderCode}
+*Pemesan:* ${validData.customer_name} (${cleanPhone})
+${deliveryText}${notesText}
+
+Mohon segera diproses ya, terima kasih!`;
+
+      const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedStoreWa}&text=${encodeURIComponent(
+        waText
+      )}`;
+
+      // 5. Bersihkan isi keranjang belanjaan setelah order berhasil disimpan
       clearCart();
       try {
         localStorage.removeItem("dr_cart_items_v1");
         localStorage.setItem("dr_cart_items_v1", "[]");
-      } catch (e) {
-        // Fallback
-      }
+      } catch {}
 
       const completedData = {
-        orderCode: data.orderCode,
-        totalAmount: data.totalAmount,
-        subtotal: data.subtotal,
-        shippingFee: data.shippingFee ?? 0,
-        customerName: customerName.trim(),
+        orderCode: generatedOrderCode,
+        totalAmount,
+        subtotal,
+        shippingFee: 0,
+        customerName: validData.customer_name,
         customerPhone: cleanPhone,
         fulfillmentType,
-        deliveryAddress: deliveryAddress.trim(),
+        deliveryAddress: validData.delivery_address,
         paymentMethod,
         paymentMethodLabel: paymentLabel,
-        notes: notes.trim(),
+        notes: validData.notes || "",
         createdAtFormatted: nowFormatted,
         items: orderItemsSnapshot,
-        whatsappUrl: data.whatsappUrl,
+        whatsappUrl,
         savedAt: Date.now(),
       };
 
       try {
         localStorage.setItem("dr_last_completed_order", JSON.stringify(completedData));
-        window.history.replaceState(null, "", "?order=" + data.orderCode);
-      } catch (e) {}
+        window.history.replaceState(null, "", "?order=" + generatedOrderCode);
+      } catch {}
 
       setCompletedOrder(completedData);
 
-      // Buka link WhatsApp di window/tab baru agar halaman web tetap menampilkan bukti pesanan yang utuh!
-      if (data.whatsappUrl) {
-        window.open(data.whatsappUrl, "_blank");
+      // 6. Buka link WhatsApp Web / App
+      if (whatsappUrl) {
+        window.open(whatsappUrl, "_blank");
       }
     } catch (err: any) {
+      console.error("Checkout error:", err);
       setErrorMessage(err.message || "Terjadi kesalahan saat memproses pesanan.");
     } finally {
       setIsSubmitting(false);
@@ -647,11 +732,26 @@ Terima kasih banyak telah memesan di ${brandName}!
                     type="text"
                     required
                     value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value);
+                      if (fieldErrors.customer_name) {
+                        setFieldErrors((prev) => ({ ...prev, customer_name: "" }));
+                      }
+                    }}
                     placeholder="Contoh: Ibu Rina / Bpk. Hendra"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E] transition bg-white"
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
+                      fieldErrors.customer_name
+                        ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
+                        : "border-stone-300 focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    }`}
                   />
                 </div>
+                {fieldErrors.customer_name && (
+                  <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{fieldErrors.customer_name}</span>
+                  </p>
+                )}
               </div>
 
               <div>
@@ -666,14 +766,30 @@ Terima kasih banyak telah memesan di ${brandName}!
                     type="tel"
                     required
                     value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    onChange={(e) => {
+                      setCustomerPhone(e.target.value);
+                      if (fieldErrors.customer_phone) {
+                        setFieldErrors((prev) => ({ ...prev, customer_phone: "" }));
+                      }
+                    }}
                     placeholder="Contoh: 081234567890"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E] transition bg-white"
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
+                      fieldErrors.customer_phone
+                        ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
+                        : "border-stone-300 focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    }`}
                   />
                 </div>
-                <p className="text-[11px] text-stone-500 mt-1">
-                  Nomor aktif untuk konfirmasi pesanan via WhatsApp.
-                </p>
+                {fieldErrors.customer_phone ? (
+                  <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{fieldErrors.customer_phone}</span>
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-stone-500 mt-1">
+                    Nomor aktif untuk konfirmasi pesanan via WhatsApp.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -779,11 +895,26 @@ Terima kasih banyak telah memesan di ${brandName}!
                     required
                     rows={2}
                     value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
+                    onChange={(e) => {
+                      setDeliveryAddress(e.target.value);
+                      if (fieldErrors.delivery_address) {
+                        setFieldErrors((prev) => ({ ...prev, delivery_address: "" }));
+                      }
+                    }}
                     placeholder="Contoh: Blok A8 No. 12, Blok C2 No. 05, RT/RW, dekat masjid/pos satpam..."
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-emerald-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition shadow-2xs leading-relaxed placeholder:text-stone-400"
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm focus:outline-none transition shadow-2xs leading-relaxed placeholder:text-stone-400 ${
+                      fieldErrors.delivery_address
+                        ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
+                        : "border-emerald-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600"
+                    }`}
                   />
                 </div>
+                {fieldErrors.delivery_address && (
+                  <p className="text-xs text-rose-600 font-semibold flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{fieldErrors.delivery_address}</span>
+                  </p>
+                )}
                 <p className="text-[11px] text-emerald-800 font-medium">
                   ⚠️ <strong>Wajib diisi:</strong> Sebutkan alamat rumah Anda berada di <strong>Blok berapa dan Nomor berapa</strong> agar kurir dapat mengantar tepat waktu ke depan pintu rumah Anda.
                 </p>
@@ -1127,9 +1258,18 @@ Terima kasih banyak telah memesan di ${brandName}!
                   : "bg-emerald-600 hover:bg-emerald-700 hover:shadow-xl active:scale-[0.99]"
               }`}
             >
-              <Phone className="w-5 h-5" />
-              <span>{isSubmitting ? "Membuka WhatsApp..." : "Checkout & Pesan via WhatsApp"}</span>
-              <ArrowRight className="w-4 h-4 ml-1" />
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Memproses pesanan...</span>
+                </>
+              ) : (
+                <>
+                  <Phone className="w-5 h-5" />
+                  <span>Pesan via WhatsApp</span>
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </>
+              )}
             </button>
 
             {/* Keamanan & Garansi Toko */}
@@ -1169,9 +1309,17 @@ Terima kasih banyak telah memesan di ${brandName}!
               isSubmitting ? "bg-stone-400" : "bg-emerald-600 hover:bg-emerald-700"
             }`}
           >
-            <Phone className="w-4 h-4" />
-            <span>{isSubmitting ? "Membuka..." : "Checkout via WA"}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Memproses...</span>
+              </>
+            ) : (
+              <>
+                <Phone className="w-4 h-4" />
+                <span>Pesan via WhatsApp</span>
+              </>
+            )}
           </button>
         </div>
       </div>
