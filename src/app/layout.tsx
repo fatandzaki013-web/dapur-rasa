@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
 import DynamicTheme from "@/components/DynamicTheme";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 import SecurityShield from "@/components/SecurityShield";
 import { prisma } from "@/lib/prisma";
 
@@ -95,6 +96,7 @@ export default async function RootLayout({
               <CartDrawer />
               <WishlistDrawer />
               <MobileBottomNav />
+              <FloatingWhatsAppButton />
             </CartProvider>
           </WishlistProvider>
         </StoreProvider>

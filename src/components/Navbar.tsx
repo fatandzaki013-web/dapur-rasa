@@ -7,6 +7,11 @@ import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 import {
+  getWhatsAppNumber,
+  getWhatsAppDisplayNumber,
+  buildWhatsAppLink,
+} from "@/lib/whatsapp";
+import {
   ShoppingCart,
   Heart,
   Search,
@@ -94,9 +99,8 @@ export default function Navbar() {
   }
 
   const brandName = settings?.brandName || "Dapur Rasa";
-  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
-  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
-  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
+  const waLinkNum = getWhatsAppNumber(settings?.whatsappNumber);
+  const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -432,9 +436,10 @@ export default function Navbar() {
               {/* Chat WhatsApp Resmi */}
               <div className="pt-2 border-t border-gray-100 space-y-2">
                 <a
-                  href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(
-                    "Halo Dapur Rasa, saya ingin konsultasi / pesan kue..."
-                  )}`}
+                  href={buildWhatsAppLink(
+                    "Halo Dapur Rasa, saya ingin konsultasi / pesan kue...",
+                    settings?.whatsappNumber
+                  )}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"

@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  buildWhatsAppApiUrl,
+  getWhatsAppDisplayNumber,
+  getWhatsAppNumber,
+} from "@/lib/whatsapp";
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,9 +60,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Keranjang pesanan masih kosong." }, { status: 400 });
     }
 
-    // 2. Ambil Konfigurasi Toko untuk Ongkir & Nomor WA Toko (Nomor WA resmi: 085888159765)
+    // 2. Ambil Konfigurasi Toko untuk Ongkir & Nomor WA Toko
     const settings = await prisma.storeSetting.findUnique({ where: { id: "default" } });
-    const storeWa = settings?.whatsappNumber?.replace(/[^0-9]/g, "") || "6285888159765";
+    const storeWa = getWhatsAppNumber(settings?.whatsappNumber);
     const shippingFee = 0; // Free Ongkir untuk area Griya Cileungsi 5
 
     // 3. Re-validasi Harga, Varian, dan Ketersediaan Stok dari Database
@@ -213,7 +218,7 @@ export async function POST(req: NextRequest) {
     if (paymentMethod === "QRIS") {
       paymentText = "QRIS";
     } else if (paymentMethod === "GOPAY" || paymentMethod === "NO_REK_GOPAY") {
-      paymentText = "Transfer GoPay (085888159765)";
+      paymentText = `Transfer GoPay (${getWhatsAppDisplayNumber(settings?.whatsappNumber)})`;
     }
 
     const notesLine = notes && notes.trim() ? `\n*Catatan:* ${notes.trim()}` : "";
@@ -229,15 +234,7 @@ ${deliveryLine}
 
 Mohon segera diproses ya, terima kasih!`;
 
-    // Pastikan nomor WhatsApp internasional valid (6285888159765)
-    let formattedWa = storeWa;
-    if (formattedWa.startsWith("0")) {
-      formattedWa = "62" + formattedWa.slice(1);
-    } else if (!formattedWa.startsWith("62")) {
-      formattedWa = "62" + formattedWa;
-    }
-
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedWa}&text=${encodeURIComponent(waMessage)}`;
+    const whatsappUrl = buildWhatsAppApiUrl(waMessage, storeWa);
 
     return NextResponse.json({
       success: true,

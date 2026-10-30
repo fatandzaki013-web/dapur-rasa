@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_WHATSAPP_NUMBER } from "@/lib/whatsapp";
 
 
 
@@ -69,7 +70,7 @@ export async function PUT(req: NextRequest) {
         tagline: tagline || "Kue & Camilan Rumahan Kualitas Premium",
         logoUrl: logoUrl || "",
         faviconUrl: faviconUrl || "",
-        whatsappNumber: whatsappNumber || "6285888159765",
+        whatsappNumber: whatsappNumber || DEFAULT_WHATSAPP_NUMBER,
         address: address || "",
         operationalHours: operationalHours || "Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)",
         fulfillmentOptions: fulfillmentOptions || "PICKUP,DELIVERY",

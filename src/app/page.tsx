@@ -39,6 +39,7 @@ import {
   GalleryItem,
 } from "@/lib/constants";
 import { Product, fetchProductsFromSupabase } from "@/lib/supabase";
+import { buildWhatsAppLink, getWhatsAppDisplayNumber } from "@/lib/whatsapp";
 
 interface HeroSlide {
   id: string | number;
@@ -52,7 +53,7 @@ interface HeroSlide {
 }
 
 export default function HomePage() {
-  const { formatPrice, sections } = useStore();
+  const { formatPrice, sections, settings } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -306,7 +307,10 @@ export default function HomePage() {
                               <ChevronRight className="w-4 h-4" />
                             </Link>
                             <a
-                              href="https://wa.me/6285888159765?text=Halo%20Dapur%20Rasa,%20saya%20ingin%20konsultasi%20pemesanan%20kue%20/%20snack%20box"
+                              href={buildWhatsAppLink(
+                                "Halo Dapur Rasa, saya ingin konsultasi pemesanan kue / snack box",
+                                settings?.whatsappNumber
+                              )}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm backdrop-blur-xs border border-white/25 transition-all active:scale-95"
@@ -347,7 +351,10 @@ export default function HomePage() {
                           <ChevronRight className="w-3 h-3" />
                         </Link>
                         <a
-                          href="https://wa.me/6285888159765?text=Halo%20Dapur%20Rasa,%20saya%20ingin%20pesan%20kue"
+                          href={buildWhatsAppLink(
+                            "Halo Dapur Rasa, saya ingin pesan kue",
+                            settings?.whatsappNumber
+                          )}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
@@ -945,7 +952,7 @@ export default function HomePage() {
             {[
               {
                 q: "Kapan jam operasional buka dan jadwal pelayanan Dapur Rasa?",
-                a: "Dapur Rasa melayani pemesanan setiap hari Senin sampai Sabtu, pukul 05.00 – 22.00 WIB. Khusus hari Minggu toko kami tutup. Untuk pertanyaan, konsultasi menu acara, atau pesanan langsung, Anda dapat menghubungi WhatsApp kami di 085888159765."
+                a: `Dapur Rasa melayani pemesanan setiap hari Senin sampai Sabtu, pukul 05.00 – 22.00 WIB. Khusus hari Minggu toko kami tutup. Untuk pertanyaan, konsultasi menu acara, atau pesanan langsung, Anda dapat menghubungi WhatsApp kami di ${getWhatsAppDisplayNumber(settings?.whatsappNumber)}.`
               },
               {
                 q: "Bagaimana cara melakukan pemesanan kue di website Dapur Rasa?",

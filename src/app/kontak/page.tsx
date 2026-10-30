@@ -4,13 +4,17 @@ import React from "react";
 import { useStore } from "@/context/StoreContext";
 import { Phone, MapPin, Clock, MessageSquare } from "lucide-react";
 import { InstagramIcon, FacebookIcon } from "@/components/SocialIcons";
+import {
+  getWhatsAppNumber,
+  getWhatsAppDisplayNumber,
+  buildWhatsAppLink,
+} from "@/lib/whatsapp";
 
 export default function ContactPage() {
   const { settings } = useStore();
   const brandName = settings?.brandName || "Dapur Rasa";
-  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
-  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
-  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
+  const waLinkNum = getWhatsAppNumber(settings?.whatsappNumber);
+  const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-16">
@@ -38,7 +42,7 @@ export default function ContactPage() {
               <h3 className="font-heading font-bold text-stone-900 text-base">WhatsApp Resmi</h3>
               <p className="text-xs text-stone-500 mt-0.5">Respon cepat selama jam kerja</p>
               <a
-                href={`https://wa.me/${waLinkNum}`}
+                href={buildWhatsAppLink(null, settings?.whatsappNumber)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-bold text-emerald-700 hover:underline mt-2 inline-block"
@@ -95,9 +99,10 @@ export default function ContactPage() {
 
             <div className="pt-4">
               <a
-                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent(
-                  `Halo ${brandName}, saya ingin konsultasi pemesanan kue / snack box untuk acara.`
-                )}`}
+                href={buildWhatsAppLink(
+                  `Halo ${brandName}, saya ingin konsultasi pemesanan kue / snack box untuk acara.`,
+                  settings?.whatsappNumber
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg transition-all hover:scale-102"

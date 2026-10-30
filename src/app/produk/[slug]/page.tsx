@@ -6,6 +6,7 @@ import { useStore } from "@/context/StoreContext";
 import { useCart } from "@/context/CartContext";
 import ProductLikeButton from "@/components/ProductLikeButton";
 import { supabase } from "@/lib/supabase";
+import { buildWhatsAppApiUrl } from "@/lib/whatsapp";
 import {
   ShoppingBag,
   Truck,
@@ -224,11 +225,6 @@ export default function ProductDetailPage({
   };
 
   const handleDirectWhatsApp = () => {
-    const storeWa = settings?.whatsappNumber?.replace(/[^0-9]/g, "") || "6285888159765";
-    let formattedWa = storeWa;
-    if (formattedWa.startsWith("0")) formattedWa = "62" + formattedWa.slice(1);
-    else if (!formattedWa.startsWith("62")) formattedWa = "62" + formattedWa;
-
     const brand = settings?.brandName || "Dapur Rasa";
     const message = `Halo ${brand}, saya ingin memesan langsung:
 
@@ -245,7 +241,8 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       localStorage.setItem("dr_cart_items_v1", "[]");
     } catch (e) {}
 
-    window.open(`https://api.whatsapp.com/send?phone=${formattedWa}&text=${encodeURIComponent(message)}`, "_blank");
+    const waUrl = buildWhatsAppApiUrl(message, settings?.whatsappNumber);
+    window.open(waUrl, "_blank");
   };
 
   const images = product.images && product.images.length > 0 ? product.images : [{ id: "placeholder", url: "", alt: product.name, isPrimary: true }];

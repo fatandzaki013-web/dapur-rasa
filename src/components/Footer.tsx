@@ -16,6 +16,11 @@ import {
   Wallet,
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
+import {
+  getWhatsAppNumber,
+  getWhatsAppDisplayNumber,
+  buildWhatsAppLink,
+} from "@/lib/whatsapp";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -33,9 +38,8 @@ export default function Footer() {
 
   const brandName = settings?.brandName || "Dapur Rasa";
   const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Bogor, Jawa Barat";
-  const rawWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
-  const waLinkNum = rawWa.startsWith("0") ? "62" + rawWa.slice(1) : (rawWa.startsWith("62") ? rawWa : "6285888159765");
-  const waDisplayNum = rawWa.startsWith("62") ? "0" + rawWa.slice(2) : (rawWa.startsWith("0") ? rawWa : "085888159765");
+  const waLinkNum = getWhatsAppNumber(settings?.whatsappNumber);
+  const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800/80 pt-8 sm:pt-14 pb-24 sm:pb-8 mt-auto w-full max-w-full overflow-hidden font-sans">
@@ -129,7 +133,10 @@ export default function Footer() {
             {/* Tombol WhatsApp Resmi Toko */}
             <div className="pt-1">
               <a
-                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin bertanya tentang pesanan kue...")}`}
+                href={buildWhatsAppLink(
+                  "Halo Dapur Rasa, saya ingin bertanya tentang pesanan kue...",
+                  settings?.whatsappNumber
+                )}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-emerald-600 hover:text-white text-slate-300 transition-all shadow-xs text-xs font-semibold"
@@ -256,7 +263,10 @@ export default function Footer() {
 
             <div className="pt-2">
               <a
-                href={`https://wa.me/${waLinkNum}?text=${encodeURIComponent("Halo Dapur Rasa, saya ingin pesan kue...")}`}
+                href={buildWhatsAppLink(
+                  "Halo Dapur Rasa, saya ingin pesan kue...",
+                  settings?.whatsappNumber
+                )}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"

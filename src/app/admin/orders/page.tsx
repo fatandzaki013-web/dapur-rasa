@@ -27,6 +27,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { supabase, SupabaseOrder, parseOrderItems, OrderItemPayload } from "@/lib/supabase";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 function formatIDR(amount: number): string {
   return new Intl.NumberFormat("id-ID", {
@@ -422,11 +423,12 @@ export default function AdminOrdersPage() {
                       <td className="py-3.5 px-4">
                         <div className="font-bold text-slate-900">{order.customer_name}</div>
                         <div className="text-xs text-slate-500 font-mono mt-0.5">{order.customer_phone}</div>
-                        {cleanPhone && (
+                        {order.customer_phone && (
                           <a
-                            href={`https://wa.me/${waNumber}?text=${encodeURIComponent(
-                              `Halo Kak ${order.customer_name}, kami dari Dapur Rasa mengonfirmasi pesanan Anda.`
-                            )}`}
+                            href={buildWhatsAppLink(
+                              `Halo Kak ${order.customer_name}, kami dari Dapur Rasa mengonfirmasi pesanan Anda.`,
+                              order.customer_phone
+                            )}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-emerald-700 hover:text-emerald-800 hover:underline"

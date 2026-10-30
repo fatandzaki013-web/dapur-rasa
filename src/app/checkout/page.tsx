@@ -34,6 +34,11 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
+import {
+  buildWhatsAppApiUrl,
+  getWhatsAppDisplayNumber,
+  getWhatsAppNumber,
+} from "@/lib/whatsapp";
 
 // ==========================================
 // 1. ZOD VALIDATION SCHEMA UNTUK CHECKOUT
@@ -70,7 +75,7 @@ export const checkoutOrderSchema = z.object({
     .positive("Total harga harus angka positif lebih dari 0"),
 });
 
-const DEFAULT_GOPAY_NUMBER = "085888159765";
+const DEFAULT_GOPAY_NUMBER = getWhatsAppDisplayNumber();
 
 interface CompletedOrderInfo {
   orderCode: string;
@@ -307,14 +312,6 @@ Terima kasih banyak telah memesan di ${brandName}!
       }
 
       // 4. Susun Pesan WhatsApp Rapi & Link Redirect
-      const storeWaNumber = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
-      let formattedStoreWa = storeWaNumber;
-      if (formattedStoreWa.startsWith("0")) {
-        formattedStoreWa = "62" + formattedStoreWa.slice(1);
-      } else if (!formattedStoreWa.startsWith("62")) {
-        formattedStoreWa = "62" + formattedStoreWa;
-      }
-
       const itemsSummary = items
         .map(
           (it) =>
@@ -342,9 +339,7 @@ ${deliveryText}${notesText}
 
 Mohon segera diproses ya, terima kasih!`;
 
-      const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedStoreWa}&text=${encodeURIComponent(
-        waText
-      )}`;
+      const whatsappUrl = buildWhatsAppApiUrl(waText, settings?.whatsappNumber);
 
       // 5. Bersihkan isi keranjang belanjaan setelah order berhasil disimpan
       clearCart();

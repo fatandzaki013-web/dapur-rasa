@@ -15,6 +15,7 @@ import {
   Lightbulb,
 } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
+import { buildWhatsAppApiUrl } from "@/lib/whatsapp";
 
 interface CustomerFeedbackModalProps {
   isOpen: boolean;
@@ -97,11 +98,6 @@ export default function CustomerFeedbackModal({
     onClose();
   };
 
-  const storeWa = (settings?.whatsappNumber || "085888159765").replace(/[^0-9]/g, "");
-  let formattedWa = storeWa;
-  if (formattedWa.startsWith("0")) formattedWa = "62" + formattedWa.slice(1);
-  else if (!formattedWa.startsWith("62")) formattedWa = "62" + formattedWa;
-
   const waFeedbackMessage = `Halo ${settings?.brandName || "Dapur Rasa"}, saya ingin memberikan ${
     feedbackType === "SARAN" ? "saran" : feedbackType === "KRITIK" ? "kritik & masukan" : "ulasan"
   }:
@@ -113,9 +109,10 @@ ${eventOrProduct.trim() ? `• Menu/Acara: ${eventOrProduct.trim()}\n` : ""}• 
 
 Terima kasih banyak!`;
 
-  const whatsappShareUrl = `https://api.whatsapp.com/send?phone=${formattedWa}&text=${encodeURIComponent(
-    waFeedbackMessage
-  )}`;
+  const whatsappShareUrl = buildWhatsAppApiUrl(
+    waFeedbackMessage,
+    settings?.whatsappNumber
+  );
 
   return (
     <div className="fixed inset-0 z-50 bg-stone-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">

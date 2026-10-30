@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import { DEFAULT_WHATSAPP_NUMBER } from "@/lib/whatsapp";
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState<"store" | "account" | "theme">("store");
@@ -28,7 +29,7 @@ export default function AdminSettingsPage() {
   // Store Settings State
   const [brandName, setBrandName] = useState("Dapur Rasa");
   const [tagline, setTagline] = useState("Kue & Camilan Rumahan Kualitas Premium");
-  const [whatsappNumber, setWhatsappNumber] = useState("6285888159765");
+  const [whatsappNumber, setWhatsappNumber] = useState(DEFAULT_WHATSAPP_NUMBER);
   const [address, setAddress] = useState(
     "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
   );
@@ -74,7 +75,7 @@ export default function AdminSettingsPage() {
       if (sData.settings) {
         setBrandName(sData.settings.brandName || "Dapur Rasa");
         setTagline(sData.settings.tagline || "Kue & Camilan Rumahan Kualitas Premium");
-        setWhatsappNumber(sData.settings.whatsappNumber || "6285888159765");
+        setWhatsappNumber(sData.settings.whatsappNumber || DEFAULT_WHATSAPP_NUMBER);
         setAddress(
           sData.settings.address ||
             "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
@@ -368,7 +369,7 @@ export default function AdminSettingsPage() {
                   required
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder="6285888159765"
+                  placeholder={DEFAULT_WHATSAPP_NUMBER}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
                 <span className="text-[11px] text-slate-400 mt-1 block">
