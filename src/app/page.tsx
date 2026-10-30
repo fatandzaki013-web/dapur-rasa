@@ -262,7 +262,7 @@ export default function HomePage() {
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
       <main className="flex-1 pt-[72px] sm:pt-24 pb-24 sm:pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
-        {/* SECTION 1: HERO SLIDER CAROUSEL (App-Style Responsive Banner)   */}
+        {/* SECTION 1: HERO SLIDER CAROUSEL (Unified Desktop & Mobile Look) */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
           <div
@@ -277,34 +277,35 @@ export default function HomePage() {
             >
               {heroSlides.map((slide) => (
                 <div key={slide.id} className="w-full shrink-0 relative">
-                  {/* Desktop Aspect Ratio 16:9 */}
-                  <div className="hidden md:block relative w-full aspect-16/9 overflow-hidden bg-gray-900">
+                  {/* Aspect Ratio 16:9 on both Mobile and Desktop */}
+                  <div className="relative w-full aspect-16/9 overflow-hidden bg-gray-900">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       alt={slide.title}
                       src={slide.desktopImg}
                       className="w-full h-full object-cover"
                     />
-                    {/* Dark Gradient Overlay for Typography Clarity */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/45 to-transparent flex items-center">
-                      <div className="mx-auto max-w-7xl px-8 lg:px-12 w-full">
-                        <div className="max-w-xl space-y-4 text-white">
-                          <span className="inline-block px-3 py-1 rounded-full bg-[#4A0E4E] text-white text-xs font-extrabold tracking-wide uppercase shadow-sm">
+
+                    {/* Dark Gradient Overlay for Typography Clarity - Desktop Style on all screen sizes */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent flex items-center">
+                      <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12 w-full">
+                        <div className="max-w-[80%] xs:max-w-[75%] sm:max-w-xl space-y-1 xs:space-y-2 sm:space-y-4 text-white">
+                          <span className="inline-block px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#4A0E4E] text-white text-[9px] xs:text-[10px] sm:text-xs font-extrabold tracking-wide uppercase shadow-sm">
                             {slide.badge}
                           </span>
-                          <h1 className="text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                          <h1 className="text-xs xs:text-base sm:text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight line-clamp-2">
                             {slide.title}
                           </h1>
-                          <p className="text-sm lg:text-base text-gray-200 leading-relaxed">
+                          <p className="text-[9.5px] xs:text-xs sm:text-sm lg:text-base text-gray-200 leading-relaxed line-clamp-1 xs:line-clamp-2 sm:line-clamp-none">
                             {slide.subtitle}
                           </p>
-                          <div className="pt-2 flex items-center gap-3">
+                          <div className="pt-0.5 xs:pt-1 sm:pt-2 flex items-center gap-1.5 xs:gap-2 sm:gap-3">
                             <Link
                               href={slide.buttonLink || "/produk"}
-                              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-sm shadow-md transition-all active:scale-95"
+                              className="inline-flex items-center gap-1 sm:gap-2 px-2.5 py-1.5 xs:px-3.5 xs:py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-[10px] xs:text-xs sm:text-sm shadow-md transition-all active:scale-95 shrink-0"
                             >
                               <span>{slide.buttonText || "Lihat Menu Kue"}</span>
-                              <ChevronRight className="w-4 h-4" />
+                              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             </Link>
                             <a
                               href={buildWhatsAppLink(
@@ -313,55 +314,14 @@ export default function HomePage() {
                               )}
                               target="_blank"
                               rel="noreferrer"
-                              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm backdrop-blur-xs border border-white/25 transition-all active:scale-95"
+                              className="inline-flex items-center gap-1 sm:gap-2 px-2 py-1.5 xs:px-3 xs:py-2 sm:px-5 sm:py-3 rounded-lg sm:rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-[10px] xs:text-xs sm:text-sm backdrop-blur-xs border border-white/25 transition-all active:scale-95 shrink-0"
                             >
-                              <Phone className="w-4 h-4 text-emerald-400" />
-                              <span>Pesan via WhatsApp</span>
+                              <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
+                              <span className="hidden xs:inline">Pesan via WhatsApp</span>
+                              <span className="xs:hidden">WhatsApp</span>
                             </a>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Mobile Aspect Ratio 16:10 - Clean, Beautiful, Doesn't hijack viewport */}
-                  <div className="block md:hidden relative w-full aspect-[4/3] xs:aspect-[16/10] overflow-hidden bg-gray-900">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      alt={slide.title}
-                      src={slide.mobileImg}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent flex flex-col justify-end p-3.5 text-white space-y-1">
-                      <span className="inline-block px-2 py-0.5 rounded-full bg-[#4A0E4E] text-white text-[9px] font-bold tracking-wide uppercase self-start shadow-sm">
-                        {slide.badge}
-                      </span>
-                      <h2 className="text-sm xs:text-base font-extrabold tracking-tight leading-snug line-clamp-2">
-                        {slide.title}
-                      </h2>
-                      <p className="text-[10px] xs:text-[11px] text-gray-200 line-clamp-1">
-                        {slide.subtitle}
-                      </p>
-                      <div className="pt-1 flex items-center gap-2">
-                        <Link
-                          href={slide.buttonLink || "/produk"}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#4A0E4E] text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
-                        >
-                          <span>Lihat Menu</span>
-                          <ChevronRight className="w-3 h-3" />
-                        </Link>
-                        <a
-                          href={buildWhatsAppLink(
-                            "Halo Dapur Rasa, saya ingin pesan kue",
-                            settings?.whatsappNumber
-                          )}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold text-[11px] shadow-sm active:scale-95 transition"
-                        >
-                          <Phone className="w-3 h-3" />
-                          <span>WhatsApp</span>
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -369,36 +329,30 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Prev Navigation Button */}
-            {/* Mobile Slide Counter Badge in top-right (zero collision with buttons) */}
-            <div className="md:hidden absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono font-bold tracking-wider">
-              {activeSlide + 1} / {heroSlides.length}
-            </div>
-
-            {/* Prev Navigation Button (Desktop only) */}
+            {/* Prev Navigation Button - Active on Mobile & Desktop */}
             <button
               type="button"
               onClick={() =>
                 setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
               }
-              className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              className="flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
               aria-label="Slide sebelumnya"
             >
-              <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6" />
+              <ChevronLeft className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
             </button>
 
-            {/* Next Navigation Button (Desktop only) */}
+            {/* Next Navigation Button - Active on Mobile & Desktop */}
             <button
               type="button"
               onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-              className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-white/85 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
+              className="flex absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
               aria-label="Slide berikutnya"
             >
-              <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6" />
+              <ChevronRight className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
             </button>
 
-            {/* Dots Indicator (Desktop only) */}
-            <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 z-20 gap-2">
+            {/* Dots Indicator - Active on Mobile & Desktop */}
+            <div className="flex absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 gap-1.5 sm:gap-2">
               {heroSlides.map((_, i) => (
                 <button
                   key={i}
@@ -406,8 +360,8 @@ export default function HomePage() {
                   onClick={() => setActiveSlide(i)}
                   className={`rounded-full transition-all duration-300 cursor-pointer ${
                     activeSlide === i
-                      ? "bg-white w-6 sm:w-8 h-2 sm:h-2.5 shadow-sm"
-                      : "bg-white/50 hover:bg-white/70 w-2 sm:w-2.5 h-2 sm:h-2.5"
+                      ? "bg-white w-4 xs:w-5 sm:w-8 h-1.5 sm:h-2.5 shadow-sm"
+                      : "bg-white/50 hover:bg-white/70 w-1.5 sm:w-2.5 h-1.5 sm:h-2.5"
                   }`}
                   aria-label={`Ke slide ${i + 1}`}
                 />
