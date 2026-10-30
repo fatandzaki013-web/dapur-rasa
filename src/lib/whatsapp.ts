@@ -43,10 +43,33 @@ export function getWhatsAppDisplayNumber(customNumber?: string | null): string {
 
 /**
  * Sanitasi pesan teks agar rapi saat dibuka di WhatsApp.
+ * - Normalisasi line breaks (\r\n -> \n)
+ * - Mencegah pesan terpotong atau rusak
  */
 export function sanitizeWhatsAppMessage(text?: string | null): string {
   if (!text) return "";
-  return text.trim();
+  return text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+}
+
+/**
+ * Strict RFC 3986 URL Encoding:
+ * Menjamin seluruh parameter query pesan dibungkus ketat menggunakan encodeURIComponent(pesan)
+ * sebelum digabungkan ke URL tujuan (https://wa.me/... atau api.whatsapp.com/send).
+ *
+ * Karakter khusus seperti baris baru (\n), simbol (&, #, %, +, ", '), kurung,
+ * serta emotikon tetap utuh dan tidak menyebabkan URL query terpotong saat dibuka
+ * di WhatsApp Web maupun aplikasi mobile.
+ */
+export function encodeWhatsAppMessage(text?: string | null): string {
+  const clean = sanitizeWhatsAppMessage(text);
+  if (!clean) return "";
+
+  // encodeURIComponent standar tidak meng-encode ! ' ( ) *
+  // Dengan me-replace karakter tersebut ke bentuk %HEX, kita mencegah URL query terpotong atau rusak
+  return encodeURIComponent(clean).replace(
+    /[!'()*]/g,
+    (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+  );
 }
 
 /**
@@ -59,13 +82,13 @@ export function buildWhatsAppLink(
   customNumber?: string | null
 ): string {
   const phone = getWhatsAppNumber(customNumber);
-  const cleanMsg = sanitizeWhatsAppMessage(message);
+  const encodedMsg = encodeWhatsAppMessage(message);
 
-  if (!cleanMsg) {
+  if (!encodedMsg) {
     return `https://wa.me/${phone}`;
   }
 
-  return `https://wa.me/${phone}?text=${encodeURIComponent(cleanMsg)}`;
+  return `https://wa.me/${phone}?text=${encodedMsg}`;
 }
 
 /**
@@ -77,11 +100,11 @@ export function buildWhatsAppApiUrl(
   customNumber?: string | null
 ): string {
   const phone = getWhatsAppNumber(customNumber);
-  const cleanMsg = sanitizeWhatsAppMessage(message);
+  const encodedMsg = encodeWhatsAppMessage(message);
 
-  if (!cleanMsg) {
+  if (!encodedMsg) {
     return `https://api.whatsapp.com/send?phone=${phone}`;
   }
 
-  return `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(cleanMsg)}`;
+  return `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
 }
