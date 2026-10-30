@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import Image from "next/image";
 import {
   Package,
@@ -21,6 +21,10 @@ import {
   Sparkles,
   ShoppingBag,
   SlidersHorizontal,
+  UploadCloud,
+  FileImage,
+  Camera,
+  Link as LinkIcon,
 } from "lucide-react";
 import { z } from "zod";
 import { supabase, Product } from "@/lib/supabase";
@@ -44,13 +48,7 @@ export const productFormSchema = z.object({
     .string()
     .trim()
     .min(1, "Satuan wajib diisi (misal: pcs, box)"),
-  image_url: z
-    .string()
-    .trim()
-    .refine(
-      (val) => !val || val.startsWith("http://") || val.startsWith("https://") || val.startsWith("/"),
-      { message: "URL gambar harus diawali dengan http://, https://, atau /" }
-    ),
+  image_url: z.string().trim().optional(),
   badge: z.string().trim().optional(),
   description: z.string().trim().optional(),
   is_available: z.boolean().default(true),
@@ -119,6 +117,15 @@ export default function AdminDashboardPage() {
   const [formDescription, setFormDescription] = useState("");
   const [formIsAvailable, setFormIsAvailable] = useState(true);
 
+  // Supabase Storage Image Upload State
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState<string | null>(null);
+  const [showManualUrlInput, setShowManualUrlInput] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   // Form Validation Errors
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -142,6 +149,86 @@ export default function AdminDashboardPage() {
     setTimeout(() => {
       setToast((prev) => ({ ...prev, show: false }));
     }, 4000);
+  };
+
+  // ==========================================
+  // VALIDASI FILE GAMBAR (FORMAT & UKURAN)
+  // ==========================================
+  const validateImageFile = (file: File): { valid: boolean; error?: string } => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/jpg"];
+    const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
+    const allowedExts = ["jpg", "jpeg", "png", "webp"];
+
+    if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
+      return {
+        valid: false,
+        error: "Format berkas tidak didukung. Harap pilih gambar dengan format JPG, JPEG, PNG, atau WEBP.",
+      };
+    }
+
+    if (file.size > maxSizeBytes) {
+      const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+      return {
+        valid: false,
+        error: `Ukuran gambar terlalu besar (${sizeInMB} MB). Maksimal ukuran file adalah 2 MB.`,
+      };
+    }
+
+    return { valid: true };
+  };
+
+  const handleFileSelect = (file: File) => {
+    setImageUploadError(null);
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setImageUploadError(validation.error || "Berkas tidak valid");
+      return;
+    }
+
+    setSelectedFile(file);
+    const preview = URL.createObjectURL(file);
+    setImagePreviewUrl(preview);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFileSelect(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleRemoveImage = () => {
+    if (imagePreviewUrl && imagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
+    setSelectedFile(null);
+    setImagePreviewUrl(null);
+    setFormImageUrl("");
+    setImageUploadError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   // ==========================================
@@ -225,7 +312,12 @@ export default function AdminDashboardPage() {
     setFormCustomCategory("");
     setFormPrice("25000");
     setFormUnit("box");
-    setFormImageUrl("https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80");
+    setFormImageUrl("");
+    setSelectedFile(null);
+    setImagePreviewUrl(null);
+    setImageUploadError(null);
+    setIsDragging(false);
+    setShowManualUrlInput(false);
     setFormBadge("Favorit");
     setFormDescription("");
     setFormIsAvailable(true);
@@ -242,6 +334,11 @@ export default function AdminDashboardPage() {
     setFormPrice(String(product.price || 0));
     setFormUnit(product.unit || "pcs");
     setFormImageUrl(product.image_url || "");
+    setSelectedFile(null);
+    setImagePreviewUrl(product.image_url || null);
+    setImageUploadError(null);
+    setIsDragging(false);
+    setShowManualUrlInput(false);
     setFormBadge(product.badge || "");
     setFormDescription(product.description || "");
     setFormIsAvailable(product.is_available ?? true);
@@ -250,8 +347,16 @@ export default function AdminDashboardPage() {
   };
 
   const closeModal = () => {
+    if (imagePreviewUrl && imagePreviewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreviewUrl);
+    }
     setIsModalOpen(false);
     setEditingProduct(null);
+    setSelectedFile(null);
+    setImagePreviewUrl(null);
+    setImageUploadError(null);
+    setIsDragging(false);
+    setIsUploadingImage(false);
     setFormErrors({});
   };
 
@@ -290,11 +395,12 @@ export default function AdminDashboardPage() {
   };
 
   // ==========================================
-  // SAVE PRODUCT (TAMBAH / EDIT DENGAN ZOD)
+  // SAVE PRODUCT (TAMBAH / EDIT DENGAN UPLOAD STORAGE & ZOD)
   // ==========================================
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormErrors({});
+    setImageUploadError(null);
 
     const actualCategory =
       formCategory === "Lainnya" && formCustomCategory.trim()
@@ -330,6 +436,44 @@ export default function AdminDashboardPage() {
     setIsSubmitting(true);
 
     try {
+      let finalImageUrl = formImageUrl.trim();
+
+      // Jika user memilih berkas baru, upload ke Supabase Storage (bucket: product-images)
+      if (selectedFile) {
+        setIsUploadingImage(true);
+        const fileExt = selectedFile.name.split(".").pop()?.toLowerCase() || "jpg";
+        const cleanBaseName = selectedFile.name
+          .replace(/\.[^/.]+$/, "")
+          .replace(/[^a-zA-Z0-9_-]/g, "-")
+          .replace(/\s+/g, "-");
+        const filePath = `products/${Date.now()}-${cleanBaseName}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("product-images")
+          .upload(filePath, selectedFile, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw new Error(`Upload Supabase Storage gagal: ${uploadError.message}`);
+        }
+
+        const { data: publicUrlData } = supabase.storage
+          .from("product-images")
+          .getPublicUrl(filePath);
+
+        finalImageUrl = publicUrlData.publicUrl;
+        setIsUploadingImage(false);
+      }
+
+      // Fallback default image jika tidak ada gambar sama sekali
+      if (!finalImageUrl) {
+        finalImageUrl =
+          editingProduct?.image_url ||
+          "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80";
+      }
+
       if (editingProduct) {
         // Mode Edit Produk
         const updatePayload: any = {
@@ -337,7 +481,7 @@ export default function AdminDashboardPage() {
           category: validData.category,
           price: validData.price,
           unit: validData.unit,
-          image_url: validData.image_url || null,
+          image_url: finalImageUrl,
           badge: validData.badge || null,
           description: validData.description || null,
           is_available: validData.is_available,
@@ -375,7 +519,7 @@ export default function AdminDashboardPage() {
           category: validData.category,
           price: validData.price,
           unit: validData.unit,
-          image_url: validData.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80",
+          image_url: finalImageUrl,
           badge: validData.badge || null,
           description: validData.description || null,
           is_available: validData.is_available,
@@ -399,9 +543,12 @@ export default function AdminDashboardPage() {
       }
     } catch (err: any) {
       console.error("Gagal menyimpan produk:", err);
-      showToast(err.message || "Gagal menyimpan data ke Supabase.", "error");
+      const errorMessage = err?.message || "Gagal menyimpan data ke Supabase.";
+      setImageUploadError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setIsSubmitting(false);
+      setIsUploadingImage(false);
     }
   };
 
@@ -476,7 +623,7 @@ export default function AdminDashboardPage() {
             Kelola Menu &amp; Produk
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Tambah, perbarui harga, foto, kategori, dan ketersediaan menu secara langsung ke database Supabase.
+            Tambah, perbarui harga, upload foto ke Supabase Storage, atur kategori, dan ketersediaan menu secara langsung.
           </p>
         </div>
 
@@ -789,8 +936,8 @@ export default function AdminDashboardPage() {
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {editingProduct
-                    ? "Perbarui informasi dan harga produk di Supabase."
-                    : "Lengkapi data produk untuk menambah menu baru ke katalog."}
+                    ? "Perbarui informasi, harga, atau upload foto baru ke Supabase Storage."
+                    : "Lengkapi data produk dan upload foto untuk menambah menu ke katalog."}
                 </p>
               </div>
               <button
@@ -950,49 +1097,192 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* URL Gambar & Thumbnail Preview */}
+              {/* UPLOAD FOTO PRODUK (SUPABASE STORAGE: product-images) */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                  URL Gambar Foto Menu
-                </label>
-                <div className="flex gap-3">
-                  <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
-                    {formImageUrl ? (
-                      <Image
-                        src={formImageUrl}
-                        alt="Preview"
-                        fill
-                        sizes="64px"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-slate-300">
-                        <Package className="w-6 h-6" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <input
-                      type="url"
-                      value={formImageUrl}
-                      onChange={(e) => setFormImageUrl(e.target.value)}
-                      placeholder="https://images.unsplash.com/..."
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition focus:outline-none ${
-                        formErrors.image_url
-                          ? "border-rose-400 bg-rose-50/40 text-rose-900 focus:border-rose-500"
-                          : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
-                      }`}
-                    />
-                    {formErrors.image_url && (
-                      <p className="text-xs text-rose-600 mt-1 font-medium">
-                        {formErrors.image_url}
-                      </p>
-                    )}
-                    <p className="text-[11px] text-slate-400 mt-1">
-                      Gunakan link gambar langsung (Unsplash, Imgur, Supabase Storage, dll).
-                    </p>
-                  </div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Foto Produk Menu
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowManualUrlInput(!showManualUrlInput)}
+                    className="text-[11px] text-[#4A0E4E] hover:text-[#3D0840] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                  >
+                    <LinkIcon className="w-3 h-3" />
+                    <span>{showManualUrlInput ? "Tutup Input URL Manual" : "Input URL Manual"}</span>
+                  </button>
                 </div>
+
+                {/* Input file tersembunyi */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/jpg"
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                />
+
+                {/* Drag and Drop Container */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => !imagePreviewUrl && fileInputRef.current?.click()}
+                  className={`relative rounded-2xl border-2 border-dashed transition-all duration-200 overflow-hidden ${
+                    isDragging
+                      ? "border-[#4A0E4E] bg-purple-50/70 scale-[1.01]"
+                      : imagePreviewUrl
+                      ? "border-slate-200 bg-slate-50/40 p-4"
+                      : "border-slate-300 hover:border-[#4A0E4E]/60 bg-slate-50/60 hover:bg-purple-50/20 p-6 text-center cursor-pointer"
+                  }`}
+                >
+                  {imagePreviewUrl ? (
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                      {/* Image Preview Container */}
+                      <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xs shrink-0 group">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={imagePreviewUrl}
+                          alt="Pratinjau Foto Produk"
+                          className="w-full h-full object-cover"
+                        />
+                        {isUploadingImage && (
+                          <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex flex-col items-center justify-center text-white text-[10px] font-bold gap-1 p-1 text-center">
+                            <Loader2 className="w-5 h-5 animate-spin text-amber-200" />
+                            <span>Mengunggah ke Storage...</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* File Info & Action Buttons */}
+                      <div className="flex-1 min-w-0 text-center sm:text-left">
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mb-1.5">
+                          {selectedFile ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>Berkas Baru Siap Di-upload</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold">
+                              <Sparkles className="w-3 h-3 text-amber-600" />
+                              <span>Foto Produk Saat Ini</span>
+                            </span>
+                          )}
+                          <span className="text-[10px] text-slate-400 font-medium">
+                            Bucket: product-images
+                          </span>
+                        </div>
+
+                        <p className="text-xs font-bold text-slate-800 truncate">
+                          {selectedFile
+                            ? selectedFile.name
+                            : formImageUrl
+                            ? "Foto Supabase / Cloud"
+                            : "Foto Produk Menu"}
+                        </p>
+                        {selectedFile && (
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Ukuran: {(selectedFile.size / 1024).toFixed(1)} KB &bull; Format:{" "}
+                            {selectedFile.type.split("/")[1]?.toUpperCase() || "IMAGE"}
+                          </p>
+                        )}
+
+                        {/* Buttons to Change or Remove */}
+                        <div className="flex items-center justify-center sm:justify-start gap-2 mt-3">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              fileInputRef.current?.click();
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold shadow-2xs transition cursor-pointer"
+                          >
+                            <Camera className="w-3.5 h-3.5 text-[#4A0E4E]" />
+                            <span>Ganti Foto</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveImage();
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-rose-200 bg-white hover:bg-rose-50 text-rose-600 text-xs font-bold transition cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Hapus</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-2">
+                      <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#4A0E4E] flex items-center justify-center mb-2.5 shadow-2xs">
+                        <UploadCloud className="w-6 h-6" />
+                      </div>
+                      <p className="text-xs font-bold text-slate-800">
+                        Pilih foto atau seret berkas ke sini
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Format yang didukung: JPG, PNG, WEBP &bull; Maksimal 2 MB
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-purple-50 text-[#4A0E4E] border border-purple-200 hover:bg-purple-100 text-xs font-bold transition cursor-pointer"
+                      >
+                        <FileImage className="w-3.5 h-3.5" />
+                        <span>Pilih Gambar dari Perangkat</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Inline error for image upload */}
+                {imageUploadError && (
+                  <div className="mt-2 p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 animate-fadeIn">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>{imageUploadError}</span>
+                  </div>
+                )}
+
+                {/* Manual URL input option (collapsible) */}
+                {showManualUrlInput && (
+                  <div className="mt-3 p-3 rounded-2xl bg-slate-50 border border-slate-200 animate-fadeIn">
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                      Atau Tempel URL Gambar Langsung:
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        value={formImageUrl}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormImageUrl(val);
+                          if (val && !selectedFile) {
+                            setImagePreviewUrl(val);
+                          }
+                        }}
+                        placeholder="https://images.unsplash.com/... atau URL Supabase"
+                        className="flex-1 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 focus:outline-none focus:border-[#4A0E4E]"
+                      />
+                      {formImageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormImageUrl("");
+                            if (!selectedFile) setImagePreviewUrl(null);
+                          }}
+                          className="px-2.5 py-1 rounded-xl text-xs text-rose-600 hover:bg-rose-50 cursor-pointer"
+                        >
+                          Hapus
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Deskripsi */}
@@ -1039,20 +1329,24 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  disabled={isSubmitting}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition cursor-pointer"
+                  disabled={isSubmitting || isUploadingImage}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition cursor-pointer disabled:opacity-50"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isUploadingImage}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer disabled:opacity-50"
                 >
-                  {isSubmitting ? (
+                  {isSubmitting || isUploadingImage ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin text-amber-200" />
-                      <span>Menyimpan ke Supabase...</span>
+                      <span>
+                        {isUploadingImage
+                          ? "Mengunggah Foto ke Supabase..."
+                          : "Menyimpan ke Supabase..."}
+                      </span>
                     </>
                   ) : (
                     <>
