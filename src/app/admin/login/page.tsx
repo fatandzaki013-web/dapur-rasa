@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Lock,
-  User,
+  Mail,
   Eye,
   EyeOff,
   AlertCircle,
@@ -14,45 +14,63 @@ import {
   ShieldCheck,
   UtensilsCrossed,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function AdminLoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Reset error state on mount
-  React.useEffect(() => {
-    setErrorMessage(null);
+  // Jika sudah memiliki sesi Supabase aktif, langsung alihkan ke dashboard admin
+  useEffect(() => {
+    let isMounted = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isMounted && session) {
+        document.cookie = `dr_admin_session=${session.access_token}; path=/; max-age=604800; SameSite=Lax`;
+        window.location.href = "/admin";
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    const cleanUsername = username.trim();
-    if (!cleanUsername || !password) {
-      setErrorMessage("Silakan isi username dan kata sandi Anda.");
+    const cleanEmail = email.trim();
+    if (!cleanEmail || !password) {
+      setErrorMessage("Silakan isi email dan kata sandi admin.");
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: cleanUsername, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Login gagal. Periksa kembali username dan kata sandi.");
+      if (error) {
+        let msg = error.message;
+        if (error.message.includes("Invalid login credentials")) {
+          msg = "Email atau kata sandi salah. Silakan periksa kembali.";
+        } else if (error.message.includes("Email not confirmed")) {
+          msg = "Email belum dikonfirmasi di Supabase.";
+        }
+        throw new Error(msg);
       }
 
-      // Hard redirect to flush cookies into browser session and cleanly mount AdminLayout
+      if (data.session) {
+        // Simpan token sesi ke cookie agar middleware server Next.js mengizinkan akses ke rute /admin
+        document.cookie = `dr_admin_session=${data.session.access_token}; path=/; max-age=604800; SameSite=Lax`;
+      }
+
+      // Alihkan langsung ke dashboard admin
       window.location.href = "/admin";
     } catch (err: any) {
       setErrorMessage(err.message || "Terjadi kendala saat login. Silakan coba kembali.");
@@ -62,7 +80,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50/40 via-slate-50 to-stone-100/60 flex flex-col justify-center py-10 sm:py-14 px-4 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
-      {/* Decorative ambient background glows (warm bakery accents matching frontend) */}
+      {/* Decorative ambient background glows */}
       <div className="absolute -top-24 -left-24 w-80 h-80 bg-amber-200/25 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-amber-100/35 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-100/15 rounded-full blur-3xl pointer-events-none" />
@@ -87,7 +105,7 @@ export default function AdminLoginPage() {
               Pusat Kendali <span className="text-[#4A0E4E]">Dapur Rasa</span>
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
-              Silakan masukkan akun admin resmi untuk mengelola pesanan, stok produk, dan operasional website.
+              Silakan login dengan akun Supabase Admin untuk mengelola katalog menu, harga, dan ketersediaan produk.
             </p>
           </div>
 
@@ -103,18 +121,18 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Username Admin
+                Email Admin
               </label>
               <div className="relative">
-                <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
-                  type="text"
+                  type="email"
                   required
                   autoFocus
-                  autoComplete="off" spellCheck={false}
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder=""
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@dapurrasa.com"
                   className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium"
                 />
               </div>
@@ -129,7 +147,7 @@ export default function AdminLoginPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  autoComplete="off" spellCheck={false}
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan kata sandi"
@@ -159,7 +177,7 @@ export default function AdminLoginPage() {
                 {isLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin text-amber-200" />
-                    <span>Memeriksa Kredensial...</span>
+                    <span>Memverifikasi Akun Supabase...</span>
                   </>
                 ) : (
                   <>
@@ -175,7 +193,7 @@ export default function AdminLoginPage() {
           <div className="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
             <span className="flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>Sesi Terenkripsi &amp; Aman</span>
+              <span>Supabase Auth &bull; Terenkripsi</span>
             </span>
             <Link
               href="/"
