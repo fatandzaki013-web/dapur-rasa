@@ -159,19 +159,19 @@ export default function Footer() {
                 <li>
                   <Link href="/produk" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Semua Kue</span>
+                    <span className="truncate">Semua Menu</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/produk?category=pastel" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <Link href="/produk?category=nasi" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Pastel Crispy</span>
+                    <span className="truncate">Nasi Box &amp; Tumpeng</span>
                   </Link>
                 </li>
                 <li>
-                  <Link href="/produk?category=risol" className="hover:text-amber-400 transition-colors flex items-center gap-1">
+                  <Link href="/produk?category=kue" className="hover:text-amber-400 transition-colors flex items-center gap-1">
                     <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
-                    <span className="truncate">Risol Mayo Lumer</span>
+                    <span className="truncate">Kue Basah &amp; Brownies</span>
                   </Link>
                 </li>
                 <li>

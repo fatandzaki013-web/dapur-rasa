@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
+import { getStoreOperatingStatus } from "@/lib/operating-hours";
 import {
   ShoppingBag,
   Phone,
@@ -43,37 +44,49 @@ import {
 // ==========================================
 // 1. ZOD VALIDATION SCHEMA UNTUK CHECKOUT
 // ==========================================
-export const checkoutOrderSchema = z.object({
-  customer_name: z
-    .string()
-    .trim()
-    .min(3, "Nama pemesan minimal 3 karakter, wajib diisi"),
-  customer_phone: z
-    .string()
-    .trim()
-    .min(1, "Nomor WhatsApp wajib diisi")
-    .refine(
-      (val) => {
-        const clean = val.replace(/[^0-9]/g, "");
-        return clean.length >= 10 && (clean.startsWith("08") || clean.startsWith("628"));
-      },
-      {
-        message:
-          "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, hanya angka)",
+export const checkoutOrderSchema = z
+  .object({
+    customer_name: z
+      .string()
+      .trim()
+      .min(3, "Nama pemesan minimal 3 karakter, wajib diisi"),
+    customer_phone: z
+      .string()
+      .trim()
+      .min(1, "Nomor WhatsApp wajib diisi")
+      .refine(
+        (val) => {
+          const clean = val.replace(/[^0-9]/g, "");
+          return clean.length >= 10 && (clean.startsWith("08") || clean.startsWith("628"));
+        },
+        {
+          message:
+            "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, hanya angka)",
+        }
+      ),
+    fulfillment_type: z.enum(["PICKUP", "DELIVERY"]).default("PICKUP"),
+    delivery_address: z.string().trim().optional(),
+    notes: z.string().trim().optional(),
+    items: z
+      .array(z.any())
+      .min(1, "Keranjang belanja tidak boleh kosong"),
+    total_price: z
+      .number()
+      .positive("Total harga harus angka positif lebih dari 0"),
+  })
+  .refine(
+    (data) => {
+      if (data.fulfillment_type === "DELIVERY") {
+        return (data.delivery_address || "").trim().length >= 5;
       }
-    ),
-  delivery_address: z
-    .string()
-    .trim()
-    .min(5, "Alamat / blok rumah wajib diisi (minimal 5 karakter)"),
-  notes: z.string().trim().optional(),
-  items: z
-    .array(z.any())
-    .min(1, "Keranjang belanja tidak boleh kosong"),
-  total_price: z
-    .number()
-    .positive("Total harga harus angka positif lebih dari 0"),
-});
+      return true;
+    },
+    {
+      message:
+        "Alamat / blok rumah wajib diisi jika memilih Diantar ke Rumah (minimal 5 karakter)",
+      path: ["delivery_address"],
+    }
+  );
 
 const DEFAULT_GOPAY_NUMBER = getWhatsAppDisplayNumber();
 
@@ -103,6 +116,7 @@ interface CompletedOrderInfo {
 export default function CheckoutPage() {
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const { formatPrice, settings } = useStore();
+  const operatingStatus = getStoreOperatingStatus();
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -235,11 +249,12 @@ Terima kasih banyak telah memesan di ${brandName}!
     const finalAddress =
       fulfillmentType === "DELIVERY"
         ? deliveryAddress.trim()
-        : deliveryAddress.trim() || "Diambil Sendiri di Dapur Toko";
+        : "Ambil Sendiri di Dapur (Blok A8 No. 01)";
 
     const rawFormData = {
       customer_name: customerName,
       customer_phone: customerPhone,
+      fulfillment_type: fulfillmentType,
       delivery_address: finalAddress,
       notes: notes,
       items: items,
@@ -288,13 +303,21 @@ Terima kasih banyak telah memesan di ${brandName}!
 
     let generatedOrderCode = `DR-${Date.now().toString().slice(-6)}`;
 
+    const deliveryOptionLabel =
+      fulfillmentType === "DELIVERY"
+        ? "Diantar ke Rumah (Khusus Area Griya Cileungsi 5)"
+        : "Ambil Sendiri di Dapur (Blok A8 No. 01)";
+
     try {
       // 3. Simpan order ke tabel Supabase public.orders dengan payload lengkap
       const orderPayload = {
         customer_name: validData.customer_name,
         customer_phone: cleanPhone,
-        delivery_address: validData.delivery_address,
-        notes: validData.notes || "",
+        delivery_address:
+          fulfillmentType === "DELIVERY"
+            ? `[Diantar ke Rumah]: ${validData.delivery_address}`
+            : `[Ambil Sendiri di Dapur (Blok A8 No. 01)]`,
+        notes: `[Pengiriman: ${deliveryOptionLabel}] ${validData.notes || ""}`.trim(),
         items: orderItemsSnapshot,
         total_price: totalAmount,
         status: "pending",
@@ -323,8 +346,8 @@ Terima kasih banyak telah memesan di ${brandName}!
 
       const deliveryText =
         fulfillmentType === "DELIVERY"
-          ? `*Alamat:* ${validData.delivery_address}`
-          : `*Pengambilan:* Diambil Sendiri di Dapur Toko`;
+          ? `*Opsi Pengiriman:* Diantar ke Rumah (Khusus Area Griya Cileungsi 5)\n*Alamat Rumah:* ${validData.delivery_address}`
+          : `*Opsi Pengambilan:* Ambil Sendiri di Dapur (Blok A8 No. 01)`;
 
       const notesText = validData.notes ? `\n*Catatan:* ${validData.notes}` : "";
 
@@ -356,7 +379,7 @@ Mohon segera diproses ya, terima kasih!`;
         customerName: validData.customer_name,
         customerPhone: cleanPhone,
         fulfillmentType,
-        deliveryAddress: validData.delivery_address,
+        deliveryAddress: validData.delivery_address || finalAddress,
         paymentMethod,
         paymentMethodLabel: paymentLabel,
         notes: validData.notes || "",
@@ -690,6 +713,21 @@ Mohon segera diproses ya, terima kasih!`;
         </p>
       </div>
 
+      {/* Banner Informasi Jam Operasional jika Dapur Tutup */}
+      {!operatingStatus.isOpen && (
+        <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
+          <div className="w-2.5 h-2.5 rounded-full bg-amber-500 mt-1 shrink-0 ring-4 ring-amber-200/60" />
+          <div className="min-w-0 flex-1">
+            <span className="font-bold block text-amber-900">
+              Informasi Jam Operasional: {operatingStatus.statusBadge}
+            </span>
+            <p className="mt-0.5 text-amber-800 leading-relaxed text-xs">
+              {operatingStatus.noticeText}
+            </p>
+          </div>
+        </div>
+      )}
+
       {errorMessage && (
         <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
           <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
@@ -802,51 +840,19 @@ Mohon segera diproses ya, terima kasih!`;
             </div>
           </div>
 
-          {/* Section 2: Pilihan Pengantaran (Dianter vs Diambil) */}
+          {/* Section 2: Pilihan Pengantaran (Radio Button Diantar vs Ambil Sendiri) */}
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
             <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
               <span className="w-7 h-7 rounded-xl bg-[#4A0E4E] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
                 2
               </span>
-              <span>Pilihan Pengantaran: Mau Dianter atau Diambil?</span>
+              <span>Pilihan Pengantaran / Pengambilan Pesanan</span>
             </h2>
 
-            {/* 2 Opsi: Dianter vs Diambil */}
+            {/* 2 Opsi Radio: Ambil Sendiri vs Diantar */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              {/* Opsi 1: Dianter */}
-              <button
-                type="button"
-                onClick={() => setFulfillmentType("DELIVERY")}
-                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
-                  fulfillmentType === "DELIVERY"
-                    ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
-                      <Truck className="w-5 h-5" />
-                    </div>
-                    {fulfillmentType === "DELIVERY" && (
-                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                        <CheckCircle className="w-3 h-3 text-emerald-700" />
-                        Dipilih
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="font-extrabold text-sm text-stone-900">
-                    Mau Dianter ke Rumah
-                  </h3>
-                  <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
-                    Kurir toko mengantar pesanan langsung ke depan rumah Anda.
-                  </p>
-                </div>
-              </button>
-
-              {/* Opsi 2: Diambil */}
-              <button
-                type="button"
+              {/* Opsi 1: Ambil Sendiri di Dapur */}
+              <label
                 onClick={() => setFulfillmentType("PICKUP")}
                 className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
                   fulfillmentType === "PICKUP"
@@ -856,8 +862,18 @@ Mohon segera diproses ya, terima kasih!`;
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-purple-100 flex items-center justify-center text-[#4A0E4E]">
-                      <Store className="w-5 h-5" />
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        name="fulfillmentType"
+                        value="PICKUP"
+                        checked={fulfillmentType === "PICKUP"}
+                        onChange={() => setFulfillmentType("PICKUP")}
+                        className="w-4 h-4 text-[#4A0E4E] focus:ring-[#4A0E4E]"
+                      />
+                      <div className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-[#4A0E4E]">
+                        <Store className="w-4 h-4" />
+                      </div>
                     </div>
                     {fulfillmentType === "PICKUP" && (
                       <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-[#4A0E4E] bg-purple-100 px-2 py-0.5 rounded-full">
@@ -867,20 +883,60 @@ Mohon segera diproses ya, terima kasih!`;
                     )}
                   </div>
                   <h3 className="font-extrabold text-sm text-stone-900">
-                    Mau Diambil Sendiri
+                    Ambil Sendiri di Dapur (Blok A8 No. 01)
                   </h3>
                   <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
-                    Ambil pesanan langsung di dapur toko kami saat sudah matang.
+                    Ambil pesanan langsung di dapur kami tanpa biaya ongkir.
                   </p>
                 </div>
-              </button>
+              </label>
+
+              {/* Opsi 2: Diantar ke Rumah */}
+              <label
+                onClick={() => setFulfillmentType("DELIVERY")}
+                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
+                  fulfillmentType === "DELIVERY"
+                    ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20 shadow-xs"
+                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="radio"
+                        name="fulfillmentType"
+                        value="DELIVERY"
+                        checked={fulfillmentType === "DELIVERY"}
+                        onChange={() => setFulfillmentType("DELIVERY")}
+                        className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                      />
+                      <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                        <Truck className="w-4 h-4" />
+                      </div>
+                    </div>
+                    {fulfillmentType === "DELIVERY" && (
+                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        <CheckCircle className="w-3 h-3 text-emerald-700" />
+                        Dipilih
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-extrabold text-sm text-stone-900">
+                    Diantar ke Rumah (Khusus Area Griya Cileungsi 5)
+                  </h3>
+                  <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
+                    Kurir toko mengantar pesanan langsung ke depan pintu rumah Anda.
+                  </p>
+                </div>
+              </label>
             </div>
 
-            {/* KONDISIONAL JIKA MEMILIH DIANTER: PERTANYAAN WAJIB DIISI BLOK RUMAH */}
+            {/* KONDISIONAL FORM SESUAI PILIHAN PENGANTARAN */}
             {fulfillmentType === "DELIVERY" ? (
               <div className="p-4 bg-emerald-50/80 rounded-2xl border-2 border-emerald-300 space-y-2 animate-fadeIn">
                 <label className="block text-xs font-bold text-emerald-950">
-                  Alamat Rumah Anda (Wajib Cantumkan Blok &amp; Nomor Rumah) <span className="text-red-500">*</span>
+                  Alamat / Blok Rumah Anda (Khusus Area Griya Cileungsi 5) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute top-3 left-3.5 pointer-events-none text-emerald-700">
@@ -896,7 +952,7 @@ Mohon segera diproses ya, terima kasih!`;
                         setFieldErrors((prev) => ({ ...prev, delivery_address: "" }));
                       }
                     }}
-                    placeholder="Contoh: Blok A8 No. 12, Blok C2 No. 05, RT/RW, dekat masjid/pos satpam..."
+                    placeholder="Contoh: Blok A8 No. 12, Blok C2 No. 05, RT/RW, dekat pos satpam..."
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm focus:outline-none transition shadow-2xs leading-relaxed placeholder:text-stone-400 ${
                       fieldErrors.delivery_address
                         ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
@@ -915,11 +971,16 @@ Mohon segera diproses ya, terima kasih!`;
                 </p>
               </div>
             ) : (
-              <div className="p-3.5 bg-stone-50 rounded-2xl border border-stone-200 text-xs text-stone-600 flex items-center gap-2.5 animate-fadeIn">
-                <Store className="w-4 h-4 text-[#4A0E4E] shrink-0" />
-                <span>
-                  Anda memilih <strong>Diambil Sendiri</strong>. Pesanan akan disiapkan di dapur toko kami dan siap diambil saat matang.
-                </span>
+              <div className="p-3.5 bg-purple-50/70 rounded-2xl border border-purple-200 text-xs text-stone-700 flex items-start gap-2.5 animate-fadeIn">
+                <Store className="w-4 h-4 text-[#4A0E4E] shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <p className="font-bold text-[#4A0E4E]">
+                    Lokasi Pengambilan: Dapur Rasa (Blok A8 No. 01)
+                  </p>
+                  <p className="text-[11px] text-stone-600">
+                    Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi. Pesanan Anda akan disiapkan dan siap diambil saat matang / sesuai jadwal yang disepakati.
+                  </p>
+                </div>
               </div>
             )}
           </div>

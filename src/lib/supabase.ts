@@ -110,7 +110,7 @@ export async function fetchProductsFromSupabase(options?: {
         query = query.ilike("category", "%nasi%");
       } else if (cat === "kue" || cat === "aneka-kue-basah") {
         query = query.or(
-          "category.ilike.%Pastel%,category.ilike.%Risol%,category.ilike.%Sosis Solo%,category.ilike.%Brownies%,category.ilike.%Kue%"
+          "category.ilike.%Pastel%,category.ilike.%Risol%,category.ilike.%Sosis Solo%,category.ilike.%Brownies%,category.ilike.%Bolu%,category.ilike.%Kue%"
         );
       } else if (cat === "frozen" || cat === "frozen-food") {
         query = query.or(

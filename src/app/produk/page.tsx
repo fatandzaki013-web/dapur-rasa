@@ -208,10 +208,10 @@ function ProductsContent() {
             {selectedCategory === "" ? `Semua Menu (${products.length})` : "Semua Menu"}
           </button>
           {[
-            { id: "cat-nasi", name: "Nasi", slug: "nasi" },
-            { id: "cat-kue", name: "Kue", slug: "kue" },
-            { id: "cat-frozen", name: "Frozen", slug: "frozen-food" },
-            { id: "cat-snack", name: "Snack Box", slug: "snack-box" },
+            { id: "cat-nasi", name: "Nasi Box & Tumpeng", slug: "nasi" },
+            { id: "cat-kue", name: "Kue Basah & Brownies", slug: "kue" },
+            { id: "cat-frozen", name: "Frozen Food", slug: "frozen-food" },
+            { id: "cat-snack", name: "Paket Snack Box", slug: "snack-box" },
           ].map((cat) => {
             const isSelected = selectedCategory === cat.slug;
             return (

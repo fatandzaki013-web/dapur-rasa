@@ -11,6 +11,7 @@ import {
   getWhatsAppDisplayNumber,
   buildWhatsAppLink,
 } from "@/lib/whatsapp";
+import { getStoreOperatingStatus, StoreOperatingStatus } from "@/lib/operating-hours";
 import {
   ShoppingCart,
   Heart,
@@ -39,6 +40,17 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [operatingStatus, setOperatingStatus] = useState<StoreOperatingStatus>(() =>
+    getStoreOperatingStatus()
+  );
+
+  useEffect(() => {
+    // Sinkronisasi status operasional setiap 30 detik
+    const timer = setInterval(() => {
+      setOperatingStatus(getStoreOperatingStatus());
+    }, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Handler navigasi brand
   const secretClickCountRef = useRef(0);
@@ -162,11 +174,49 @@ export default function Navbar() {
                 <span className="font-extrabold text-sm sm:text-xl tracking-tight text-[#4A0E4E] leading-tight truncate max-w-[140px] sm:max-w-none">
                   {brandName}
                 </span>
+                {/* Indikator Operasional Mobile Ringkas */}
+                <div className="flex items-center gap-1 -mt-0.5 sm:hidden">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                      operatingStatus.isOpen
+                        ? "bg-emerald-500 animate-pulse ring-1 ring-emerald-300"
+                        : "bg-amber-500 ring-1 ring-amber-300"
+                    }`}
+                  />
+                  <span
+                    className={`text-[8.5px] font-bold tracking-tight truncate max-w-[110px] ${
+                      operatingStatus.isOpen ? "text-emerald-700" : "text-amber-800"
+                    }`}
+                  >
+                    {operatingStatus.isOpen ? "Buka (05-22 WIB)" : "Tutup (Bisa PO)"}
+                  </span>
+                </div>
                 <span className="text-[8.5px] sm:text-[9px] text-gray-400 font-semibold -mt-0.5 tracking-wider uppercase hidden sm:inline">
                   Kue &amp; Camilan Rumahan
                 </span>
               </div>
             </Link>
+
+            {/* Status Operasional Dapur Toko (Tablet & Desktop Header) */}
+            <div
+              className={`hidden lg:flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+                operatingStatus.isOpen
+                  ? "bg-emerald-50/90 border-emerald-200 text-emerald-800 shadow-2xs"
+                  : "bg-amber-50/90 border-amber-200 text-amber-900 shadow-2xs"
+              }`}
+              title={operatingStatus.noticeText}
+            >
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${
+                  operatingStatus.isOpen
+                    ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-300"
+                    : "bg-amber-500 ring-2 ring-amber-300"
+                }`}
+              />
+              <span className="text-[11px] font-bold tracking-tight whitespace-nowrap">
+                {operatingStatus.statusBadge}
+              </span>
+            </div>
 
             {/* Desktop Navigation Links */}
             <nav className="hidden md:flex items-center gap-1">
@@ -309,6 +359,31 @@ export default function Navbar() {
 
             {/* Scrollable Body */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {/* Status Operasional Dapur Mobile Drawer */}
+              <div
+                className={`p-3 rounded-2xl border flex items-center gap-2.5 ${
+                  operatingStatus.isOpen
+                    ? "bg-emerald-50/90 border-emerald-200 text-emerald-900"
+                    : "bg-amber-50/90 border-amber-200 text-amber-900"
+                }`}
+              >
+                <span
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                    operatingStatus.isOpen
+                      ? "bg-emerald-500 animate-pulse ring-4 ring-emerald-200"
+                      : "bg-amber-500 ring-4 ring-amber-200"
+                  }`}
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold leading-tight">
+                    {operatingStatus.statusBadge}
+                  </p>
+                  <p className="text-[10px] opacity-80 mt-0.5 leading-tight">
+                    {operatingStatus.noticeText}
+                  </p>
+                </div>
+              </div>
+
               {/* Search Bar Kompak */}
               <form onSubmit={handleSearchSubmit} className="relative w-full">
                 <input

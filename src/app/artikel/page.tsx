@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import initialData from "../../../prisma/initial-data.json";
 
 import { BookOpen, Calendar, User, ArrowRight, Sparkles } from "lucide-react";
 
@@ -16,6 +17,12 @@ export default async function PublicArticlesPage() {
     });
   } catch (error) {
     console.warn("PublicArticlesPage fetch warning:", error);
+  }
+
+  // Fallback statis jika database offline atau belum terisi data
+  if (!articles || articles.length === 0) {
+    const fallbackList = (initialData as any)?.Article || [];
+    articles = fallbackList.filter((a: any) => a.status === "PUBLISHED");
   }
 
   return (

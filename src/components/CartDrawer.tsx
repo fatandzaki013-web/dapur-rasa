@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
+import { getStoreOperatingStatus } from "@/lib/operating-hours";
 import {
   X,
   Trash2,
@@ -17,6 +18,7 @@ import {
 export default function CartDrawer() {
   const { items, updateQuantity, removeItem, subtotal, isCartOpen, setIsCartOpen } = useCart();
   const { formatPrice } = useStore();
+  const operatingStatus = getStoreOperatingStatus();
 
   if (!isCartOpen) return null;
 
@@ -156,6 +158,16 @@ export default function CartDrawer() {
           {/* Footer Drawer Ringkas & Rapi di Mobile */}
           {items.length > 0 && (
             <div className="p-3.5 sm:p-4 bg-stone-50 border-t border-stone-200 space-y-2.5 shrink-0">
+              {/* Catatan Pre-Order jika Dapur Tutup */}
+              {!operatingStatus.isOpen && (
+                <div className="flex items-start gap-1.5 px-2.5 py-1.5 rounded-xl bg-amber-50 border border-amber-200/90 text-[10px] text-amber-900 font-medium">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-0.5" />
+                  <span className="leading-tight">
+                    Dapur sedang istirahat. Pesanan Anda tetap diterima sebagai <strong>Pre-Order</strong>.
+                  </span>
+                </div>
+              )}
+
               {/* Badge 1-Baris Free Ongkir */}
               <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-[10.5px] font-semibold text-emerald-800">
                 <div className="flex items-center gap-1.5">

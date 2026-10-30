@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Cake, Image as ImageIcon, Heart, ShoppingBag } from "lucide-react";
+import { Home, Cake, Image as ImageIcon, Heart, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 
@@ -89,10 +89,10 @@ export default function MobileBottomNav() {
           aria-label="Keranjang Belanja"
         >
           <div className="p-1 rounded-xl relative">
-            <ShoppingBag className="w-5 h-5 text-[#4A0E4E]" />
+            <ShoppingCart className="w-5 h-5 text-[#4A0E4E]" />
             {totalItems > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] px-0.5 bg-[#4A0E4E] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-2xs animate-scaleIn">
-                {totalItems}
+              <span className="absolute -top-1 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md animate-scaleIn border-2 border-white">
+                {totalItems > 99 ? "99+" : totalItems}
               </span>
             )}
           </div>

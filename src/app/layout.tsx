@@ -21,20 +21,48 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Dapur Rasa — Frozen Food & Kue Rumahan Berkualitas",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dapur-rasa.vercel.app"),
+  title: "Dapur Rasa - Kue Rumahan & Snack Box Griya Cileungsi 5",
   description:
-    "Toko online & retail frozen food dan aneka kue rumahan berkualitas. Menyajikan aneka pastel crispy, risol mayo lumer, sosis solo, brownies panggang, dan kebutuhan snack box higienis.",
+    "Pesan aneka pastel crispy renyah, risol mayo lumer, brownies panggang, dan paket snack box fresh setiap hari di Perumahan Griya Cileungsi 5.",
   keywords: [
-    "dapur rasa",
-    "kue rumahan cileungsi",
-    "dapur rasa",
-    "kue rumahan",
-    "frozen food",
-    "pastel crispy",
-    "risol mayo",
-    "snack box",
-    "makanan beku",
+    "Dapur Rasa",
+    "Kue Rumahan",
+    "Snack Box Cileungsi",
+    "Griya Cileungsi 5",
+    "Pastel Crispy",
+    "Risol Mayo",
+    "Brownies Panggang",
+    "Frozen Food",
+    "Kue Tradisional",
+    "Catering Snack Box",
   ],
+  openGraph: {
+    title: "Dapur Rasa - Kue Rumahan & Snack Box Griya Cileungsi 5",
+    description:
+      "Pesan aneka pastel crispy renyah, risol mayo lumer, brownies panggang, dan paket snack box fresh setiap hari di Perumahan Griya Cileungsi 5.",
+    url: "/",
+    siteName: "Dapur Rasa",
+    locale: "id_ID",
+    type: "website",
+    images: [
+      {
+        url: "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=1200&h=630&fit=crop&q=85",
+        width: 1200,
+        height: 630,
+        alt: "Dapur Rasa - Kue Rumahan & Snack Box Griya Cileungsi 5",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dapur Rasa - Kue Rumahan & Snack Box Griya Cileungsi 5",
+    description:
+      "Pesan aneka pastel crispy renyah, risol mayo lumer, brownies panggang, dan paket snack box fresh setiap hari di Perumahan Griya Cileungsi 5.",
+    images: [
+      "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=1200&h=630&fit=crop&q=85",
+    ],
+  },
 };
 
 export default async function RootLayout({

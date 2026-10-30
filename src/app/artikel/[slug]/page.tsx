@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import initialData from "../../../../prisma/initial-data.json";
 
 import {
   Calendar,
@@ -41,6 +42,19 @@ export default async function ArticleDetailPage({
     }
   } catch (error) {
     console.warn("ArticleDetailPage fetch error:", error);
+  }
+
+  // Fallback statis jika database offline atau artikel tidak ditemukan di DB
+  if (!article) {
+    const fallbackList = (initialData as any)?.Article || [];
+    article =
+      fallbackList.find((a: any) => a.slug === slug && a.status === "PUBLISHED") ||
+      null;
+    if (article && relatedArticles.length === 0) {
+      relatedArticles = fallbackList
+        .filter((a: any) => a.status === "PUBLISHED" && a.id !== article.id)
+        .slice(0, 3);
+    }
   }
 
   if (!article || article.status !== "PUBLISHED") {
