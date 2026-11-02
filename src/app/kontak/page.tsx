@@ -68,17 +68,17 @@ export default function ContactPage() {
             </div>
           )}
 
-          {/* Operational Hours */}
+          {/* Layanan Pemesanan */}
           <div className="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs flex items-start gap-4">
             <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="font-heading font-bold text-stone-900 text-base">Jam Operasional</h3>
-              <p className="text-xs text-stone-500 mt-0.5">Jadwal produksi & pengantaran</p>
+              <h3 className="font-heading font-bold text-stone-900 text-base">Layanan Pemesanan</h3>
+              <p className="text-xs text-stone-500 mt-0.5">Pemesanan &amp; konsultasi menu</p>
               <p className="text-sm text-stone-800 font-medium mt-2">
-                <span className="block">Senin – Sabtu: 05.00 – 22.00 WIB</span>
-                <span className="block text-amber-800 font-semibold text-xs mt-0.5">Hari Minggu: Tutup</span>
+                <span className="block font-semibold text-emerald-800">Online via WhatsApp</span>
+                <span className="block text-stone-500 text-xs mt-0.5">Respon cepat setiap hari</span>
               </p>
             </div>
           </div>

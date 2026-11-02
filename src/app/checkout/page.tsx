@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useStore } from "@/context/StoreContext";
-import { getStoreOperatingStatus } from "@/lib/operating-hours";
 import {
   ShoppingBag,
   Phone,
@@ -116,7 +115,6 @@ interface CompletedOrderInfo {
 export default function CheckoutPage() {
   const { items, totalItems, subtotal, updateQuantity, removeItem, clearCart } = useCart();
   const { formatPrice, settings } = useStore();
-  const operatingStatus = getStoreOperatingStatus();
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -712,21 +710,6 @@ Mohon segera diproses ya, terima kasih!`;
           Lengkapi data pemesanan di bawah ini. Pesanan Anda akan otomatis terhubung ke WhatsApp dapur toko kami.
         </p>
       </div>
-
-      {/* Banner Informasi Jam Operasional jika Dapur Tutup */}
-      {!operatingStatus.isOpen && (
-        <div className="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 text-xs sm:text-sm flex items-start gap-3 shadow-xs">
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-500 mt-1 shrink-0 ring-4 ring-amber-200/60" />
-          <div className="min-w-0 flex-1">
-            <span className="font-bold block text-amber-900">
-              Informasi Jam Operasional: {operatingStatus.statusBadge}
-            </span>
-            <p className="mt-0.5 text-amber-800 leading-relaxed text-xs">
-              {operatingStatus.noticeText}
-            </p>
-          </div>
-        </div>
-      )}
 
       {errorMessage && (
         <div className="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-3 shadow-xs">

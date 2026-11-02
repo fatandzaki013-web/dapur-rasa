@@ -196,7 +196,7 @@ export default function AdminNavigationPage() {
                   type="text"
                   value={operationalHours}
                   onChange={(e) => setOperationalHours(e.target.value)}
-                  placeholder="Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)"
+                  placeholder="Pemesanan Online via WhatsApp Setiap Hari"
                   className="w-full px-3 py-2 rounded-xl border border-stone-300"
                 />
               </div>

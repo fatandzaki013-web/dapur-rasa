@@ -905,8 +905,8 @@ export default function HomePage() {
           <div className="space-y-3">
             {[
               {
-                q: "Kapan jam operasional buka dan jadwal pelayanan Dapur Rasa?",
-                a: `Dapur Rasa melayani pemesanan setiap hari Senin sampai Sabtu, pukul 05.00 – 22.00 WIB. Khusus hari Minggu toko kami tutup. Untuk pertanyaan, konsultasi menu acara, atau pesanan langsung, Anda dapat menghubungi WhatsApp kami di ${getWhatsAppDisplayNumber(settings?.whatsappNumber)}.`
+                q: "Bagaimana jadwal pelayanan dan pemesanan di Dapur Rasa?",
+                a: `Dapur Rasa melayani pemesanan aneka kue rumahan dan frozen food secara online via WhatsApp di ${getWhatsAppDisplayNumber(settings?.whatsappNumber)}. Silakan lakukan pemesanan melalui katalog website atau hubungi WhatsApp kami langsung.`
               },
               {
                 q: "Bagaimana cara melakukan pemesanan kue di website Dapur Rasa?",

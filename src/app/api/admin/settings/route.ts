@@ -72,7 +72,7 @@ export async function PUT(req: NextRequest) {
         faviconUrl: faviconUrl || "",
         whatsappNumber: whatsappNumber || DEFAULT_WHATSAPP_NUMBER,
         address: address || "",
-        operationalHours: operationalHours || "Senin - Sabtu: 05.00 - 22.00 WIB (Minggu: Tutup)",
+        operationalHours: operationalHours || "Pemesanan Online via WhatsApp Setiap Hari",
         fulfillmentOptions: fulfillmentOptions || "PICKUP,DELIVERY",
         defaultShippingFee: defaultShippingFee !== undefined ? Number(defaultShippingFee) : 15000,
         minOrderAmount: minOrderAmount !== undefined ? Number(minOrderAmount) : 0,

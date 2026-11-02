@@ -193,11 +193,11 @@ export default function AboutPage() {
 
           <div className="space-y-1">
             <span className="text-xs font-bold text-amber-300 uppercase tracking-wider block">
-              Jam Operasional
+              Layanan Pemesanan
             </span>
-            <p className="font-bold text-base sm:text-lg">Senin – Sabtu: 05.00 – 22.00 WIB</p>
-            <p className="text-xs text-amber-300 font-semibold">
-              Hari Minggu: Tutup
+            <p className="font-bold text-base sm:text-lg">Online via WhatsApp</p>
+            <p className="text-xs text-purple-200">
+              Pemesanan aneka kue &amp; snack box setiap hari
             </p>
           </div>
 

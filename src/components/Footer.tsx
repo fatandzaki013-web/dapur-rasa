@@ -245,10 +245,9 @@ export default function Footer() {
               <div className="flex items-start gap-2">
                 <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-bold text-slate-200">Jam Operasional Toko</p>
+                  <p className="font-bold text-slate-200">Layanan Pemesanan</p>
                   <p className="leading-snug text-[11px] text-slate-400 mt-0.5">
-                    <span className="block font-medium text-slate-300">Senin – Sabtu: 05.00 – 22.00 WIB</span>
-                    <span className="block text-amber-400 font-semibold">Hari Minggu: Tutup</span>
+                    <span className="block font-medium text-slate-300">Pemesanan Online via WhatsApp</span>
                   </p>
                 </div>
               </div>
