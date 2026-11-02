@@ -1,7 +1,7 @@
 "use client";
 
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition, useMemo } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
@@ -28,8 +28,8 @@ function ProductsContent() {
   const { categories, formatPrice } = useStore();
   const { addItem, setIsCartOpen } = useCart();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortOption, setSortOption] = useState("order");
@@ -53,28 +53,76 @@ function ProductsContent() {
 
   const [, startTransition] = useTransition();
 
-  // Fetch products directly from Supabase based on filters
+  // Load all products from Supabase
   useEffect(() => {
     setIsLoading(true);
-    fetchProductsFromSupabase({
-      category: selectedCategory,
-      search: searchTerm,
-      availableOnly: onlyAvailable,
-    })
+    fetchProductsFromSupabase()
       .then((data) => {
-        let sorted = [...data];
-        if (sortOption === "price-asc") {
-          sorted.sort((a, b) => a.price - b.price);
-        } else if (sortOption === "price-desc") {
-          sorted.sort((a, b) => b.price - a.price);
-        } else if (sortOption === "name-asc") {
-          sorted.sort((a, b) => a.name.localeCompare(b.name));
-        }
-        setProducts(sorted);
+        setAllProducts(data || []);
       })
       .catch((e) => console.error("Error fetching products from Supabase:", e))
       .finally(() => setIsLoading(false));
-  }, [searchTerm, selectedCategory, sortOption, onlyAvailable]);
+  }, []);
+
+  // Filter instan di sisi klien/state (Real-time tanpa jeda)
+  const filteredProducts = useMemo(() => {
+    let list = [...allProducts];
+
+    // 1. Filter Kategori Aktif (jika dipilih)
+    if (selectedCategory) {
+      const catLower = selectedCategory.toLowerCase();
+      list = list.filter((p) => {
+        const pCat = (p.category || "").toLowerCase();
+        if (catLower === "kue") {
+          return (
+            pCat.includes("kue") ||
+            pCat.includes("pastel") ||
+            pCat.includes("risol") ||
+            pCat.includes("sosis") ||
+            pCat.includes("brownies") ||
+            pCat.includes("bolu")
+          );
+        }
+        if (catLower === "nasi") {
+          return pCat.includes("nasi");
+        }
+        if (catLower === "frozen-food" || catLower === "frozen") {
+          return pCat.includes("frozen");
+        }
+        if (catLower === "snack-box" || catLower === "snack") {
+          return pCat.includes("snack") || pCat.includes("box");
+        }
+        return pCat === catLower;
+      });
+    }
+
+    // 2. Filter Ketersediaan
+    if (onlyAvailable) {
+      list = list.filter((p) => p.is_available || p.isAvailable);
+    }
+
+    // 3. Filter Pencarian Instan (Real-time nama produk & deskripsi)
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase().trim();
+      list = list.filter((p) => {
+        const matchName = (p.name || "").toLowerCase().includes(q);
+        const matchDesc = (p.description || "").toLowerCase().includes(q);
+        const matchCat = (p.category || "").toLowerCase().includes(q);
+        return matchName || matchDesc || matchCat;
+      });
+    }
+
+    // 4. Sorting
+    if (sortOption === "price-asc") {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortOption === "price-desc") {
+      list.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "name-asc") {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [allProducts, selectedCategory, onlyAvailable, searchTerm, sortOption]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -178,11 +226,11 @@ function ProductsContent() {
 
         {/* Active Search & Filter Feedback Banner */}
         {searchTerm && (
-          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-2xl border border-purple-200 text-xs text-[#4A0E4E]">
+          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-2xl border border-purple-200 text-xs text-[#4A0E4E] animate-fadeIn">
             <span className="flex items-center gap-1.5 truncate">
               <Search className="w-4 h-4 text-[#4A0E4E] shrink-0" />
               <span className="truncate">
-                Hasil pencarian untuk: <strong>&ldquo;{searchTerm}&rdquo;</strong> ({products.length} produk ditemukan)
+                Hasil pencarian untuk: <strong>&ldquo;{searchTerm}&rdquo;</strong> ({filteredProducts.length} menu ditemukan)
               </span>
             </span>
             <button
@@ -205,7 +253,7 @@ function ProductsContent() {
                 : "bg-stone-100 hover:bg-stone-200 text-stone-700"
             }`}
           >
-            {selectedCategory === "" ? `Semua Menu (${products.length})` : "Semua Menu"}
+            {selectedCategory === "" ? `Semua Menu (${filteredProducts.length})` : "Semua Menu"}
           </button>
           {[
             { id: "cat-nasi", name: "Nasi Box & Tumpeng", slug: "nasi" },
@@ -242,31 +290,41 @@ function ProductsContent() {
             </div>
           ))}
         </div>
-      ) : products.length === 0 ? (
-        <div className="text-center py-20 px-4 bg-white rounded-3xl border border-stone-200">
-          <div className="w-16 h-16 bg-purple-50 text-[#4A0E4E] rounded-full flex items-center justify-center mx-auto mb-4">
-            <Filter className="w-8 h-8" />
+      ) : filteredProducts.length === 0 ? (
+        <div className="text-center py-16 px-4 bg-white rounded-3xl border border-stone-200/90 shadow-sm max-w-lg mx-auto my-6 animate-fadeIn">
+          <div className="w-16 h-16 bg-purple-50 text-[#4A0E4E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+            <Search className="w-8 h-8 text-[#4A0E4E]" />
           </div>
-          <h3 className="text-stone-900 font-bold text-lg font-heading mb-1">
-            Tidak ada produk yang ditemukan
+          <h3 className="text-stone-900 font-extrabold text-lg sm:text-xl font-heading mb-1.5">
+            Menu Tidak Ditemukan
           </h3>
-          <p className="text-xs sm:text-sm text-stone-500 max-w-md mx-auto mb-6">
-            Coba gunakan kata kunci pencarian yang berbeda atau hapus filter kategori yang sedang aktif.
+          <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6 leading-relaxed">
+            Menu yang Anda cari tidak ditemukan. Coba kata kunci lain atau lihat kategori lainnya.
           </p>
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setSelectedCategory("");
-              setOnlyAvailable(false);
-            }}
-            className="px-5 py-2.5 bg-[#4A0E4E] text-white text-xs font-semibold rounded-xl hover:bg-[#5C1261] cursor-pointer"
-          >
-            Reset Semua Filter
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold rounded-xl transition cursor-pointer"
+              >
+                Hapus Pencarian (&ldquo;{searchTerm}&rdquo;)
+              </button>
+            )}
+            {selectedCategory && (
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("")}
+                className="px-4 py-2 bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-bold rounded-xl transition shadow-xs cursor-pointer"
+              >
+                Lihat Semua Kategori
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
-          {products.map((prod) => {
+          {filteredProducts.map((prod: Product) => {
             const currentPrice = prod.price;
             const isOutOfStock = !prod.is_available && !prod.isAvailable;
             const primaryImg =

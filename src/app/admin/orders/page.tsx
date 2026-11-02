@@ -25,6 +25,8 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
+  Download,
+  FileSpreadsheet,
 } from "lucide-react";
 import { supabase, SupabaseOrder, parseOrderItems, OrderItemPayload } from "@/lib/supabase";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -61,6 +63,7 @@ export default function AdminOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [selectedOrder, setSelectedOrder] = useState<SupabaseOrder | null>(null);
+  const [receiptOrder, setReceiptOrder] = useState<SupabaseOrder | null>(null);
   const [orderToDelete, setProductToDelete] = useState<SupabaseOrder | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
@@ -206,6 +209,69 @@ export default function AdminOrdersPage() {
     }
   };
 
+  // ==========================================
+  // EKSPOR DATA PESANAN KE CSV (EXCEL / SHEETS)
+  // ==========================================
+  const handleExportCSV = () => {
+    const listToExport = filteredOrders.length > 0 ? filteredOrders : orders;
+    if (listToExport.length === 0) {
+      showToast("Tidak ada data pesanan untuk diekspor.", "error");
+      return;
+    }
+
+    const headers = [
+      "ID Pesanan",
+      "Tanggal & Waktu",
+      "Nama Pelanggan",
+      "Nomor WhatsApp",
+      "Alamat Pengantaran / Opsi Ambil",
+      "Catatan",
+      "Rincian Item Menu",
+      "Total Harga (Rp)",
+      "Status Pesanan",
+    ];
+
+    const escapeCSV = (val: any): string => {
+      if (val === null || val === undefined) return '""';
+      const text = String(val).replace(/"/g, '""');
+      return `"${text}"`;
+    };
+
+    const rows = listToExport.map((order) => {
+      const parsedItems = parseOrderItems(order.items);
+      const itemsSummary = parsedItems
+        .map((it) => `${it.name} (${it.quantity}x @Rp ${it.price.toLocaleString("id-ID")})`)
+        .join("; ");
+
+      return [
+        escapeCSV(order.id),
+        escapeCSV(formatDate(order.created_at)),
+        escapeCSV(order.customer_name),
+        escapeCSV(order.customer_phone),
+        escapeCSV(order.delivery_address || "Ambil Sendiri di Dapur"),
+        escapeCSV(order.notes || "-"),
+        escapeCSV(itemsSummary),
+        escapeCSV(order.total_price),
+        escapeCSV(order.status || "pending"),
+      ].join(",");
+    });
+
+    // Tambahkan UTF-8 BOM (\uFEFF) agar Microsoft Excel membuka aksen & format dengan benar
+    const csvContent = "\uFEFF" + [headers.join(","), ...rows].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const todayStr = new Date().toISOString().split("T")[0];
+    link.href = url;
+    link.setAttribute("download", `laporan-pesanan-dapur-rasa-${todayStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast(`Berhasil mengunduh laporan (${listToExport.length} pesanan) dalam format CSV!`, "success");
+  };
+
   // Cetak Struk
   const handlePrint = () => {
     window.print();
@@ -255,7 +321,16 @@ export default function AdminOrdersPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold transition shadow-2xs cursor-pointer"
+            title="Download laporan transaksi pesanan ke format CSV / Excel"
+          >
+            <Download className="w-4 h-4 text-emerald-600" />
+            <span>Ekspor CSV</span>
+          </button>
           <button
             type="button"
             onClick={() => loadOrders(true)}
@@ -515,6 +590,19 @@ export default function AdminOrdersPage() {
                           </button>
                           <button
                             type="button"
+                            onClick={() => setReceiptOrder(order)}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                              status === "selesai" || status === "diproses"
+                                ? "bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300 shadow-2xs"
+                                : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200"
+                            }`}
+                            title="Cetak Struk Belanja Pesanan"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-amber-700" />
+                            <span className="hidden md:inline">Cetak Struk</span>
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setProductToDelete(order)}
                             className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                             title="Hapus Pesanan"
@@ -633,10 +721,14 @@ export default function AdminOrdersPage() {
               <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer"
+                  onClick={() => {
+                    const current = selectedOrder;
+                    setSelectedOrder(null);
+                    setReceiptOrder(current);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 font-bold text-xs hover:bg-amber-100 transition cursor-pointer"
                 >
-                  <Printer className="w-4 h-4 text-slate-600" />
+                  <Printer className="w-4 h-4 text-amber-700" />
                   <span>Cetak Struk Nota</span>
                 </button>
                 <button
@@ -647,6 +739,203 @@ export default function AdminOrdersPage() {
                   Tutup
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL: CETAK STRUK PESANAN (INVOICE / RECEIPT)                */}
+      {/* ============================================================== */}
+      {receiptOrder && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-lg w-full p-6 shadow-2xl animate-scaleIn max-h-[95vh] overflow-y-auto">
+            {/* Modal Controls (No-Print) */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 no-print">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <Printer className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 font-heading">
+                    Struk Belanja Pesanan
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    Siap dicetak ke printer thermal atau disimpan sebagai file PDF
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Cetak / PDF</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReceiptOrder(null)}
+                  className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 cursor-pointer"
+                  title="Tutup Struk"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Area Struk yang Dicetak (Memenuhi kertas cetak) */}
+            <div id="printable-receipt" className="pt-4 text-stone-900 font-sans">
+              {/* Header Toko */}
+              <div className="text-center pb-4 border-b-2 border-dashed border-stone-300">
+                <div className="inline-block p-1 rounded-full bg-amber-50 mb-1">
+                  <span className="font-heading font-black text-2xl tracking-wider text-[#4A0E4E]">
+                    DAPUR RASA
+                  </span>
+                </div>
+                <div className="text-xs font-semibold text-stone-700">
+                  Kue Rumahan &amp; Snack Box Griya Cileungsi 5
+                </div>
+                <div className="text-[11px] text-stone-500 mt-0.5">
+                  Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Bogor, Jawa Barat
+                </div>
+                <div className="text-[11px] text-stone-600 font-semibold mt-0.5">
+                  WhatsApp: 0858-8815-9765
+                </div>
+              </div>
+
+              {/* Info Pemesan & Transaksi */}
+              <div className="py-3 border-b-2 border-dashed border-stone-300 text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">No. Pesanan:</span>
+                  <span className="font-mono font-bold text-stone-900">
+                    #{receiptOrder.id?.slice(0, 8).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Tanggal &amp; Waktu:</span>
+                  <span className="font-semibold text-stone-800">
+                    {formatDate(receiptOrder.created_at)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Nama Pelanggan:</span>
+                  <span className="font-bold text-stone-900">{receiptOrder.customer_name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Nomor WhatsApp:</span>
+                  <span className="font-mono font-semibold text-stone-800">
+                    {receiptOrder.customer_phone}
+                  </span>
+                </div>
+                <div className="flex justify-between items-start pt-1">
+                  <span className="text-stone-500 shrink-0">Alamat / Opsi:</span>
+                  <span className="font-medium text-stone-800 text-right max-w-[240px]">
+                    {receiptOrder.delivery_address || "Ambil Sendiri di Dapur (Blok A8 No. 01)"}
+                  </span>
+                </div>
+                {receiptOrder.notes && (
+                  <div className="flex justify-between items-start pt-1">
+                    <span className="text-stone-500 shrink-0">Catatan Khusus:</span>
+                    <span className="text-stone-700 italic text-right max-w-[240px]">
+                      &ldquo;{receiptOrder.notes}&rdquo;
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-stone-500">Status Pesanan:</span>
+                  <span className="px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-slate-100 text-slate-800 border border-slate-200">
+                    {receiptOrder.status || "pending"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Tabel Rincian Menu */}
+              <div className="py-3 border-b-2 border-dashed border-stone-300">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-stone-500 uppercase text-[10px] tracking-wider border-b border-stone-200">
+                      <th className="text-left pb-1.5 font-bold">Item Menu</th>
+                      <th className="text-center pb-1.5 font-bold">Qty</th>
+                      <th className="text-right pb-1.5 font-bold">Harga</th>
+                      <th className="text-right pb-1.5 font-bold">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100">
+                    {parseOrderItems(receiptOrder.items).map((item, idx) => (
+                      <tr key={idx} className="py-1.5">
+                        <td className="py-1.5 font-semibold text-stone-800 pr-2">
+                          {item.name}
+                        </td>
+                        <td className="py-1.5 text-center text-stone-600 font-mono">
+                          {item.quantity}x
+                        </td>
+                        <td className="py-1.5 text-right text-stone-600 font-mono text-[11px]">
+                          {formatIDR(item.price)}
+                        </td>
+                        <td className="py-1.5 text-right font-bold text-stone-900 font-mono">
+                          {formatIDR(item.subtotal || item.price * item.quantity)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Total Akhir */}
+              <div className="py-3 border-b-2 border-dashed border-stone-300 space-y-1.5 text-xs">
+                <div className="flex justify-between items-center text-stone-600">
+                  <span>Subtotal Menu:</span>
+                  <span className="font-mono">{formatIDR(receiptOrder.total_price)}</span>
+                </div>
+                <div className="flex justify-between items-center text-stone-600">
+                  <span>Ongkos Kirim:</span>
+                  <span className="font-mono text-emerald-700 font-semibold">
+                    {receiptOrder.delivery_address && receiptOrder.delivery_address.toLowerCase().includes("diantar")
+                      ? "Area Griya Cileungsi 5"
+                      : "Gratis (Ambil di Toko)"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-stone-200 text-sm">
+                  <span className="font-extrabold uppercase tracking-wide text-stone-900">
+                    Total Pembayaran:
+                  </span>
+                  <span className="font-black text-lg text-[#4A0E4E] font-heading">
+                    {formatIDR(receiptOrder.total_price)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Footer Struk */}
+              <div className="text-center pt-4 pb-2 text-[11px] text-stone-500 space-y-1">
+                <p className="font-bold text-stone-800 text-xs">
+                  Terima kasih telah memesan di Dapur Rasa!
+                </p>
+                <p>Kue rumahan lezat, renyah, &amp; 100% Halal</p>
+                <p className="text-[10px] text-stone-400 font-mono">
+                  Simpan struk ini sebagai bukti transaksi resmi.
+                </p>
+              </div>
+            </div>
+
+            {/* Tombol Aksi di Bawah (No-Print) */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 no-print mt-2">
+              <button
+                type="button"
+                onClick={() => setReceiptOrder(null)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition cursor-pointer"
+              >
+                Tutup
+              </button>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Cetak Struk Sekarang</span>
+              </button>
             </div>
           </div>
         </div>

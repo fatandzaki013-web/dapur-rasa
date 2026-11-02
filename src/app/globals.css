@@ -75,3 +75,35 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 .bg-theme-bg { background-color: var(--color-bg); }
 .bg-theme-accent { background-color: var(--color-accent); }
 .text-theme-text { color: var(--color-text); }
+
+/* Print styling for official receipts / invoices */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt,
+  #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 24px !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+    z-index: 999999 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
