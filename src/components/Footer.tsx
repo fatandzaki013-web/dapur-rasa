@@ -252,12 +252,22 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-0.5">
-                <PhoneCall className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span className="text-[11px] text-slate-300 font-mono font-bold">
-                  {waDisplayNum}
+              <a
+                href={buildWhatsAppLink(
+                  "Halo Dapur Rasa, saya ingin konsultasi atau pesan kue...",
+                  settings?.whatsappNumber
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 pt-0.5 text-[11px] text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer group"
+              >
+                <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                  <PhoneCall className="w-3 h-3" />
+                </div>
+                <span className="font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors">
+                  Chat WhatsApp Kami
                 </span>
-              </div>
+              </a>
             </div>
 
             <div className="pt-2">

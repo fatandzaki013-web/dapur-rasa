@@ -129,6 +129,11 @@ export default function AdminDashboardPage() {
   // Form Validation Errors
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
+  // Quick Inline Price Editing State
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [inlinePriceValue, setInlinePriceValue] = useState<string>("");
+  const [isSavingInlinePrice, setIsSavingInlinePrice] = useState(false);
+
   // Modal State: Delete Confirmation
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -576,6 +581,45 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Quick Inline Price Editing Handlers
+  const handleStartEditPrice = (product: Product) => {
+    setEditingPriceId(product.id);
+    setInlinePriceValue(String(product.price || 0));
+  };
+
+  const handleCancelEditPrice = () => {
+    setEditingPriceId(null);
+    setInlinePriceValue("");
+  };
+
+  const handleSaveInlinePrice = async (productId: string) => {
+    const numPrice = Number(inlinePriceValue);
+    if (isNaN(numPrice) || numPrice <= 0) {
+      showToast("Harga harus angka positif lebih dari 0", "error");
+      return;
+    }
+
+    setIsSavingInlinePrice(true);
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ price: numPrice })
+        .eq("id", productId);
+
+      if (error) throw error;
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === productId ? { ...p, price: numPrice } : p))
+      );
+      showToast(`Harga berhasil diubah menjadi ${formatIDR(numPrice)}!`, "success");
+      setEditingPriceId(null);
+    } catch (err: any) {
+      showToast(err.message || "Gagal mengubah harga produk.", "error");
+    } finally {
+      setIsSavingInlinePrice(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fadeIn pb-12">
       {/* ============================================================== */}
@@ -885,12 +929,60 @@ export default function AdminDashboardPage() {
 
                       {/* Column 3: Price */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <div className="font-bold text-slate-900">
-                          {formatIDR(product.price)}
-                        </div>
-                        <div className="text-[11px] text-slate-400 font-medium">
-                          per {product.unit || "pcs"}
-                        </div>
+                        {editingPriceId === product.id ? (
+                          <div className="flex items-center gap-1.5 animate-fadeIn">
+                            <span className="text-xs font-bold text-slate-500">Rp</span>
+                            <input
+                              type="number"
+                              min="1"
+                              step="1"
+                              value={inlinePriceValue}
+                              onChange={(e) => setInlinePriceValue(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleSaveInlinePrice(product.id);
+                                if (e.key === "Escape") handleCancelEditPrice();
+                              }}
+                              autoFocus
+                              className="w-24 px-2 py-1 text-xs font-bold border-2 border-[#4A0E4E] rounded-lg focus:outline-none bg-white text-slate-900 shadow-xs"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleSaveInlinePrice(product.id)}
+                              disabled={isSavingInlinePrice}
+                              className="p-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-xs disabled:opacity-50"
+                              title="Simpan Harga"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleCancelEditPrice}
+                              className="p-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 cursor-pointer shadow-xs"
+                              title="Batal"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="group/price flex items-center gap-2">
+                            <div>
+                              <div className="font-bold text-slate-900">
+                                {formatIDR(product.price)}
+                              </div>
+                              <div className="text-[11px] text-slate-400 font-medium">
+                                per {product.unit || "pcs"}
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditPrice(product)}
+                              className="opacity-70 group-hover/price:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-[#4A0E4E] hover:bg-purple-50 transition cursor-pointer"
+                              title="Ubah harga produk langsung"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
                       </td>
 
                       {/* Column 4: Availability Toggle */}
@@ -1055,28 +1147,62 @@ export default function AdminDashboardPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Harga */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Harga (Rp) <span className="text-rose-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Harga (Rp) <span className="text-rose-500">*</span>
+                    </label>
+                    <span className="text-[11px] font-bold text-[#4A0E4E]">
+                      {formatIDR(Number(formPrice) || 0)}
+                    </span>
+                  </div>
                   <input
                     type="number"
                     min="1"
-                    step="500"
+                    step="1"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    placeholder="25000"
+                    placeholder="Contoh: 3000 / 25000"
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-sm font-semibold transition focus:outline-none ${
                       formErrors.price
                         ? "border-rose-400 bg-rose-50/40 text-rose-900 focus:border-rose-500"
                         : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
                     }`}
                   />
-                  {formErrors.price ? (
+                  {/* Preset Nominal Cepat */}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {[2500, 3000, 5000, 10000, 15000, 25000, 35000, 50000].map((nominal) => (
+                      <button
+                        key={nominal}
+                        type="button"
+                        onClick={() => setFormPrice(String(nominal))}
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md border transition-all cursor-pointer ${
+                          Number(formPrice) === nominal
+                            ? "bg-[#4A0E4E] text-white border-[#4A0E4E]"
+                            : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                        }`}
+                      >
+                        {formatIDR(nominal)}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={() => setFormPrice((prev) => String((Number(prev) || 0) + 1000))}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer"
+                      title="Tambah Rp 1.000"
+                    >
+                      +1.000
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormPrice((prev) => String((Number(prev) || 0) + 5000))}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 cursor-pointer"
+                      title="Tambah Rp 5.000"
+                    >
+                      +5.000
+                    </button>
+                  </div>
+                  {formErrors.price && (
                     <p className="text-xs text-rose-600 mt-1 font-medium">{formErrors.price}</p>
-                  ) : (
-                    <p className="text-[11px] text-slate-400 mt-1 font-medium">
-                      Preview: {formatIDR(Number(formPrice) || 0)}
-                    </p>
                   )}
                 </div>
 

@@ -906,7 +906,7 @@ export default function HomePage() {
             {[
               {
                 q: "Bagaimana jadwal pelayanan dan pemesanan di Dapur Rasa?",
-                a: `Dapur Rasa melayani pemesanan aneka kue rumahan dan frozen food secara online via WhatsApp di ${getWhatsAppDisplayNumber(settings?.whatsappNumber)}. Silakan lakukan pemesanan melalui katalog website atau hubungi WhatsApp kami langsung.`
+                a: "Dapur Rasa melayani pemesanan aneka kue rumahan dan frozen food secara online via WhatsApp resmi kami. Silakan lakukan pemesanan melalui katalog website atau langsung hubungi kami via WhatsApp."
               },
               {
                 q: "Bagaimana cara melakukan pemesanan kue di website Dapur Rasa?",

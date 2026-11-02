@@ -127,13 +127,18 @@ export default function AdminSettingsPage() {
     setErrorMessage(null);
 
     try {
+      let formattedWa = whatsappNumber.replace(/[^0-9]/g, "");
+      if (formattedWa.startsWith("0")) {
+        formattedWa = "62" + formattedWa.slice(1);
+      }
+
       const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           brandName,
           tagline,
-          whatsappNumber: whatsappNumber.replace(/[^0-9]/g, ""),
+          whatsappNumber: formattedWa,
           address,
           operationalHours,
           defaultShippingFee: Number(defaultShippingFee),
@@ -147,6 +152,9 @@ export default function AdminSettingsPage() {
       if (!res.ok) throw new Error(data.error || "Gagal menyimpan pengaturan toko.");
 
       showToast("Pengaturan profil & kontak toko berhasil diperbarui!");
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("theme-updated"));
+      }
     } catch (err: any) {
       setErrorMessage(err.message || "Gagal menyimpan pengaturan toko.");
     } finally {
@@ -362,18 +370,18 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block font-bold text-slate-700 text-xs uppercase tracking-wide mb-1.5">
-                  Nomor WhatsApp Toko (Awali 62...) <span className="text-red-500">*</span>
+                  Nomor WhatsApp Admin (Chat &amp; Checkout) <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
-                  placeholder={DEFAULT_WHATSAPP_NUMBER}
+                  placeholder="085888159765"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
                 />
                 <span className="text-[11px] text-slate-400 mt-1 block">
-                  * Otomatis menerima pesan pemesanan checkout dari pembeli dan menjadi nomor GoPay default.
+                  * Berlaku otomatis di seluruh website: tombol WhatsApp mengambang, footer, dan redirect checkout. (Contoh: 085888159765).
                 </span>
               </div>
 
