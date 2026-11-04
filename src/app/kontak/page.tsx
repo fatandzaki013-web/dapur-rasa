@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useStore } from "@/context/StoreContext";
-import { Phone, MapPin, Clock, MessageSquare } from "lucide-react";
+import { Phone, MapPin, Clock, MessageSquare, ExternalLink } from "lucide-react";
 import { InstagramIcon, FacebookIcon } from "@/components/SocialIcons";
 import {
   getWhatsAppNumber,
@@ -64,6 +64,15 @@ export default function ContactPage() {
               <p className="text-sm text-stone-800 font-medium mt-2 leading-relaxed">
                 {address}
               </p>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Perumahan+Griya+Cileungsi+5+Cileungsi+Bogor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-amber-900 hover:underline mt-2.5 transition"
+              >
+                <span>Buka Petunjuk Arah di Google Maps</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
             </div>
           </div>
 
