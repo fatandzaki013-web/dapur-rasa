@@ -13,6 +13,7 @@ import {
 export default function ContactPage() {
   const { settings } = useStore();
   const brandName = settings?.brandName || "Dapur Rasa";
+  const address = settings?.address || "Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Bogor, Jawa Barat";
   const waLinkNum = getWhatsAppNumber(settings?.whatsappNumber);
   const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
@@ -53,20 +54,18 @@ export default function ContactPage() {
           </div>
 
           {/* Address Card */}
-          {settings?.address && (
-            <div className="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
-                <MapPin className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-heading font-bold text-stone-900 text-base">Alamat Dapur</h3>
-                <p className="text-xs text-stone-500 mt-0.5">Lokasi pengambilan pesanan (pickup)</p>
-                <p className="text-sm text-stone-800 font-medium mt-2 leading-relaxed">
-                  {settings.address}
-                </p>
-              </div>
+          <div className="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+              <MapPin className="w-6 h-6" />
             </div>
-          )}
+            <div>
+              <h3 className="font-heading font-bold text-stone-900 text-base">Alamat Dapur</h3>
+              <p className="text-xs text-stone-500 mt-0.5">Lokasi pengambilan pesanan (pickup)</p>
+              <p className="text-sm text-stone-800 font-medium mt-2 leading-relaxed">
+                {address}
+              </p>
+            </div>
+          </div>
 
           {/* Layanan Pemesanan */}
           <div className="p-6 rounded-3xl bg-white border border-stone-200 shadow-xs flex items-start gap-4">
