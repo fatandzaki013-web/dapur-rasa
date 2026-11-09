@@ -228,7 +228,10 @@ export default function HomePage() {
     setLightboxIndex((prev) => (prev! + 1) % filteredGalleryItems.length);
   };
 
-  // Auto slide effect
+  const touchStartXRef = useRef<number | null>(null);
+  const touchEndXRef = useRef<number | null>(null);
+
+  // Auto slide effect (Bisa geser otomatis setiap 4.5 detik)
   useEffect(() => {
     if (isHovered) return;
     const interval = setInterval(() => {
@@ -236,6 +239,42 @@ export default function HomePage() {
     }, 4500);
     return () => clearInterval(interval);
   }, [isHovered, heroSlides.length]);
+
+  // Handler geser manual via sentuhan jari (Touch Swipe)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.targetTouches[0].clientX;
+    setIsHovered(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndXRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    setIsHovered(false);
+    if (!touchStartXRef.current || !touchEndXRef.current) return;
+    const distance = touchStartXRef.current - touchEndXRef.current;
+    const minSwipeDistance = 40;
+
+    if (distance > minSwipeDistance) {
+      // Swipe kiri -> slide berikutnya
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+    } else if (distance < -minSwipeDistance) {
+      // Swipe kanan -> slide sebelumnya
+      setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    }
+
+    touchStartXRef.current = null;
+    touchEndXRef.current = null;
+  };
+
+  const handlePrevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
+  const handleNextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -284,64 +323,113 @@ export default function HomePage() {
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
       <main className="flex-1 pt-[72px] sm:pt-24 pb-32 sm:pb-16 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
-        {/* SECTION 1: HERO BANNER GRADASI DIAGONAL 2 KOLOM                */}
+        {/* SECTION 1: HERO SLIDER CAROUSEL (FULL FOTO KUE & SWIPEABLE)    */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
           <div
-            className="relative w-full overflow-hidden rounded-[26px] p-5 sm:p-7 min-h-[185px] sm:min-h-[220px] shadow-[0_10px_28px_-8px_rgba(18,56,41,0.22)]"
-            style={{
-              background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-mid) 58%, var(--accent-glow) 100%)",
-            }}
+            className="relative w-full overflow-hidden rounded-[26px] sm:rounded-[34px] shadow-[0_12px_32px_-8px_rgba(18,56,41,0.22)] border border-[#D5EADF]/60 select-none group"
+            style={{ touchAction: "pan-y" }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
-            <div className="grid grid-cols-[1.2fr_1fr] items-center gap-2.5 sm:gap-6 relative z-10">
-              {/* Kolom Kiri: Judul 2 baris tegas, subjudul, tombol pill putih */}
-              <div className="text-white space-y-1 sm:space-y-2">
-                <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[9px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-xs">
-                  {heroSlides[activeSlide]?.badge || "Kue & Camilan Autentik"}
-                </span>
-                <h1 className="text-base sm:text-2xl lg:text-3xl font-extrabold text-white leading-[1.18] tracking-tight line-clamp-2">
-                  {heroSlides[activeSlide]?.title || "Camilan Rumahan Rasa Istimewa"}
-                </h1>
-                <p className="text-[0.78rem] sm:text-sm text-white/85 leading-[1.35] line-clamp-2">
-                  {heroSlides[activeSlide]?.subtitle || "Pastel renyah, risol mayo lumer & aneka kue basah segar setiap hari."}
-                </p>
-                <div className="pt-2 sm:pt-3">
-                  <Link
-                    href={heroSlides[activeSlide]?.buttonLink || "/produk"}
-                    className="inline-flex items-center gap-1.5 bg-white text-[#111915] rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-stone-50 transition active:scale-95"
-                  >
-                    <span>{heroSlides[activeSlide]?.buttonText || "Lihat Menu Kue"}</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#123829]" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Kolom Kanan: Visual produk unggulan dengan rounded frame & kemiringan dinamis */}
-              <div className="flex items-center justify-end pr-1 sm:pr-4">
-                <div className="relative h-[130px] sm:h-[180px] w-auto max-w-full rounded-[18px] overflow-hidden -rotate-6 shadow-[0_14px_16px_rgba(0,0,0,0.32)] border-2 border-white/25 transition-transform duration-500 hover:rotate-0 hover:scale-105">
+            {/* Track Slide: Geser Halus Otomatis & Manual */}
+            <div
+              className="flex transition-transform duration-700 ease-out h-full"
+              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
+            >
+              {heroSlides.map((slide, idx) => (
+                <div
+                  key={slide.id || idx}
+                  className="w-full shrink-0 relative min-h-[220px] sm:min-h-[290px] md:min-h-[350px] lg:min-h-[380px] flex items-center overflow-hidden"
+                >
+                  {/* Full Background Foto Kue / Produk */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    alt={heroSlides[activeSlide]?.title || "Dapur Rasa"}
-                    src={heroSlides[activeSlide]?.desktopImg || "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80"}
-                    className="w-full h-full object-cover"
+                    alt={slide.title || "Dapur Rasa"}
+                    src={slide.desktopImg || slide.mobileImg || "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=1600&auto=format&fit=crop&q=85"}
+                    className="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-1000 ease-out"
                   />
+
+                  {/* Gradient Overlay Gelap Emerald Agar Teks & Tombol Terbaca Sangat Jelas */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#123829]/95 via-[#123829]/75 sm:via-[#123829]/60 to-black/35" />
+
+                  {/* Konten Teks & Tombol Aksi */}
+                  <div className="relative z-10 w-full px-5 sm:px-10 lg:px-14 py-6 sm:py-10 max-w-2xl text-white space-y-2 sm:space-y-3.5">
+                    {slide.badge && (
+                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/20 shadow-xs">
+                        {slide.badge}
+                      </span>
+                    )}
+
+                    <h1 className="text-lg xs:text-xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-[1.18] tracking-tight line-clamp-2 drop-shadow-sm">
+                      {slide.title}
+                    </h1>
+
+                    <p className="text-xs sm:text-sm lg:text-base text-white/90 leading-relaxed line-clamp-2 max-w-lg drop-shadow-xs">
+                      {slide.subtitle}
+                    </p>
+
+                    <div className="pt-2 sm:pt-4 flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
+                      <Link
+                        href={slide.buttonLink || "/produk"}
+                        className="inline-flex items-center gap-2 bg-white text-[#111915] rounded-full px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold shadow-[0_6px_16px_rgba(0,0,0,0.18)] hover:bg-[#F2F7F4] transition active:scale-95"
+                      >
+                        <span>{slide.buttonText || "Lihat Menu Kue"}</span>
+                        <ChevronRight className="w-4 h-4 text-[#123829]" />
+                      </Link>
+
+                      <a
+                        href={buildWhatsAppLink(
+                          `Halo Dapur Rasa, saya ingin pesan: *${slide.title}*`,
+                          settings?.whatsappNumber
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm backdrop-blur-md border border-white/25 transition active:scale-95 shadow-xs"
+                      >
+                        <Phone className="w-3.5 h-3.5 text-[#47C98E]" />
+                        <span>Pesan via WA</span>
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
 
-            {/* Indikator Slide: Deretan 3 Titik Bulat di Tengah Bawah Banner */}
-            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
-              {heroSlides.slice(0, 5).map((_, i) => (
+            {/* Tombol Geser Kiri (Sebelumnya) */}
+            <button
+              type="button"
+              onClick={handlePrevSlide}
+              className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
+              aria-label="Slide sebelumnya"
+            >
+              <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Tombol Geser Kanan (Berikutnya) */}
+            <button
+              type="button"
+              onClick={handleNextSlide}
+              className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
+              aria-label="Slide berikutnya"
+            >
+              <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Indikator Titik Slide: Klik untuk Lompat ke Slide */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-black/25 backdrop-blur-xs px-3 py-1 rounded-full border border-white/15">
+              {heroSlides.map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setActiveSlide(i)}
                   className={`rounded-full transition-all duration-300 cursor-pointer ${
                     activeSlide === i
-                      ? "bg-white w-4 h-1.5 shadow-xs"
-                      : "bg-white/45 hover:bg-white/70 w-1.5 h-1.5"
+                      ? "bg-white w-5 h-2 shadow-xs"
+                      : "bg-white/45 hover:bg-white/75 w-2 h-2"
                   }`}
                   aria-label={`Ke slide ${i + 1}`}
                 />
