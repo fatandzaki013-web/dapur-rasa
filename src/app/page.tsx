@@ -29,6 +29,7 @@ import {
   Image as ImageIcon,
   X,
   ExternalLink,
+  Plus,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
 import ProductLikeButton from "@/components/ProductLikeButton";
@@ -138,31 +139,39 @@ export default function HomePage() {
     return defaultHeroSlides;
   }, [heroSection?.customConfig]);
 
-  // 4 Kategori Produk Utama (Nasi, Kue, Frozen, Snack Box)
-  const categoryCircles = [
+  // Bar Filter Kategori 5 Kolom (Semua + 4 Kategori Utama)
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const categoryCapsules = [
+    {
+      name: "Semua",
+      slug: "all",
+      icon: Sparkles,
+      desc: "Semua Menu",
+    },
     {
       name: "Nasi",
       slug: "nasi",
       icon: UtensilsCrossed,
-      desc: "Nasi Box & Tumpeng",
+      desc: "Nasi Box",
     },
     {
       name: "Kue",
       slug: "kue",
       icon: Cake,
-      desc: "Kue Basah & Brownies",
+      desc: "Kue Basah",
     },
     {
       name: "Frozen",
       slug: "frozen-food",
       icon: Snowflake,
-      desc: "Pastel & Risol Beku",
+      desc: "Frozen Food",
     },
     {
       name: "Snack Box",
       slug: "snack-box",
       icon: PackageCheck,
-      desc: "Paket Rapat & Acara",
+      desc: "Snack Box",
     },
   ];
 
@@ -241,12 +250,25 @@ export default function HomePage() {
     }
   };
 
+  // Filter produk Top Picks sesuai kapsul kategori aktif
+  const topPickProducts = useMemo(() => {
+    if (selectedCategory === "all") return products;
+    return products.filter((p) => {
+      const pCat = (typeof p.category === "string" ? p.category : (p.category as any)?.slug || (p.category as any)?.name || "").toLowerCase();
+      if (selectedCategory === "nasi") return pCat.includes("nasi");
+      if (selectedCategory === "kue") return pCat.includes("kue") || pCat.includes("brownies") || pCat.includes("bolu");
+      if (selectedCategory === "frozen-food") return pCat.includes("frozen");
+      if (selectedCategory === "snack-box") return pCat.includes("snack") || pCat.includes("box");
+      return pCat === selectedCategory;
+    });
+  }, [products, selectedCategory]);
+
   return (
     <>
-      {/* Toast Notification */}
+      {/* Toast Notification (Floating Pill) */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-[#2E9E6B] animate-fadeIn">
-          <CheckCircle className="w-4 h-4 text-emerald-400" />
+        <div className="fixed bottom-6 right-6 z-50 bg-[#123829] text-white px-5 py-2.5 rounded-full shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-[#47C98E] animate-fadeIn">
+          <CheckCircle className="w-4 h-4 text-[#47C98E]" />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -262,106 +284,64 @@ export default function HomePage() {
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
       <main className="flex-1 pt-[72px] sm:pt-24 pb-32 sm:pb-16 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
-        {/* SECTION 1: HERO SLIDER CAROUSEL (Unified Desktop & Mobile Look) */}
+        {/* SECTION 1: HERO BANNER GRADASI DIAGONAL 2 KOLOM                */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
           <div
-            className="relative w-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-sm sm:shadow-md bg-gray-900"
-            style={{ touchAction: "pan-y" }}
+            className="relative w-full overflow-hidden rounded-[26px] p-5 sm:p-7 min-h-[185px] sm:min-h-[220px] shadow-[0_10px_28px_-8px_rgba(18,56,41,0.22)]"
+            style={{
+              background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--accent-mid) 58%, var(--accent-glow) 100%)",
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            <div
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-            >
-              {heroSlides.map((slide) => (
-                <div key={slide.id} className="w-full shrink-0 relative">
-                  {/* Aspect Ratio 16:9 on both Mobile and Desktop */}
-                  <div className="relative w-full aspect-16/9 overflow-hidden bg-gray-900">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      alt={slide.title}
-                      src={slide.desktopImg}
-                      className="w-full h-full object-cover"
-                    />
-
-                    {/* Dark Gradient Overlay for Typography Clarity - Desktop Style on all screen sizes */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/50 to-transparent flex items-center">
-                      <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12 w-full">
-                        <div className="max-w-[80%] xs:max-w-[75%] sm:max-w-xl space-y-1 xs:space-y-2 sm:space-y-4 text-white">
-                          <span className="inline-block px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-[#123829] text-white text-[9px] xs:text-[10px] sm:text-xs font-extrabold tracking-wide uppercase shadow-sm">
-                            {slide.badge}
-                          </span>
-                          <h1 className="text-xs xs:text-base sm:text-3xl lg:text-5xl font-extrabold tracking-tight leading-tight line-clamp-2">
-                            {slide.title}
-                          </h1>
-                          <p className="text-[9.5px] xs:text-xs sm:text-sm lg:text-base text-gray-200 leading-relaxed line-clamp-1 xs:line-clamp-2 sm:line-clamp-none">
-                            {slide.subtitle}
-                          </p>
-                          <div className="pt-0.5 xs:pt-1 sm:pt-2 flex items-center gap-1.5 xs:gap-2 sm:gap-3">
-                            <Link
-                              href={slide.buttonLink || "/produk"}
-                              className="inline-flex items-center gap-1 sm:gap-2 px-2.5 py-1.5 xs:px-3.5 xs:py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white font-bold text-[10px] xs:text-xs sm:text-sm shadow-md shadow-[#123829]/20 transition-all active:scale-95 shrink-0"
-                            >
-                              <span>{slide.buttonText || "Lihat Menu Kue"}</span>
-                              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                            </Link>
-                            <a
-                              href={buildWhatsAppLink(
-                                "Halo Dapur Rasa, saya ingin konsultasi pemesanan kue / snack box",
-                                settings?.whatsappNumber
-                              )}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 sm:gap-2 px-2 py-1.5 xs:px-3 xs:py-2 sm:px-5 sm:py-3 rounded-lg sm:rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-[10px] xs:text-xs sm:text-sm backdrop-blur-xs border border-white/25 transition-all active:scale-95 shrink-0"
-                            >
-                              <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
-                              <span className="hidden xs:inline">Pesan via WhatsApp</span>
-                              <span className="xs:hidden">WhatsApp</span>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+            <div className="grid grid-cols-[1.2fr_1fr] items-center gap-2.5 sm:gap-6 relative z-10">
+              {/* Kolom Kiri: Judul 2 baris tegas, subjudul, tombol pill putih */}
+              <div className="text-white space-y-1 sm:space-y-2">
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[9px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-xs">
+                  {heroSlides[activeSlide]?.badge || "Kue & Camilan Autentik"}
+                </span>
+                <h1 className="text-base sm:text-2xl lg:text-3xl font-extrabold text-white leading-[1.18] tracking-tight line-clamp-2">
+                  {heroSlides[activeSlide]?.title || "Camilan Rumahan Rasa Istimewa"}
+                </h1>
+                <p className="text-[0.78rem] sm:text-sm text-white/85 leading-[1.35] line-clamp-2">
+                  {heroSlides[activeSlide]?.subtitle || "Pastel renyah, risol mayo lumer & aneka kue basah segar setiap hari."}
+                </p>
+                <div className="pt-2 sm:pt-3">
+                  <Link
+                    href={heroSlides[activeSlide]?.buttonLink || "/produk"}
+                    className="inline-flex items-center gap-1.5 bg-white text-[#111915] rounded-full px-4 sm:px-5 py-2 text-xs sm:text-sm font-bold shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-stone-50 transition active:scale-95"
+                  >
+                    <span>{heroSlides[activeSlide]?.buttonText || "Lihat Menu Kue"}</span>
+                    <ChevronRight className="w-3.5 h-3.5 text-[#123829]" />
+                  </Link>
                 </div>
-              ))}
+              </div>
+
+              {/* Kolom Kanan: Visual produk unggulan dengan rounded frame & kemiringan dinamis */}
+              <div className="flex items-center justify-end pr-1 sm:pr-4">
+                <div className="relative h-[130px] sm:h-[180px] w-auto max-w-full rounded-[18px] overflow-hidden -rotate-6 shadow-[0_14px_16px_rgba(0,0,0,0.32)] border-2 border-white/25 transition-transform duration-500 hover:rotate-0 hover:scale-105">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={heroSlides[activeSlide]?.title || "Dapur Rasa"}
+                    src={heroSlides[activeSlide]?.desktopImg || "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80"}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Prev Navigation Button - Active on Mobile & Desktop */}
-            <button
-              type="button"
-              onClick={() =>
-                setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
-              }
-              className="flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
-              aria-label="Slide sebelumnya"
-            >
-              <ChevronLeft className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
-            </button>
-
-            {/* Next Navigation Button - Active on Mobile & Desktop */}
-            <button
-              type="button"
-              onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-              className="flex absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 sm:w-11 sm:h-11 rounded-full bg-white/80 hover:bg-white text-gray-800 shadow-md items-center justify-center transition-all duration-200 hover:scale-105 backdrop-blur-xs cursor-pointer active:scale-90"
-              aria-label="Slide berikutnya"
-            >
-              <ChevronRight className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
-            </button>
-
-            {/* Dots Indicator - Active on Mobile & Desktop */}
-            <div className="flex absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 gap-1.5 sm:gap-2">
-              {heroSlides.map((_, i) => (
+            {/* Indikator Slide: Deretan 3 Titik Bulat di Tengah Bawah Banner */}
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
+              {heroSlides.slice(0, 5).map((_, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => setActiveSlide(i)}
                   className={`rounded-full transition-all duration-300 cursor-pointer ${
                     activeSlide === i
-                      ? "bg-white w-4 xs:w-5 sm:w-8 h-1.5 sm:h-2.5 shadow-sm"
-                      : "bg-white/50 hover:bg-white/70 w-1.5 sm:w-2.5 h-1.5 sm:h-2.5"
+                      ? "bg-white w-4 h-1.5 shadow-xs"
+                      : "bg-white/45 hover:bg-white/70 w-1.5 h-1.5"
                   }`}
                   aria-label={`Ke slide ${i + 1}`}
                 />
@@ -423,20 +403,58 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: KATEGORI PRODUK (Balanced 5-Column Grid on Mobile)  */}
+        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Kapsul Vertikal Aktif)  */}
         {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
-          <div className="flex items-center justify-between">
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
+          <div className="flex items-center justify-between gap-2 overflow-x-auto scrollbar-none py-2 px-1">
+            {categoryCapsules.map((cat) => {
+              const IconComponent = cat.icon;
+              const isActive = selectedCategory === cat.slug;
+              return (
+                <button
+                  key={cat.name}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.slug)}
+                  className={`min-w-[58px] sm:min-w-[68px] h-[78px] sm:h-[84px] rounded-[30px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
+                    isActive
+                      ? "bg-[#123829] text-white shadow-[0_8px_18px_-4px_rgba(18,56,41,0.28)]"
+                      : "bg-transparent hover:bg-[#F4F7F5] text-[#111915]"
+                  }`}
+                  aria-label={`Kategori ${cat.name}`}
+                >
+                  <IconComponent
+                    className={`w-5 h-5 transition-transform ${
+                      isActive ? "text-white" : "text-[#111915] stroke-[1.8]"
+                    }`}
+                  />
+                  <span
+                    className={`text-[0.72rem] leading-none ${
+                      isActive ? "font-semibold text-white" : "font-medium text-[#687871]"
+                    }`}
+                  >
+                    {cat.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ============================================================== */}
+        {/* SECTION 4: SEKSI "TOP PICKS" / KATALOG KARTU PASTEL             */}
+        {/* ============================================================== */}
+        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-3.5">
+          <div className="flex items-center justify-between px-1">
             <div>
-              <h2 className="text-lg sm:text-2xl font-extrabold text-[#111915] tracking-tight">
-                Kategori Produk
+              <h2 className="text-[1.08rem] sm:text-2xl font-extrabold text-[#111915] tracking-tight">
+                Top Picks
               </h2>
-              <p className="text-xs sm:text-sm text-[#687871]">
-                Pilih kategori kue &amp; camilan favorit Anda
+              <p className="text-xs text-[#687871]">
+                Paling banyak dicari oleh pelanggan kami
               </p>
             </div>
             <Link
-              className="text-xs sm:text-sm font-semibold text-[#123829] hover:text-[#2E9E6B] hover:underline flex items-center gap-0.5 shrink-0"
+              className="text-[0.8rem] font-bold text-[#2E9E6B] hover:underline flex items-center gap-0.5 shrink-0"
               href="/produk"
             >
               <span>Lihat Semua</span>
@@ -444,76 +462,19 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 4 Kategori Kapsul Vertikal (Emerald & Soft Mint Standard) */}
-          <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
-            {categoryCircles.map((cat) => {
-              const IconComponent = cat.icon;
-              return (
-                <Link
-                  key={cat.name}
-                  className="group flex flex-col items-center justify-center min-w-[64px] h-[88px] sm:h-[104px] p-2 sm:p-3 rounded-[28px] sm:rounded-[34px] bg-[#F2F7F4] border border-[#D5EADF] hover:bg-[#123829] hover:border-[#123829] text-center transition-all duration-200 active:scale-95 shadow-2xs hover:shadow-[0_8px_18px_-4px_rgba(18,56,41,0.3)]"
-                  href={`/produk?category=${cat.slug}`}
-                >
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-[#123829] group-hover:text-white transition-colors mb-1">
-                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:scale-110" />
-                  </div>
-                  <h3 className="font-bold text-[11px] sm:text-sm text-[#111915] group-hover:text-white transition-colors leading-tight line-clamp-1">
-                    {cat.name}
-                  </h3>
-                  <p className="text-[10px] text-[#687871] group-hover:text-white/80 font-medium hidden md:block leading-none mt-0.5">
-                    {cat.desc}
-                  </p>
-                </Link>
-              );
-            })}
-          </div>
-
-        </section>
-
-        {/* ============================================================== */}
-        {/* SECTION 4: PRODUK POPULER (Compact 2-Col Mobile Grid)          */}
-        {/* ============================================================== */}
-        <section className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-lg sm:text-2xl font-extrabold text-[#111915] tracking-tight">
-                Produk Populer
-              </h2>
-              <p className="text-xs sm:text-sm text-[#687871]">
-                Paling banyak dicari oleh pelanggan kami
-              </p>
-            </div>
-            <Link
-              className="text-xs sm:text-sm font-semibold text-[#123829] hover:text-[#2E9E6B] hover:underline flex items-center gap-0.5 shrink-0"
-              href="/produk"
-            >
-              <span>Lihat Selengkapnya</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-          {/* Skeleton loading or 2-Column Grid */}
+          {/* Skeleton loading or 2-Column Responsive Grid */}
           {isLoadingProducts ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 w-full">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
-                  className="flex flex-col rounded-2xl border border-[#D5EADF] bg-white p-2.5 sm:p-3.5 space-y-2.5 animate-pulse"
-                >
-                  <div className="aspect-square w-full rounded-xl bg-slate-100" />
-                  <div className="h-3 w-16 bg-slate-100 rounded" />
-                  <div className="h-4 w-full bg-slate-100 rounded" />
-                  <div className="h-4 w-2/3 bg-slate-100 rounded" />
-                  <div className="pt-2 flex justify-between items-center mt-auto">
-                    <div className="h-4 w-16 bg-slate-100 rounded" />
-                    <div className="h-7 w-20 bg-slate-100 rounded-lg" />
-                  </div>
-                </div>
+                  className="flex flex-col rounded-[24px] bg-[#E8F5EE] p-3.5 space-y-2.5 animate-pulse h-[220px]"
+                />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 w-full max-w-full">
-              {products.map((prod) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 w-full">
+              {topPickProducts.map((prod) => {
                 const currentPrice = prod.price;
                 const isOutOfStock = !prod.is_available && !prod.isAvailable;
                 const primaryImage =
@@ -525,90 +486,63 @@ export default function HomePage() {
                     ? prod.category
                     : (prod.category as any)?.name || "Kue";
 
-              return (
-                <article
-                  key={prod.id}
-                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-[#D5EADF] bg-[#E8F5EE] shadow-2xs transition-all duration-300 hover:border-[#47C98E] hover:shadow-card hover:-translate-y-0.5 rounded-[22px] p-3 sm:p-3.5 justify-between gap-2.5"
-                >
-                  {/* Photo container: height 130px sm:155px, border-radius 16px, object-cover */}
-                  <div className="relative w-full h-[130px] sm:h-[155px] rounded-[16px] overflow-hidden bg-white shrink-0">
-                    <Link
-                      className="block w-full h-full"
-                      href={`/produk/${prod.slug}`}
-                      prefetch={true}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        alt={prod.name}
-                        src={primaryImage}
-                        className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
-                        loading="lazy"
-                      />
-                    </Link>
-
-                    {/* Tombol Wishlist Bulat 32px di kiri atas */}
-                    <div className="absolute top-2 left-2 z-10">
-                      <ProductLikeButton product={prod} size="sm" />
+                return (
+                  <article
+                    key={prod.id}
+                    className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[24px] p-3.5 shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-200 cursor-pointer min-w-0"
+                  >
+                    {/* Sudut Kiri Atas: Tombol Wishlist Ikon Hati Garis SVG 20px, background transparent */}
+                    <div className="absolute top-3 left-3 z-10">
+                      <ProductLikeButton product={prod} variant="minimal" />
                     </div>
 
-                    {/* Status Badge Kapsul di kanan atas */}
-                    <div className="absolute top-2 right-2 z-10 pointer-events-none">
-                      {isOutOfStock ? (
-                        <span className="rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
-                          Habis
-                        </span>
-                      ) : prod.isBestSeller ? (
-                        <span className="rounded-full bg-[#2E9E6B] text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
-                          Favorit
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  {/* Body Info & Bottom Action Bar */}
-                  <div className="flex flex-1 flex-col justify-between min-w-0 gap-2">
-                    <div className="min-w-0">
-                      <span className="text-[9px] font-bold uppercase text-[#2E9E6B] tracking-wider block truncate">
-                        {categoryDisplay}
-                      </span>
-                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0 mt-0.5">
-                        <h3 className="font-extrabold text-xs sm:text-sm text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1">
-                          {prod.name}
-                        </h3>
+                    {/* Wadah Foto Seragam 126px object-cover rounded 16px */}
+                    <div className="w-full h-[126px] sm:h-[145px] rounded-[16px] overflow-hidden flex items-center justify-center mt-6 mb-2 bg-white/60">
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="w-full h-full block">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          alt={prod.name}
+                          src={primaryImage}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
                       </Link>
                     </div>
 
-                    {/* Bottom Row: Price on left, Round + Action Button on right */}
-                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#D5EADF]/60 mt-auto min-w-0">
-                      <div className="min-w-0 flex flex-col">
-                        <span className="text-xs sm:text-base font-extrabold text-[#2E9E6B] font-mono leading-none truncate">
-                          {formatPrice(currentPrice)}
-                        </span>
-                        <span className="text-[9px] text-[#687871] font-medium leading-none mt-0.5">/{prod.unit}</span>
+                    {/* Area Informasi Bawah */}
+                    <div className="min-w-0 pr-8">
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block">
+                        <h3 className="text-[0.94rem] font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
+                          {prod.name}
+                        </h3>
+                      </Link>
+                      <span className="text-[0.74rem] text-[#687871] line-clamp-1 block mt-0.5">
+                        {categoryDisplay}
+                      </span>
+                      <div className="text-[1.02rem] font-extrabold text-[#2E9E6B] font-mono mt-1.5 leading-none">
+                        {formatPrice(currentPrice)}
                       </div>
-
-                      <button
-                        type="button"
-                        disabled={isOutOfStock}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleQuickAdd(prod);
-                        }}
-                        className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-90 cursor-pointer ${
-                          isOutOfStock
-                            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                            : "bg-[#123829] hover:bg-[#1A4D39] text-white"
-                        }`}
-                        title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
-                        aria-label={isOutOfStock ? "Stok Habis" : `Tambah ${prod.name} ke Keranjang`}
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                      </button>
                     </div>
-                  </div>
-                </article>
-              );
+
+                    {/* Tombol Bulat + Sudut Kanan Bawah Kartu 34px x 34px */}
+                    <button
+                      type="button"
+                      disabled={isOutOfStock}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleQuickAdd(prod);
+                      }}
+                      className={`absolute bottom-3.5 right-3.5 w-[34px] h-[34px] rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white inline-flex items-center justify-center active:scale-90 shadow-xs transition-transform cursor-pointer ${
+                        isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
+                      aria-label={isOutOfStock ? "Stok Habis" : `Tambah ${prod.name} ke Keranjang`}
+                    >
+                      <Plus className="w-4 h-4 stroke-[2.2]" />
+                    </button>
+                  </article>
+                );
               })}
             </div>
           )}

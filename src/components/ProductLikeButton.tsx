@@ -9,6 +9,7 @@ interface ProductLikeButtonProps {
   product: ProductItem | any;
   className?: string;
   size?: "sm" | "md" | "lg";
+  variant?: "default" | "minimal";
   onToggled?: (isLiked: boolean) => void;
 }
 
@@ -16,6 +17,7 @@ export default function ProductLikeButton({
   product,
   className = "",
   size = "md",
+  variant = "default",
   onToggled,
 }: ProductLikeButtonProps) {
   const { isLiked, toggleWishlist } = useWishlist();
@@ -29,6 +31,25 @@ export default function ProductLikeButton({
       onToggled(nowLiked);
     }
   };
+
+  if (variant === "minimal") {
+    return (
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-label={liked ? "Hapus dari favorit" : "Sukai produk ini"}
+        className={`w-7 h-7 flex items-center justify-center bg-transparent transition-all duration-200 active:scale-90 cursor-pointer ${className}`}
+      >
+        <Heart
+          className={`w-5 h-5 transition-transform ${
+            liked
+              ? "fill-rose-500 text-rose-500 stroke-rose-500 scale-105"
+              : "text-[#111915] stroke-[1.8] hover:text-rose-500"
+          }`}
+        />
+      </button>
+    );
+  }
 
   const sizeClasses =
     size === "sm"

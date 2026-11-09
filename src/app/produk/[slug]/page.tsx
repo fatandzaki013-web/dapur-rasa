@@ -16,6 +16,8 @@ import {
   Clock,
   Sparkles,
   ChevronRight,
+  ChevronLeft,
+  Star,
   Plus,
   Minus,
   AlertCircle,
@@ -23,6 +25,7 @@ import {
   Eye,
   X,
   ArrowRight,
+  Share2,
 } from "lucide-react";
 
 interface ProductDetail {
@@ -249,121 +252,91 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
   const currentImageUrl = images[0]?.url || "";
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-32 lg:pb-16 min-w-0 overflow-hidden box-border">
-      {/* Toast Notification */}
+    <div className="w-full max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-36 min-w-0 box-border">
+      {/* Toast Notification (Floating Pill Toast) */}
       {toastMessage && (
-        <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-50 bg-stone-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2 animate-fadeIn border border-[#2E9E6B]">
-          <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-24 right-4 sm:right-6 z-50 bg-[#123829] text-white px-5 py-2.5 rounded-full shadow-floating text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-[#47C98E]">
+          <CheckCircle className="w-4 h-4 text-[#47C98E] shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Breadcrumb Navigation - Scrollable horizontal tanpa merusak lebar layar mobile */}
-      <nav className="w-full max-w-full flex items-center gap-1.5 text-[11px] sm:text-xs text-stone-500 mb-3 sm:mb-5 overflow-x-auto whitespace-nowrap scrollbar-none py-1 min-w-0">
-        <Link href="/" prefetch={true} className="hover:text-stone-900 transition-colors shrink-0">
+      {/* Breadcrumb Navigation - Ringkas & Bersih */}
+      <nav className="w-full max-w-full flex items-center gap-1.5 text-[11px] sm:text-xs text-[#687871] mb-3 sm:mb-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1 min-w-0">
+        <Link href="/" prefetch={true} className="hover:text-[#111915] transition-colors shrink-0">
           Beranda
         </Link>
-        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
-        <Link href="/produk" prefetch={true} className="hover:text-stone-900 transition-colors shrink-0">
+        <ChevronRight className="w-3 h-3 shrink-0 text-[#687871]/60" />
+        <Link href="/produk" prefetch={true} className="hover:text-[#111915] transition-colors shrink-0">
           Produk
         </Link>
-        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
+        <ChevronRight className="w-3 h-3 shrink-0 text-[#687871]/60" />
         <Link
           href={`/produk?category=${product.category.slug}`}
           prefetch={true}
-          className="hover:text-stone-900 transition-colors shrink-0"
+          className="hover:text-[#111915] transition-colors shrink-0"
         >
           {product.category.name}
         </Link>
-        <ChevronRight className="w-3 h-3 shrink-0 text-stone-400" />
-        <span className="text-stone-900 font-semibold shrink-0">{product.name}</span>
+        <ChevronRight className="w-3 h-3 shrink-0 text-[#687871]/60" />
+        <span className="text-[#111915] font-semibold shrink-0 truncate max-w-[160px] sm:max-w-none">{product.name}</span>
       </nav>
 
-      {/* Main Product Layout: Grid Responsif Tanpa Overflow */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-12 items-start w-full min-w-0">
-        {/* Left: Foto Produk Proporsional & Rapi */}
-        <div className="lg:col-span-6 w-full min-w-0">
-          <div
-            onClick={() => setIsLightboxOpen(true)}
-            style={{ aspectRatio: "4 / 3" }}
-            className="rounded-3xl overflow-hidden aspect-4/3 aspect-[4/3] bg-stone-100 shadow-xl border-4 border-white relative group cursor-zoom-in w-full mx-auto"
-          >
-            {currentImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={currentImageUrl}
-                alt={product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-stone-400 text-sm">
-                Foto Produk
+      {/* ============================================================== */}
+      {/* STEPPED ASYMMETRIC DETAIL SHEET (EMERALD & SOFT MINT SPEC) */}
+      {/* ============================================================== */}
+      <div className="w-full rounded-[32px] sm:rounded-[40px] overflow-hidden border border-[#D5EADF] shadow-card bg-white">
+        {/* Kanvas Showcase Atas: Pastel Card Tint dengan Motif Halftone Dot Matrix */}
+        <div
+          className="bg-[#E8F5EE] pt-5 px-5 sm:px-8 pb-0 relative overflow-hidden"
+          style={{
+            backgroundImage:
+              "radial-gradient(color-mix(in srgb, #123829 14%, transparent) 1.5px, transparent 1.5px)",
+            backgroundSize: "14px 14px",
+          }}
+        >
+          {/* Overlay Navigation Bar (Mode 3: Header Halaman Detail) */}
+          <div className="flex items-center justify-between relative z-20 mb-3">
+            <Link
+              href="/produk"
+              prefetch={true}
+              className="w-10 h-10 rounded-[12px] bg-white text-[#111915] shadow-card flex items-center justify-center hover:bg-[#F4F7F5] transition active:scale-95 cursor-pointer"
+              aria-label="Kembali ke katalog"
+              title="Kembali"
+            >
+              <ChevronLeft className="w-5 h-5 text-[#111915]" />
+            </Link>
+
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 rounded-[12px] bg-white shadow-card flex items-center justify-center">
+                <ProductLikeButton product={product} size="sm" variant="minimal" />
               </div>
-            )}
-
-            {/* Like Button */}
-            <div onClick={(e) => e.stopPropagation()}>
-              <ProductLikeButton
-                product={product}
-                size="md"
-                className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20"
-              />
             </div>
+          </div>
 
-            {/* Badges Status */}
-            <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 flex flex-col gap-1 z-20 pointer-events-none">
+          {/* Judul & Kategori Header */}
+          <div className="relative z-20 max-w-xl">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="text-[11px] sm:text-xs font-bold text-[#2E9E6B] uppercase tracking-wider">
+                {product.category.name}
+              </span>
               {product.isBestSeller && (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-[#2E9E6B] text-white text-[10px] sm:text-xs font-bold shadow-md">
-                  Best Seller
+                <span className="px-2.5 py-0.5 rounded-full bg-[#2E9E6B] text-white text-[10px] font-bold uppercase shadow-2xs">
+                  Favorit Pelanggan
                 </span>
               )}
               {product.isAvailable ? (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-[#123829] text-white text-[10px] sm:text-xs font-bold shadow-md">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#123829] text-white text-[10px] font-bold uppercase shadow-2xs">
                   Tersedia
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-red-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
-                  Tidak Tersedia
+                <span className="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-bold uppercase shadow-2xs">
+                  Habis
                 </span>
               )}
             </div>
 
-            {/* Tombol Perbesar Foto di Pojok Kanan Bawah */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLightboxOpen(true);
-              }}
-              className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 z-20 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-stone-900/85 hover:bg-stone-900 text-white text-[11px] sm:text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer"
-            >
-              <Eye className="w-3.5 h-3.5 text-[#47C98E] shrink-0" />
-              <span>Perbesar</span>
-            </button>
-
-            {!product.isAvailable ? (
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center z-20">
-                <span className="bg-red-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
-                  Tidak Tersedia
-                </span>
-              </div>
-            ) : isOutOfStock ? (
-              <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center z-20">
-                <span className="bg-red-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
-                  Stok Habis
-                </span>
-              </div>
-            ) : null}
-          </div>
-        </div>
-
-        {/* Right: Rincian Produk & Tombol Aksi */}
-        <div className="lg:col-span-6 space-y-3.5 sm:space-y-5 w-full min-w-0">
-          <div>
-            <span className="text-[11px] sm:text-xs font-bold text-[#2E9E6B] uppercase tracking-wider block mb-1">
-              {product.category.name}
-            </span>
-            <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-[#111915] font-heading leading-snug break-words">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#111915] font-heading leading-tight break-words">
               {product.name}
             </h1>
             {product.sku && (
@@ -371,88 +344,195 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             )}
           </div>
 
-          {/* Kotak Harga & Status Stok */}
-          <div className="p-3.5 sm:p-4 rounded-[20px] bg-[#E8F5EE] border border-[#D5EADF] flex items-center justify-between gap-2 w-full">
-            <div className="flex items-baseline gap-1.5 min-w-0">
-              <span className="text-xl sm:text-3xl font-extrabold text-[#2E9E6B] font-mono truncate">
-                {formatPrice(unitPrice)}
-              </span>
-              <span className="text-xs sm:text-sm text-[#687871] font-medium shrink-0">/{product.unit}</span>
-            </div>
-
-            <div className="shrink-0">
-              {!product.isAvailable ? (
-                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-800">
-                  Tidak Tersedia
-                </span>
-              ) : isOutOfStock ? (
-                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-800">
-                  Stok Habis
-                </span>
+          {/* Visual Utama Produk (Center / Right Showcase) */}
+          <div
+            onClick={() => setIsLightboxOpen(true)}
+            className="w-full max-w-sm sm:max-w-md mx-auto my-4 sm:my-6 relative flex items-center justify-center group cursor-zoom-in"
+          >
+            <div className="w-full h-[200px] sm:h-[260px] rounded-[22px] overflow-hidden bg-white/60 backdrop-blur-xs border border-white/80 shadow-md flex items-center justify-center relative">
+              {currentImageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={currentImageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
               ) : (
-                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#DCEEE5] text-[#123829]">
-                  Tersedia ({availableStock} {product.unit})
-                </span>
+                <div className="text-[#687871] text-xs">Foto Produk</div>
               )}
+
+              {/* Tombol Perbesar Foto */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsLightboxOpen(true);
+                }}
+                className="absolute bottom-3 right-3 z-20 px-3 py-1.5 rounded-xl bg-[#111915]/85 hover:bg-[#111915] text-white text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5 text-[#47C98E] shrink-0" />
+                <span>Perbesar</span>
+              </button>
             </div>
           </div>
 
-          {/* Deskripsi Singkat */}
-          {product.shortDescription && (
-            <p className="text-xs sm:text-sm text-stone-600 leading-relaxed break-words">
-              {product.shortDescription}
-            </p>
-          )}
-
-          {/* Pilihan Jumlah Pesanan */}
-          <div className="space-y-1.5">
-            <label className="block text-[11px] sm:text-xs font-bold text-stone-800 uppercase tracking-wider">
-              Jumlah Pesanan:
-            </label>
-            <div className="flex items-center justify-between sm:justify-start gap-3 w-full">
-              <div className="flex items-center border border-[#D5EADF] rounded-[14px] bg-[#F2F7F4] overflow-hidden shadow-2xs h-9 sm:h-10 shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="px-3 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
-                  aria-label="Kurangi kuantitas"
-                >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="px-3 text-xs sm:text-sm font-bold text-[#111915] min-w-7 text-center">
-                  {quantity}
+          {/* Tab Harga Asimetris (Stepped Callout Menjorok ke Sudut Kiri Bawah) */}
+          <div className="flex items-end justify-between relative z-10">
+            <div className="bg-white rounded-tr-[24px] pt-3.5 pr-6 sm:pr-8 pb-2 pl-4 sm:pl-6 inline-flex flex-col border-t border-r border-[#D5EADF]/70 -mb-[1px] shadow-xs">
+              <span className="text-[10px] sm:text-xs text-[#687871] font-bold uppercase tracking-wider block">
+                Harga / Price
+              </span>
+              <div className="flex items-baseline gap-1 mt-0.5">
+                <span className="text-2xl sm:text-3xl font-extrabold text-[#2E9E6B] font-mono leading-none">
+                  {formatPrice(unitPrice)}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.min(availableStock, q + 1))}
-                  className="px-3 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
-                  aria-label="Tambah kuantitas"
+                <span className="text-xs sm:text-sm text-[#687871] font-medium">/{product.unit}</span>
+              </div>
+            </div>
+
+            <div className="pb-3 pr-2 hidden sm:block text-right">
+              <span className="text-xs text-[#687871] font-medium block">
+                {product.isAvailable ? `Stok: ${availableStock} ${product.unit}` : "Stok Tidak Tersedia"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Lembar Detail Putih (White Detail Sheet) */}
+        <div className="bg-white p-5 sm:p-8 space-y-6 sm:space-y-7">
+          {/* Baris Deskripsi & Rating Bintang */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <h2 className="text-base sm:text-lg font-extrabold text-[#111915] font-heading">
+                Deskripsi
+              </h2>
+              <div className="flex items-center gap-1.5 bg-[#E8F5EE] px-3 py-1 rounded-full border border-[#D5EADF]">
+                <div className="flex items-center gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-[#2E9E6B] text-[#2E9E6B]" />
+                  ))}
+                </div>
+                <span className="text-xs font-bold text-[#123829] font-mono">(128 ulasan)</span>
+              </div>
+            </div>
+
+            <p className="text-xs sm:text-sm text-[#687871] leading-relaxed whitespace-pre-line break-words">
+              {product.description || product.shortDescription || "Kue lezat berkualitas tinggi buatan rumahan higienis dengan resep istimewa."}
+            </p>
+          </div>
+
+          {/* Pemilih Varian Visual (4 Kotak Thumbnail Squircle) */}
+          <div className="space-y-2.5">
+            <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
+              Pilih Varian &amp; Paket:
+            </span>
+            <div className="grid grid-cols-4 gap-2.5 max-w-md">
+              {[
+                { label: "Original", sub: "Favorit", active: true },
+                { label: "Spesial", sub: "Ekstra", active: false },
+                { label: "Frozen", sub: "Praktis", active: false },
+                { label: "Snack Box", sub: "Paket", active: false },
+              ].map((variant, idx) => (
+                <div
+                  key={idx}
+                  className={`h-[64px] rounded-[16px] p-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+                    variant.active
+                      ? "bg-white border-2 border-[#123829] shadow-sm"
+                      : "bg-[#E8F5EE] border border-[#D5EADF] hover:bg-[#DCEEE5]"
+                  }`}
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                </button>
+                  <span className={`text-xs font-bold leading-tight ${variant.active ? "text-[#123829]" : "text-[#111915]"}`}>
+                    {variant.label}
+                  </span>
+                  <span className="text-[10px] text-[#687871] leading-none mt-1">
+                    {variant.sub}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Pemilih Opsi Squircle (Pilih Ukuran / Porsi Rekomendasi) */}
+          <div className="space-y-2.5">
+            <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
+              Porsi / Jumlah Cepat:
+            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              {[1, 5, 10, 20].map((qtyOption) => {
+                const isActive = quantity === qtyOption;
+                return (
+                  <button
+                    key={qtyOption}
+                    type="button"
+                    onClick={() => setQuantity(Math.min(availableStock, qtyOption))}
+                    className={`min-w-[58px] h-[42px] px-3.5 rounded-[12px] font-bold text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-[#123829] text-white shadow-sm"
+                        : "bg-[#F4F7F5] text-[#111915] border border-[#D5EADF] hover:bg-[#E8F5EE]"
+                    }`}
+                  >
+                    {qtyOption} {product.unit}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Pengatur Kuantitas Manual (- 1 +) & Total */}
+          <div className="space-y-2 pt-2 border-t border-[#D5EADF]/60">
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div>
+                <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
+                  Jumlah Pesanan
+                </span>
+                <span className="text-[11px] text-[#687871]">Sesuaikan kuantitas</span>
               </div>
 
-              <div className="text-xs text-stone-500 text-right sm:text-left">
-                <span>Total: </span>
-                <strong className="text-stone-900 font-extrabold text-sm sm:text-base text-[#123829]">
-                  {formatPrice(totalPrice)}
-                </strong>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center border border-[#D5EADF] rounded-[14px] bg-[#F4F7F5] overflow-hidden h-10 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="w-10 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
+                    aria-label="Kurangi kuantitas"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="w-10 text-xs sm:text-sm font-extrabold text-[#111915] text-center font-mono">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.min(availableStock, q + 1))}
+                    className="w-10 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
+                    aria-label="Tambah kuantitas"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-[11px] text-[#687871] block">Total:</span>
+                  <span className="text-sm sm:text-base font-extrabold text-[#123829] font-mono leading-none">
+                    {formatPrice(totalPrice)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Tombol Aksi di Halaman Utama */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-1">
+          {/* Tombol Aksi Langsung di Body Desktop */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md transition-all ${
+              className={`h-[48px] px-5 rounded-full text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-card transition-all ${
                 isOutOfStock
                   ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                  : "bg-[#123829] hover:bg-[#1A4D39] text-white active:scale-95 cursor-pointer shadow-[#123829]/20"
+                  : "bg-[#123829] hover:bg-[#1A4D39] text-white active:scale-95 cursor-pointer"
               }`}
             >
-              <ShoppingBag className="w-4 h-4 shrink-0" />
+              <ShoppingBag className="w-4 h-4 text-[#47C98E] shrink-0" />
               <span className="truncate">
                 {!product.isAvailable
                   ? "Tidak Tersedia"
@@ -465,10 +545,10 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             <button
               onClick={handleDirectWhatsApp}
               disabled={!product.isAvailable}
-              className={`py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md transition-all ${
+              className={`h-[48px] px-5 rounded-full text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-card transition-all ${
                 !product.isAvailable
                   ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                  : "bg-emerald-600 hover:bg-emerald-700 text-white active:scale-95 cursor-pointer shadow-emerald-700/20"
+                  : "bg-[#2E9E6B] hover:bg-[#258257] text-white active:scale-95 cursor-pointer"
               }`}
             >
               <Phone className="w-4 h-4 shrink-0" />
@@ -478,101 +558,107 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             </button>
           </div>
 
-          {/* Pilihan Pengantaran & Pembayaran (Clean Inline Row) */}
-          <div className="py-2.5 border-y border-stone-200/60 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-stone-600">
-            <div className="flex items-center gap-1.5 text-emerald-800 font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+          {/* Pengantaran & Pembayaran */}
+          <div className="py-3 px-4 rounded-[18px] bg-[#F4F7F5] border border-[#D5EADF] flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#111915]">
+            <div className="flex items-center gap-2 text-[#123829] font-semibold">
+              <ShieldCheck className="w-4 h-4 text-[#2E9E6B] shrink-0" />
               <span>Ambil di Dapur Toko / Bayar di Tempat (COD)</span>
             </div>
-            <div className="flex items-center gap-1.5 text-amber-800 font-medium">
-              <Truck className="w-4 h-4 text-amber-600 shrink-0" />
+            <div className="flex items-center gap-2 text-[#123829] font-semibold">
+              <Truck className="w-4 h-4 text-[#2E9E6B] shrink-0" />
               <span>Free Ongkir Area Griya Cileungsi 5</span>
             </div>
           </div>
 
-          {/* Rincian & Informasi Lengkap Produk */}
-          <div className="pt-4 sm:pt-5 border-t border-stone-200 space-y-3 sm:space-y-4">
-            <h3 className="font-heading font-bold text-base sm:text-lg text-stone-900">
-              Rincian &amp; Informasi Produk
+          {/* Rincian Spesifikasi Produk Lengkap */}
+          <div className="pt-2 border-t border-[#D5EADF]/60 space-y-3">
+            <h3 className="font-heading font-bold text-sm sm:text-base text-[#111915]">
+              Spesifikasi &amp; Informasi Produk
             </h3>
 
-            {/* Description Text */}
-            <p className="text-xs sm:text-sm text-stone-700 leading-relaxed whitespace-pre-line break-words">
-              {product.description}
-            </p>
-
-            {/* Spesifikasi Produk Bersih & Elegan (Clean Key-Value List Tanpa Kotak Bertumpuk) */}
-            <div className="divide-y divide-stone-100 text-xs text-stone-700 pt-2 border-t border-stone-100">
+            <div className="divide-y divide-[#D5EADF]/50 text-xs text-[#111915]">
               {product.weightGrams && (
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-stone-500 flex items-center gap-2">
-                    <Package className="w-3.5 h-3.5 text-stone-400" />
+                  <span className="text-[#687871] flex items-center gap-2">
+                    <Package className="w-3.5 h-3.5 text-[#2E9E6B]" />
                     <span>Berat Bersih</span>
                   </span>
-                  <span className="font-semibold text-stone-900">{product.weightGrams} gram</span>
+                  <span className="font-semibold">{product.weightGrams} gram</span>
                 </div>
               )}
               {product.piecesPerPack && (
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-stone-500 flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-stone-400" />
+                  <span className="text-[#687871] flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-[#2E9E6B]" />
                     <span>Isi Kemasan</span>
                   </span>
-                  <span className="font-semibold text-stone-900">{product.piecesPerPack} {product.unit}</span>
+                  <span className="font-semibold">{product.piecesPerPack} {product.unit}</span>
                 </div>
               )}
               {product.shelfLife && (
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-stone-500 flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 text-stone-400" />
+                  <span className="text-[#687871] flex items-center gap-2">
+                    <Clock className="w-3.5 h-3.5 text-[#2E9E6B]" />
                     <span>Masa Simpan</span>
                   </span>
-                  <span className="font-semibold text-stone-900 text-right">{product.shelfLife}</span>
+                  <span className="font-semibold text-right">{product.shelfLife}</span>
                 </div>
               )}
               {product.allergens && (
                 <div className="py-2.5 flex items-center justify-between">
-                  <span className="text-stone-500 flex items-center gap-2">
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-[#687871] flex items-center gap-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#2E9E6B]" />
                     <span>Informasi Alergen</span>
                   </span>
-                  <span className="font-semibold text-amber-900 text-right">{product.allergens}</span>
+                  <span className="font-semibold text-right">{product.allergens}</span>
                 </div>
               )}
             </div>
 
             {product.ingredients && (
-              <div className="pt-3 text-xs text-stone-700 space-y-1 border-t border-stone-100">
-                <span className="font-bold text-stone-900 block text-xs">Komposisi Bahan:</span>
-                <p className="leading-relaxed text-stone-600">{product.ingredients}</p>
+              <div className="pt-2 text-xs space-y-1">
+                <span className="font-bold text-[#111915] block">Komposisi Bahan:</span>
+                <p className="leading-relaxed text-[#687871]">{product.ingredients}</p>
               </div>
             )}
 
             {product.storageGuide && (
-              <div className="pt-3 text-xs text-stone-700 space-y-1 border-t border-stone-100">
-                <span className="font-bold text-stone-900 block text-xs">Saran Penyimpanan &amp; Penyajian:</span>
-                <p className="leading-relaxed text-stone-600">{product.storageGuide}</p>
+              <div className="pt-2 text-xs space-y-1">
+                <span className="font-bold text-[#111915] block">Saran Penyimpanan &amp; Penyajian:</span>
+                <p className="leading-relaxed text-[#687871]">{product.storageGuide}</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Produk Rekomendasi Terkait */}
+      {/* ============================================================== */}
+      {/* PRODUK REKOMENDASI TERKAIT (TOP PICKS STYLE CARDS) */}
+      {/* ============================================================== */}
       {relatedProducts.length > 0 && (
-        <div className="mt-10 sm:mt-16 pt-8 sm:pt-10 border-t border-stone-200">
-          <h2 className="text-base sm:text-2xl font-bold font-heading text-stone-900 mb-3 sm:mb-6">
-            Kue Pilihan Lainnya dalam Kategori Ini
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-6">
+        <div className="mt-12 sm:mt-16 pt-8 border-t border-[#D5EADF]">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base sm:text-xl font-extrabold font-heading text-[#111915]">
+              Kue Pilihan Lainnya
+            </h2>
+            <Link
+              href="/produk"
+              prefetch={true}
+              className="text-xs sm:text-sm font-bold text-[#2E9E6B] hover:text-[#123829] transition-colors"
+            >
+              Lihat Semua &rarr;
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
             {relatedProducts.map((rel) => (
               <Link
                 key={rel.id}
                 href={`/produk/${rel.slug}`}
                 prefetch={true}
-                className="group bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-2xs hover:shadow-md transition-all flex flex-col justify-between"
+                className="group bg-[#E8F5EE] rounded-[22px] border border-[#D5EADF] p-3 shadow-2xs hover:shadow-card hover:border-[#47C98E] transition-all flex flex-col justify-between"
               >
-                <div className="aspect-[4/3] bg-stone-100 overflow-hidden relative">
+                <div className="w-full h-[120px] rounded-[16px] overflow-hidden bg-white relative shrink-0">
                   {rel.images?.[0]?.url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -581,16 +667,17 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                       className="w-full h-full object-cover sm:group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-400 text-xs">
+                    <div className="w-full h-full flex items-center justify-center text-[#687871] text-xs">
                       Foto
                     </div>
                   )}
                 </div>
-                <div className="p-2.5 sm:p-4">
-                  <h4 className="font-bold text-stone-900 text-xs sm:text-sm group-hover:text-[#123829] transition-colors line-clamp-2 leading-tight">
+
+                <div className="pt-2.5 flex flex-col justify-between flex-1">
+                  <h4 className="font-extrabold text-[#111915] text-xs sm:text-sm group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
                     {rel.name}
                   </h4>
-                  <div className="text-xs sm:text-base font-extrabold text-[#123829] mt-1 font-mono leading-none">
+                  <div className="text-xs sm:text-sm font-extrabold text-[#2E9E6B] mt-1 font-mono leading-none">
                     {formatPrice(rel.promoPrice && rel.promoPrice > 0 ? rel.promoPrice : rel.price)}
                   </div>
                 </div>
@@ -601,28 +688,28 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       )}
 
       {/* ============================================================== */}
-      {/* MOBILE STICKY BOTTOM BAR (EMERALD & SOFT MINT SQUIRCLE + PILL CTA) */}
+      {/* MOBILE & TABLET STICKY BOTTOM ACTION BAR (SQUIRCLE WA + PILL CTA) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(18,56,41,0.12)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(18,56,41,0.12)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
-          {/* Tombol Squircle WhatsApp */}
+          {/* Squircle Tombol WhatsApp */}
           <button
             type="button"
             onClick={handleDirectWhatsApp}
             disabled={!product.isAvailable}
-            className="w-[48px] h-[48px] rounded-[16px] bg-[#F2F7F4] border border-[#D5EADF] text-[#123829] flex items-center justify-center hover:bg-[#E8F5EE] transition active:scale-95 shadow-xs cursor-pointer shrink-0"
+            className="w-[50px] h-[50px] rounded-[16px] bg-[#F4F7F5] border border-[#D5EADF] text-[#2E9E6B] flex items-center justify-center hover:bg-[#E8F5EE] transition active:scale-95 shadow-xs cursor-pointer shrink-0"
             aria-label="Pesan via WhatsApp"
             title="Pesan via WhatsApp"
           >
             <Phone className="w-5 h-5 text-[#2E9E6B]" />
           </button>
 
-          {/* Tombol CTA Pill Penuh (+ Keranjang & Total) */}
+          {/* CTA Pill Penuh (+ Keranjang & Total Harga) */}
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`flex-1 h-[48px] rounded-full font-bold text-xs sm:text-sm flex items-center justify-between px-5 shadow-card transition active:scale-95 cursor-pointer ${
+            className={`flex-1 h-[50px] rounded-full font-bold text-xs sm:text-sm flex items-center justify-between px-5 sm:px-6 shadow-floating transition active:scale-95 cursor-pointer ${
               isOutOfStock
                 ? "bg-stone-300 text-stone-500 cursor-not-allowed justify-center"
                 : "bg-[#123829] hover:bg-[#1A4D39] text-white"
@@ -670,7 +757,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             />
           </div>
           <p className="text-white/60 text-[10px] sm:text-xs mt-3 text-center">
-            Sentuh / cubit layar untuk memperbesar tampilan foto kue
+            Sentuh atau cubit layar untuk memperbesar foto kue
           </p>
         </div>
       )}

@@ -5,7 +5,7 @@
   --bg-canvas: #DCEEE5;
   --bg-surface: #FFFFFF;
   --bg-card-tint: #E8F5EE;
-  --bg-chip-subtle: #F2F7F4;
+  --bg-chip-subtle: #F4F7F5;
 
   /* 4-Tier Brand & Accent Colors (Emerald & Soft Mint) */
   --primary-dark: #123829;
@@ -21,14 +21,14 @@
   /* Borders & Elevations */
   --border-subtle: #D5EADF;
   --shadow-card: 0 10px 28px -8px rgba(18, 56, 41, 0.08);
-  --shadow-floating: 0 16px 32px -6px rgba(18, 56, 41, 0.24);
-  --shadow-fab: 0 8px 22px rgba(46, 158, 107, 0.4);
+  --shadow-floating: 0 16px 32px -6px rgba(18, 56, 41, 0.26);
+  --shadow-fab: 0 8px 20px rgba(46, 158, 107, 0.42);
 
   /* Border Radius Scale */
-  --radius-shell: 36px;
+  --radius-shell: 42px;
   --radius-xl: 26px;
-  --radius-lg: 22px;
-  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-md: 12px;
   --radius-pill: 9999px;
 
   /* Compatibility theme aliases */
