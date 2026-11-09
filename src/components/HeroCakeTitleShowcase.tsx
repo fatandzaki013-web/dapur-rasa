@@ -7,7 +7,6 @@ import {
   ChevronRight,
   ShoppingBag,
   ArrowRight,
-  Sparkles,
   Edit3,
   Clock,
   CheckCircle,
@@ -220,7 +219,7 @@ export default function HeroCakeTitleShowcase({
             {/* Category & Badge */}
             <div className="flex items-center gap-3 flex-wrap">
               <span className="px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-bold border border-amber-400/30 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" />
+                <UtensilsCrossed className="w-3.5 h-3.5" />
                 {currentSlide.badgeText}
               </span>
               <span className="px-3 py-1 rounded-full bg-stone-800 text-stone-300 text-xs font-medium">

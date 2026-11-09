@@ -9,7 +9,6 @@ import {
   RotateCcw,
   Save,
   ExternalLink,
-  Sparkles,
   ShoppingBag,
   Eye,
   Check,
@@ -317,7 +316,7 @@ export default function AdminThemePage() {
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <Palette className="w-4 h-4 text-amber-600" />
                   <h2 className="font-bold text-sm text-slate-900">
                     Preset Tema Pilihan (1-Klik)
                   </h2>
@@ -408,7 +407,7 @@ export default function AdminThemePage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-200/80 text-amber-900 text-[10.5px] font-extrabold uppercase tracking-wide mb-1">
-                      <Sparkles className="w-3 h-3 text-amber-700" />
+                      <Palette className="w-3 h-3 text-amber-700" />
                       <span>Fitur Latar Belakang Website (Background)</span>
                     </div>
                     <h3 className="text-xs font-bold text-slate-900">

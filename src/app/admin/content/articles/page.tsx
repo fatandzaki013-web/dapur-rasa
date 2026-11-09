@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   Clock,
   Layers,
-  Sparkles,
   ExternalLink,
   X,
   AlertCircle,

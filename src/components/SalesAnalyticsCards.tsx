@@ -14,7 +14,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Calendar,
-  Sparkles,
 } from "lucide-react";
 import { supabase, SupabaseOrder, parseOrderItems } from "@/lib/supabase";
 
@@ -194,7 +193,7 @@ export default function SalesAnalyticsCards({
         <div className="space-y-0.5">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10.5px] font-bold uppercase tracking-wider border border-emerald-200/60">
-              <Sparkles className="w-3 h-3 text-emerald-600" />
+              <TrendingUp className="w-3 h-3 text-emerald-600" />
               <span>Analitik Real-Time</span>
             </span>
             <span className="text-xs text-slate-400 font-medium hidden sm:inline">•</span>

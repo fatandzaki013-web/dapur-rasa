@@ -19,7 +19,7 @@ import {
   MapPin,
   ShieldCheck,
   Award,
-  Sparkles,
+  LayoutGrid,
   PackageCheck,
   ShoppingBag,
   Store,
@@ -146,7 +146,7 @@ export default function HomePage() {
     {
       name: "Semua",
       slug: "all",
-      icon: Sparkles,
+      icon: LayoutGrid,
       desc: "Semua Menu",
     },
     {

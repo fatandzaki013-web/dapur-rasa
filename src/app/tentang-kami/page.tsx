@@ -6,7 +6,6 @@ import { useStore } from "@/context/StoreContext";
 import {
   ShieldCheck,
   Heart,
-  Sparkles,
   Clock,
   ArrowRight,
   UtensilsCrossed,

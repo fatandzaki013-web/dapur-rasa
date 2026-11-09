@@ -5,7 +5,6 @@ import {
   X,
   Star,
   MessageSquare,
-  Sparkles,
   CheckCircle,
   AlertCircle,
   Send,
@@ -177,7 +176,7 @@ Terima kasih banyak!`;
             {/* Header Form */}
             <div className="space-y-1 pr-6">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10.5px] font-extrabold uppercase">
-                <Sparkles className="w-3 h-3 text-amber-700" />
+                <Star className="w-3 h-3 text-amber-700 fill-amber-700" />
                 <span>Ruang Saran &amp; Ulasan Pelanggan</span>
               </div>
               <h2 className="text-lg sm:text-xl font-extrabold text-stone-900 font-heading">

@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   Cake,
   ShoppingBag,
-  Sparkles,
+  Award,
   Edit3,
   X,
   CheckCircle,
@@ -250,7 +250,7 @@ export default function FrontpageAdminBar({ products, onConfigUpdated }: Frontpa
                   <span className="font-bold text-white">{stats.totalOrders} Pesanan</span>
                 </div>
                 <div className="hidden sm:flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <Award className="w-3.5 h-3.5 text-amber-300" />
                   <span className="text-stone-400">Status Pembukaan:</span>
                   <span className="font-semibold text-emerald-400">Auto-Slide Aktif (Semua Kue)</span>
                 </div>

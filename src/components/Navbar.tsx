@@ -26,7 +26,6 @@ import {
   BookOpen,
   Info,
   ChevronRight,
-  Sparkles,
   MapPin,
 } from "lucide-react";
 

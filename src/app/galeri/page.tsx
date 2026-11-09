@@ -8,7 +8,6 @@ import {
   ChevronRight,
   ExternalLink,
   Image as ImageIcon,
-  Sparkles,
   UtensilsCrossed,
   ShoppingBag,
 } from "lucide-react";

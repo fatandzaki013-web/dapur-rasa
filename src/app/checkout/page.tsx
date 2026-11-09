@@ -21,7 +21,7 @@ import {
   CreditCard,
   QrCode,
   Wallet,
-  Sparkles,
+  Award,
   Plus,
   Minus,
   Trash2,
@@ -440,8 +440,8 @@ Mohon segera diproses ya, terima kasih!`;
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-md">
             <CheckCircle className="w-9 h-9 sm:w-11 sm:h-11" />
           </div>
-          <span className="text-xs font-bold text-amber-800 tracking-wider uppercase inline-flex items-center gap-1.5 bg-amber-50 px-3.5 py-1 rounded-full border border-amber-200">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          <span className="text-xs font-bold text-emerald-800 tracking-wider uppercase inline-flex items-center gap-1.5 bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">
+            <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
             Pesanan Berhasil Tercatat
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 font-heading">
@@ -1351,7 +1351,7 @@ Mohon segera diproses ya, terima kasih!`;
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <Award className="w-3.5 h-3.5 text-amber-500" />
                 Rasa Terjamin
               </span>
             </div>

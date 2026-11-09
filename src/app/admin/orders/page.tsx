@@ -16,7 +16,6 @@ import {
   Trash2,
   RefreshCw,
   Clock,
-  Sparkles,
   MapPin,
   Check,
   ChevronDown,
@@ -368,7 +367,7 @@ export default function AdminOrdersPage() {
 
         <div className="bg-white p-4 rounded-2xl border border-[#D5EADF] bg-[#E8F5EE]/30 shadow-xs">
           <div className="text-[11px] font-bold text-[#123829] uppercase tracking-wider flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#123829]" />
+            <RefreshCw className="w-3.5 h-3.5 text-[#123829]" />
             <span>Diproses</span>
           </div>
           <div className="text-2xl font-black text-[#123829] mt-1 font-heading">{metrics.diproses}</div>

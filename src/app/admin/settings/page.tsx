@@ -15,7 +15,6 @@ import {
   EyeOff,
   Store,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import { DEFAULT_WHATSAPP_NUMBER } from "@/lib/whatsapp";
 

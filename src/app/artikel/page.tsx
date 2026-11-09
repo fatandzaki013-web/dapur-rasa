@@ -3,7 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import initialData from "../../../prisma/initial-data.json";
 
-import { BookOpen, Calendar, User, ArrowRight, Sparkles } from "lucide-react";
+import { BookOpen, Calendar, User, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,7 +31,7 @@ export default async function PublicArticlesPage() {
         {/* Hero Section */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
+            <BookOpen className="w-3.5 h-3.5" />
             <span>Cerita, Edukasi &amp; Resep</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#4B291B] tracking-tight font-serif mb-3">

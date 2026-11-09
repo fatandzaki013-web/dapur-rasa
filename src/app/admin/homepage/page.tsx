@@ -12,7 +12,6 @@ import {
   RotateCcw,
   Eye,
   UtensilsCrossed,
-  Sparkles,
   Image as ImageIcon,
   Edit3,
   Upload,
@@ -387,7 +386,7 @@ export default function AdminHomepageBuilderPage() {
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-2.5">
                             <div className="p-2 bg-[#123829] text-white rounded-xl">
-                              <Sparkles className="w-4 h-4" />
+                              <ImageIcon className="w-4 h-4" />
                             </div>
                             <div>
                               <h3 className="font-bold text-stone-900 text-sm font-heading">

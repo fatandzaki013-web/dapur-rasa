@@ -19,12 +19,12 @@ import {
   Check,
   X,
   Loader2,
-  Sparkles,
   SlidersHorizontal,
   UploadCloud,
   FileImage,
   Camera,
   ShoppingBag,
+  Cake,
 } from "lucide-react";
 import { z } from "zod";
 import { supabase, Product } from "@/lib/supabase";
@@ -656,7 +656,7 @@ export default function AdminDashboardPage() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Cake className="w-3.5 h-3.5" />
               <span>Katalog Dinamis Supabase</span>
             </span>
           </div>
@@ -1304,7 +1304,7 @@ export default function AdminDashboardPage() {
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8F5EE] text-[#123829] border border-[#D5EADF] text-[10px] font-bold">
-                              <Sparkles className="w-3 h-3 text-amber-600" />
+                              <FileImage className="w-3 h-3 text-[#2E9E6B]" />
                               <span>Foto Produk Saat Ini</span>
                             </span>
                           )}

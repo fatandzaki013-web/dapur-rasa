@@ -14,7 +14,7 @@ import {
   CheckCircle,
   ShieldCheck,
   Clock,
-  Sparkles,
+  PackageCheck,
   ChevronRight,
   ChevronLeft,
   Star,
@@ -589,7 +589,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               {product.piecesPerPack && (
                 <div className="py-2.5 flex items-center justify-between">
                   <span className="text-[#687871] flex items-center gap-2">
-                    <Sparkles className="w-3.5 h-3.5 text-[#2E9E6B]" />
+                    <PackageCheck className="w-3.5 h-3.5 text-[#2E9E6B]" />
                     <span>Isi Kemasan</span>
                   </span>
                   <span className="font-semibold">{product.piecesPerPack} {product.unit}</span>
