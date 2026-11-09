@@ -369,7 +369,6 @@ Terima kasih banyak telah memesan di ${brandName}!
 ${itemsSummary}
 
 *Total:* ${formatPrice(totalAmount)}
-*No. Pesanan:* ${generatedOrderCode}
 *Pemesan:* ${validData.customer_name} (${cleanPhone})
 ${deliveryText}${notesText}
 

@@ -13,8 +13,9 @@ export default function FloatingWhatsAppButton() {
   const { settings } = useStore();
   const { isCartOpen } = useCart();
 
-  // Sembunyikan pada rute admin, saat checkout, saat di detail produk, atau saat drawer keranjang terbuka
+  // Sembunyikan pada halaman utama, rute admin, saat checkout, saat di detail produk, atau saat drawer keranjang terbuka
   if (
+    pathname === "/" ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/checkout") ||
     (pathname.startsWith("/produk/") && pathname !== "/produk") ||
