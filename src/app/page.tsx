@@ -487,10 +487,10 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Liquid Glass Capsule)  */}
+        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Kapsul Vertikal Aktif) */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="liquid-glass-track p-2 sm:p-2.5 rounded-[34px] flex items-center justify-between sm:justify-center gap-2 sm:gap-3 overflow-x-auto scrollbar-none">
+          <div className="py-1 flex items-center justify-between sm:justify-center gap-2 sm:gap-3.5 overflow-x-auto scrollbar-none">
             {categoryCapsules.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = selectedCategory === cat.slug;
@@ -499,10 +499,10 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[62px] sm:min-w-[76px] h-[82px] sm:h-[86px] rounded-[28px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 liquid-glass-shine ${
+                  className={`min-w-[64px] sm:min-w-[76px] h-[82px] sm:h-[86px] rounded-[28px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
                     isActive
-                      ? "liquid-glass-active shadow-md"
-                      : "liquid-glass text-[#111915]"
+                      ? "bg-[#123829] text-white shadow-[0_8px_20px_-4px_rgba(18,56,41,0.35)]"
+                      : "bg-[#F2F7F4] hover:bg-[#E8F5EE] border border-[#D5EADF] text-[#111915]"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
                 >
@@ -513,7 +513,7 @@ export default function HomePage() {
                   />
                   <span
                     className={`text-[0.72rem] leading-none ${
-                      isActive ? "font-bold text-white tracking-wide" : "font-semibold text-[#4A5D54]"
+                      isActive ? "font-bold text-white tracking-wide" : "font-semibold text-[#687871]"
                     }`}
                   >
                     {cat.name}
@@ -575,7 +575,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
               {topPickProducts.map((prod) => {
                 const currentPrice = prod.price;
                 const isOutOfStock = !prod.is_available && !prod.isAvailable;
@@ -591,28 +591,39 @@ export default function HomePage() {
                 return (
                   <article
                     key={prod.id}
-                    className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[24px] p-3.5 shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-200 cursor-pointer min-w-0"
+                    className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[22px] sm:rounded-[24px] p-3 sm:p-3.5 shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-0"
                   >
-                    {/* Sudut Kiri Atas: Tombol Wishlist Bulat Putih 32px x 32px */}
-                    <div className="absolute top-3 left-3 z-10">
-                      <ProductLikeButton product={prod} size="md" />
-                    </div>
-
-                    {/* Wadah Foto Seragam 130px object-cover rounded 16px */}
-                    <div className="w-full h-[130px] sm:h-[148px] rounded-[16px] overflow-hidden flex items-center justify-center mt-6 mb-2 bg-white/60">
+                    {/* Wadah Foto Seragam 134px-150px: Berada di atas kartu secara alami */}
+                    <div className="relative w-full h-[134px] sm:h-[152px] rounded-[16px] overflow-hidden bg-white/70 shrink-0">
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="w-full h-full block">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           alt={prod.name}
                           src={primaryImage}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           loading="lazy"
                         />
                       </Link>
+
+                      {/* Tombol Wishlist Terintegrasi Alami di Pojok Kanan Atas Foto */}
+                      <div className="absolute top-2.5 right-2.5 z-10">
+                        <ProductLikeButton product={prod} size="sm" />
+                      </div>
+
+                      {/* Status Badge di Pojok Kiri Atas Foto */}
+                      {isOutOfStock ? (
+                        <span className="absolute top-2.5 left-2.5 z-10 px-2 py-0.5 rounded-full bg-red-600/90 text-white text-[9px] font-bold uppercase tracking-wide pointer-events-none shadow-2xs">
+                          Habis
+                        </span>
+                      ) : prod.isBestSeller ? (
+                        <span className="absolute top-2.5 left-2.5 z-10 px-2.5 py-0.5 rounded-full bg-[#123829]/80 backdrop-blur-xs text-white text-[9px] font-extrabold uppercase tracking-wide pointer-events-none shadow-2xs">
+                          Favorit
+                        </span>
+                      ) : null}
                     </div>
 
                     {/* Area Informasi Bawah */}
-                    <div className="min-w-0 pr-8">
+                    <div className="min-w-0 pr-9 pt-2.5">
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="block">
                         <h3 className="text-[0.92rem] font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
                           {prod.name}

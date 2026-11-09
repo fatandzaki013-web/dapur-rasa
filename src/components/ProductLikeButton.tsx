@@ -16,7 +16,7 @@ interface ProductLikeButtonProps {
 export default function ProductLikeButton({
   product,
   className = "",
-  size = "md",
+  size = "sm",
   variant = "default",
   onToggled,
 }: ProductLikeButtonProps) {
@@ -38,13 +38,13 @@ export default function ProductLikeButton({
         type="button"
         onClick={handleClick}
         aria-label={liked ? "Hapus dari favorit" : "Sukai produk ini"}
-        className={`w-7 h-7 flex items-center justify-center bg-transparent transition-all duration-200 active:scale-90 cursor-pointer ${className}`}
+        className={`w-7 h-7 flex items-center justify-center bg-transparent transition-transform duration-200 active:scale-80 cursor-pointer ${className}`}
       >
         <Heart
-          className={`w-5 h-5 transition-transform ${
+          className={`w-5 h-5 transition-colors duration-200 ${
             liked
-              ? "fill-rose-500 text-rose-500 stroke-rose-500 scale-105"
-              : "text-[#111915] stroke-[1.8] hover:text-rose-500"
+              ? "fill-rose-500 text-rose-500 stroke-rose-500"
+              : "text-[#111915]/80 hover:text-rose-500 stroke-[2]"
           }`}
         />
       </button>
@@ -53,16 +53,16 @@ export default function ProductLikeButton({
 
   const sizeClasses =
     size === "sm"
-      ? "w-7 h-7"
+      ? "w-[30px] h-[30px]"
       : size === "lg"
-      ? "w-10 h-10"
-      : "w-8 h-8";
+      ? "w-[38px] h-[38px]"
+      : "w-[32px] h-[32px]";
 
   const iconSizes =
     size === "sm"
       ? "w-3.5 h-3.5"
       : size === "lg"
-      ? "w-5 h-5"
+      ? "w-[18px] h-[18px]"
       : "w-4 h-4";
 
   return (
@@ -70,15 +70,17 @@ export default function ProductLikeButton({
       type="button"
       onClick={handleClick}
       aria-label={liked ? "Hapus dari favorit" : "Sukai produk ini"}
-      className={`rounded-full flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer backdrop-blur-xs shadow-sm ${sizeClasses} ${
+      className={`rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-75 ${sizeClasses} ${
         liked
-          ? "bg-white text-rose-500 ring-2 ring-rose-300/80 shadow-rose-200/50"
-          : "bg-white/90 hover:bg-white text-stone-500 hover:text-rose-500 hover:shadow-md"
+          ? "bg-white text-rose-500 border border-rose-100 shadow-[0_2px_8px_rgba(244,63,94,0.25)] scale-105"
+          : "bg-white/85 hover:bg-white text-stone-600 hover:text-rose-500 backdrop-blur-md border border-white/70 shadow-[0_2px_6px_rgba(0,0,0,0.06)] hover:shadow-xs"
       } ${className}`}
     >
       <Heart
-        className={`${iconSizes} transition-transform ${
-          liked ? "fill-rose-500 text-rose-500 scale-105" : "text-stone-500"
+        className={`${iconSizes} transition-all duration-200 ${
+          liked
+            ? "fill-rose-500 text-rose-500 stroke-rose-500"
+            : "stroke-[2] text-[#111915]/80 group-hover:text-rose-500"
         }`}
       />
     </button>

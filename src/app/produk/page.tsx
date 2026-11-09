@@ -341,36 +341,34 @@ function ProductsContent() {
                 key={prod.id}
                 className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-[#E8F5EE] rounded-[22px] border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#47C98E] hover:-translate-y-0.5 transition-all duration-300 p-3 sm:p-3.5 justify-between gap-2.5"
               >
-                {/* Product Image: height 130px sm:155px, rounded 16px, object-cover */}
-                <div className="relative w-full h-[130px] sm:h-[155px] rounded-[16px] overflow-hidden bg-white shrink-0">
+                {/* Product Image: height 134px sm:155px, rounded 16px, object-cover */}
+                <div className="relative w-full h-[134px] sm:h-[155px] rounded-[16px] overflow-hidden bg-white/70 shrink-0">
                   <Link href={`/produk/${prod.slug}`} prefetch={true} className="block w-full h-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={primaryImg}
                       alt={prod.name}
-                      className="w-full h-full object-cover transition-transform duration-300 sm:group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 sm:group-hover:scale-105"
                       loading="lazy"
                       onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=800&auto=format&fit=crop&q=80"; }}
                     />
                   </Link>
 
-                  {/* Tombol Wishlist Bulat 32px di kiri atas */}
-                  <div className="absolute top-2 left-2 z-10">
+                  {/* Tombol Wishlist Terintegrasi Alami di Pojok Kanan Atas Foto */}
+                  <div className="absolute top-2.5 right-2.5 z-10">
                     <ProductLikeButton product={prod} size="sm" />
                   </div>
 
-                  {/* Status Badge Kapsul di kanan atas */}
-                  <div className="absolute top-2 right-2 z-10 pointer-events-none">
-                    {isOutOfStock ? (
-                      <span className="rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
-                        Habis
-                      </span>
-                    ) : prod.isBestSeller ? (
-                      <span className="rounded-full bg-[#2E9E6B] text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
-                        Favorit
-                      </span>
-                    ) : null}
-                  </div>
+                  {/* Status Badge di Pojok Kiri Atas Foto */}
+                  {isOutOfStock ? (
+                    <span className="absolute top-2.5 left-2.5 z-10 rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs pointer-events-none">
+                      Habis
+                    </span>
+                  ) : prod.isBestSeller ? (
+                    <span className="absolute top-2.5 left-2.5 z-10 rounded-full bg-[#123829]/80 backdrop-blur-xs text-white px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide shadow-2xs pointer-events-none">
+                      Favorit
+                    </span>
+                  ) : null}
                 </div>
 
                 {/* Info Card */}
