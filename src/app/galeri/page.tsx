@@ -75,7 +75,7 @@ export default function GalleryPage() {
   const currentItem = lightboxIndex !== null ? filteredItems[lightboxIndex] : null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-32 sm:pb-16">
       {/* Header Halaman */}
       <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">

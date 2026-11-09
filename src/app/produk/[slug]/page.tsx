@@ -249,10 +249,10 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
   const currentImageUrl = images[0]?.url || "";
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-28 lg:pb-16 min-w-0 overflow-hidden box-border">
+    <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-32 lg:pb-16 min-w-0 overflow-hidden box-border">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-50 bg-stone-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2 animate-fadeIn border border-amber-600/30">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-50 bg-stone-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs sm:text-sm font-medium flex items-center gap-2 animate-fadeIn border border-[#2E9E6B]">
           <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -313,16 +313,16 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             {/* Badges Status */}
             <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 flex flex-col gap-1 z-20 pointer-events-none">
               {product.isBestSeller && (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-xl bg-amber-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
+                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-[#2E9E6B] text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Best Seller
                 </span>
               )}
               {product.isAvailable ? (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-xl bg-emerald-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
+                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-[#123829] text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Tersedia
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 sm:py-1 rounded-xl bg-red-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
+                <span className="px-2.5 py-0.5 sm:py-1 rounded-full bg-red-600 text-white text-[10px] sm:text-xs font-bold shadow-md">
                   Tidak Tersedia
                 </span>
               )}
@@ -337,7 +337,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               }}
               className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 z-20 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-stone-900/85 hover:bg-stone-900 text-white text-[11px] sm:text-xs font-bold backdrop-blur-md flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer"
             >
-              <Eye className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              <Eye className="w-3.5 h-3.5 text-[#47C98E] shrink-0" />
               <span>Perbesar</span>
             </button>
 
@@ -349,7 +349,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               </div>
             ) : isOutOfStock ? (
               <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center z-20">
-                <span className="bg-amber-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
+                <span className="bg-red-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-full shadow-lg">
                   Stok Habis
                 </span>
               </div>
@@ -363,21 +363,21 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             <span className="text-[11px] sm:text-xs font-bold text-[#2E9E6B] uppercase tracking-wider block mb-1">
               {product.category.name}
             </span>
-            <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-stone-900 font-heading leading-snug break-words">
+            <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-[#111915] font-heading leading-snug break-words">
               {product.name}
             </h1>
             {product.sku && (
-              <span className="text-[11px] text-stone-400 mt-0.5 block">SKU: {product.sku}</span>
+              <span className="text-[11px] text-[#687871] mt-0.5 block">SKU: {product.sku}</span>
             )}
           </div>
 
           {/* Kotak Harga & Status Stok */}
-          <div className="p-3 sm:p-4 rounded-2xl bg-stone-50 border border-stone-200/90 flex items-center justify-between gap-2 w-full">
+          <div className="p-3.5 sm:p-4 rounded-[20px] bg-[#E8F5EE] border border-[#D5EADF] flex items-center justify-between gap-2 w-full">
             <div className="flex items-baseline gap-1.5 min-w-0">
-              <span className="text-xl sm:text-3xl font-extrabold text-[#123829] font-heading truncate">
+              <span className="text-xl sm:text-3xl font-extrabold text-[#2E9E6B] font-mono truncate">
                 {formatPrice(unitPrice)}
               </span>
-              <span className="text-xs sm:text-sm text-stone-500 font-medium shrink-0">/{product.unit}</span>
+              <span className="text-xs sm:text-sm text-[#687871] font-medium shrink-0">/{product.unit}</span>
             </div>
 
             <div className="shrink-0">
@@ -386,11 +386,11 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                   Tidak Tersedia
                 </span>
               ) : isOutOfStock ? (
-                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
+                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-800">
                   Stok Habis
                 </span>
               ) : (
-                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
+                <span className="text-[10.5px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#DCEEE5] text-[#123829]">
                   Tersedia ({availableStock} {product.unit})
                 </span>
               )}
@@ -410,22 +410,22 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               Jumlah Pesanan:
             </label>
             <div className="flex items-center justify-between sm:justify-start gap-3 w-full">
-              <div className="flex items-center border border-stone-300 rounded-xl bg-white overflow-hidden shadow-2xs h-9 sm:h-10 shrink-0">
+              <div className="flex items-center border border-[#D5EADF] rounded-[14px] bg-[#F2F7F4] overflow-hidden shadow-2xs h-9 sm:h-10 shrink-0">
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="px-3 h-full hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer flex items-center justify-center"
+                  className="px-3 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
                   aria-label="Kurangi kuantitas"
                 >
                   <Minus className="w-3.5 h-3.5" />
                 </button>
-                <span className="px-3 text-xs sm:text-sm font-bold text-stone-900 min-w-7 text-center">
+                <span className="px-3 text-xs sm:text-sm font-bold text-[#111915] min-w-7 text-center">
                   {quantity}
                 </span>
                 <button
                   type="button"
                   onClick={() => setQuantity((q) => Math.min(availableStock, q + 1))}
-                  className="px-3 h-full hover:bg-stone-100 text-stone-600 transition-colors cursor-pointer flex items-center justify-center"
+                  className="px-3 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
                   aria-label="Tambah kuantitas"
                 >
                   <Plus className="w-3.5 h-3.5" />
@@ -601,47 +601,43 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       )}
 
       {/* ============================================================== */}
-      {/* MOBILE STICKY BOTTOM BAR (TETAP TERLIHAT DI LAYAR HP TANPA TERPOTONG) */}
+      {/* MOBILE STICKY BOTTOM BAR (EMERALD & SOFT MINT SQUIRCLE + PILL CTA) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(0,0,0,0.12)] px-3.5 pt-2.5 pb-[max(0.65rem,env(safe-area-inset-bottom,0.65rem))]">
-        <div className="flex items-center justify-between gap-2.5 max-w-lg mx-auto">
-          {/* Info Harga & Kuantitas */}
-          <div className="min-w-0 flex-1">
-            <span className="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">
-              Total ({quantity} {product.unit}):
-            </span>
-            <span className="font-extrabold text-sm sm:text-base text-[#123829] font-heading block truncate">
-              {formatPrice(totalPrice)}
-            </span>
-          </div>
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(18,56,41,0.12)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
+          {/* Tombol Squircle WhatsApp */}
+          <button
+            type="button"
+            onClick={handleDirectWhatsApp}
+            disabled={!product.isAvailable}
+            className="w-[48px] h-[48px] rounded-[16px] bg-[#F2F7F4] border border-[#D5EADF] text-[#123829] flex items-center justify-center hover:bg-[#E8F5EE] transition active:scale-95 shadow-xs cursor-pointer shrink-0"
+            aria-label="Pesan via WhatsApp"
+            title="Pesan via WhatsApp"
+          >
+            <Phone className="w-5 h-5 text-[#2E9E6B]" />
+          </button>
 
-          {/* Tombol WA & Tambah ke Keranjang */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={handleDirectWhatsApp}
-              disabled={!product.isAvailable}
-              className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-700 flex items-center justify-center hover:bg-emerald-100 transition active:scale-95 shadow-xs cursor-pointer"
-              aria-label="Pesan via WhatsApp"
-              title="Pesan via WhatsApp"
-            >
-              <Phone className="w-4 h-4" />
-            </button>
-
-            <button
-              type="button"
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className={`px-3.5 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer ${
-                isOutOfStock
-                  ? "bg-stone-300 text-stone-500 cursor-not-allowed"
-                  : "bg-[#123829] hover:bg-[#1A4D39] text-white"
-              }`}
-            >
-              <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
-              <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
-            </button>
-          </div>
+          {/* Tombol CTA Pill Penuh (+ Keranjang & Total) */}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className={`flex-1 h-[48px] rounded-full font-bold text-xs sm:text-sm flex items-center justify-between px-5 shadow-card transition active:scale-95 cursor-pointer ${
+              isOutOfStock
+                ? "bg-stone-300 text-stone-500 cursor-not-allowed justify-center"
+                : "bg-[#123829] hover:bg-[#1A4D39] text-white"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <ShoppingBag className="w-4 h-4 shrink-0 text-[#47C98E]" />
+              <span>{isOutOfStock ? "Stok Habis" : "+ Keranjang"}</span>
+            </div>
+            {!isOutOfStock && (
+              <span className="font-extrabold text-white font-mono text-sm">
+                {formatPrice(totalPrice)}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 

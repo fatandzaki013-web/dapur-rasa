@@ -67,7 +67,7 @@ export default async function ArticleDetailPage({
 
   return (
     <div className="min-h-screen bg-[#FFFDF9] flex flex-col font-sans text-slate-800">
-      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-24 sm:pb-16 w-full">
+      <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-32 sm:pb-16 w-full">
         {/* Back Link */}
         <div className="mb-6">
           <Link

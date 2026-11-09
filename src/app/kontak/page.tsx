@@ -18,9 +18,9 @@ export default function ContactPage() {
   const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-32 sm:pb-16">
       <div className="text-center max-w-2xl mx-auto mb-12">
-        <span className="text-xs font-bold text-amber-800 tracking-wider uppercase">
+        <span className="text-xs font-bold text-[#123829] tracking-wider uppercase bg-[#E8F5EE] px-3.5 py-1 rounded-full border border-[#D5EADF] inline-block">
           Layanan Pelanggan
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-heading mt-1">

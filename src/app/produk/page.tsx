@@ -144,10 +144,10 @@ function ProductsContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-14 w-full max-w-full overflow-hidden">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-32 sm:pb-16 w-full max-w-full overflow-hidden">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-amber-600/30">
+        <div className="fixed bottom-6 right-6 z-50 bg-stone-900 text-white px-5 py-3 rounded-xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-[#2E9E6B]">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -162,30 +162,30 @@ function ProductsContent() {
 
       {/* Header Halaman */}
       <div className="mb-8">
-        <span className="text-xs font-bold tracking-wider uppercase text-amber-800 bg-amber-100/80 px-3 py-1 rounded-full border border-amber-200 inline-flex items-center gap-1.5 mb-2">
-          <UtensilsCrossed className="w-3.5 h-3.5" />
+        <span className="text-xs font-bold tracking-wider uppercase text-[#123829] bg-[#E8F5EE] px-3.5 py-1 rounded-full border border-[#D5EADF] inline-flex items-center gap-1.5 mb-2">
+          <UtensilsCrossed className="w-3.5 h-3.5 text-[#2E9E6B]" />
           Katalog Lengkap
         </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 font-heading">
-          Aneka Kue & Camilan Lezat
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#111915] font-heading">
+          Aneka Kue &amp; Camilan Lezat
         </h1>
-        <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl">
+        <p className="text-xs sm:text-sm text-[#687871] mt-1 max-w-2xl">
           Pilih kue favorit Anda untuk camilan harian, acara keluarga, rapat kantor, atau stok frozen food.
         </p>
       </div>
 
-      {/* Filter & Search Bar */}
-      <div className="bg-white rounded-3xl border border-stone-200/90 p-4 sm:p-5 shadow-2xs mb-8 space-y-4">
+      {/* Filter & Search Bar (Squircle Standard) */}
+      <div className="bg-white rounded-[26px] border border-[#D5EADF] p-4 sm:p-5 shadow-card mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#687871] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari kue (pastel, risol, brownies, sosis solo...)"
-              className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-[#D5EADF] bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/30 focus:border-[#2E9E6B]"
+              className="w-full pl-10 pr-10 h-12 rounded-[16px] border border-[#D5EADF] bg-[#F2F7F4] text-xs sm:text-sm text-[#111915] focus:outline-none focus:border-[#123829] focus:bg-white transition-all"
             />
             {searchTerm && (
               <button
@@ -202,7 +202,7 @@ function ProductsContent() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-[#D5EADF] text-xs font-medium text-stone-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/30 focus:border-[#2E9E6B]"
+              className="h-11 px-3.5 rounded-[14px] border border-[#D5EADF] text-xs font-semibold text-[#111915] bg-[#F2F7F4] focus:outline-none focus:border-[#123829]"
             >
               <option value="order">Urutan Rekomendasi</option>
               <option value="price-asc">Harga: Termurah</option>
@@ -213,10 +213,10 @@ function ProductsContent() {
 
             <button
               onClick={() => setOnlyAvailable(!onlyAvailable)}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
+              className={`h-11 px-3.5 rounded-[14px] text-xs font-semibold border transition-all cursor-pointer ${
                 onlyAvailable
                   ? "bg-[#E8F5EE] text-[#123829] border-[#D5EADF] font-bold"
-                  : "bg-white text-stone-600 border-[#D5EADF] hover:bg-[#F2F7F4]"
+                  : "bg-[#F2F7F4] text-[#687871] border-[#D5EADF] hover:bg-[#E8F5EE]"
               }`}
             >
               {onlyAvailable ? "✓ Hanya Yang Tersedia" : "Tampilkan Semua"}
@@ -339,10 +339,10 @@ function ProductsContent() {
             return (
               <div
                 key={prod.id}
-                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-2xl border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#47C98E] transition-all duration-300 justify-between"
+                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-[#E8F5EE] rounded-[22px] border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#47C98E] hover:-translate-y-0.5 transition-all duration-300 p-3 sm:p-3.5 justify-between gap-2.5"
               >
-                {/* Product Image: aspect-square agar foto kue utuh tidak terpotong */}
-                <div className="relative aspect-square w-full bg-stone-50 overflow-hidden">
+                {/* Product Image: height 130px sm:155px, rounded 16px, object-cover */}
+                <div className="relative w-full h-[130px] sm:h-[155px] rounded-[16px] overflow-hidden bg-white shrink-0">
                   <Link href={`/produk/${prod.slug}`} prefetch={true} className="block w-full h-full">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -354,79 +354,62 @@ function ProductsContent() {
                     />
                   </Link>
 
-                  {/* Status Badge Esensial (Fokus ke kelezatan foto kue) */}
-                  <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+                  {/* Tombol Wishlist Bulat 32px di kiri atas */}
+                  <div className="absolute top-2 left-2 z-10">
+                    <ProductLikeButton product={prod} size="sm" />
+                  </div>
+
+                  {/* Status Badge Kapsul di kanan atas */}
+                  <div className="absolute top-2 right-2 z-10 pointer-events-none">
                     {isOutOfStock ? (
-                      <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                      <span className="rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
                         Habis
                       </span>
-                    ) : prod.badge ? (
-                      <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
-                        {prod.badge}
-                      </span>
                     ) : prod.isBestSeller ? (
-                      <span className="rounded-lg bg-amber-600/95 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                      <span className="rounded-full bg-[#2E9E6B] text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
                         Favorit
                       </span>
                     ) : null}
                   </div>
-
-                  {/* Tombol Like di pojok kanan atas */}
-                  <div className="absolute top-2 right-2 z-10">
-                    <ProductLikeButton product={prod} size="sm" />
-                  </div>
-
-                  {!prod.isAvailable ? (
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-red-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
-                        Habis
-                      </span>
-                    </div>
-                  ) : prod.stock <= 0 ? (
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-2xs flex items-center justify-center">
-                      <span className="bg-amber-600 text-white font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full shadow-lg">
-                        Habis
-                      </span>
-                    </div>
-                  ) : null}
                 </div>
 
-                {/* Info Card: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
-                <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between space-y-1.5 min-w-0 bg-white">
+                {/* Info Card */}
+                <div className="flex-1 flex flex-col justify-between min-w-0 gap-2">
                   <div className="min-w-0">
-                    <span className="text-[8.5px] sm:text-[9.5px] text-[#2E9E6B] font-bold uppercase tracking-wide truncate block mb-0.5">
+                    <span className="text-[9px] text-[#2E9E6B] font-bold uppercase tracking-wider truncate block">
                       {categoryDisplay}
                     </span>
                     <Link
                       href={`/produk/${prod.slug}`}
                       prefetch={true}
-                      className="font-bold text-stone-900 text-xs sm:text-sm hover:text-[#123829] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px] block leading-snug"
+                      className="font-extrabold text-[#111915] text-xs sm:text-sm hover:text-[#123829] transition-colors line-clamp-1 block leading-snug mt-0.5"
                     >
                       {prod.name}
                     </Link>
                   </div>
 
-                  {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                  <div className="pt-1.5 border-t border-stone-100 flex items-center justify-between gap-1.5 mt-auto min-w-0">
-                    <div className="min-w-0">
-                      <div className="text-xs sm:text-base font-extrabold text-[#123829] font-mono leading-none truncate">
+                  {/* Bottom Row: Price on left, Round + Action Button on right */}
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#D5EADF]/60 mt-auto min-w-0">
+                    <div className="min-w-0 flex flex-col">
+                      <span className="text-xs sm:text-base font-extrabold text-[#2E9E6B] font-mono leading-none truncate">
                         {formatPrice(currentPrice)}
-                      </div>
+                      </span>
+                      <span className="text-[9px] text-[#687871] font-medium leading-none mt-0.5">/{prod.unit}</span>
                     </div>
 
                     <button
                       type="button"
-                      onClick={() => handleQuickAdd(prod)}
                       disabled={isOutOfStock}
-                      className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
+                      onClick={() => handleQuickAdd(prod)}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-90 cursor-pointer ${
                         isOutOfStock
-                          ? "bg-stone-200 text-stone-400 cursor-not-allowed"
+                          ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                           : "bg-[#123829] hover:bg-[#1A4D39] text-white"
                       }`}
-                      title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
+                      title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
+                      aria-label={isOutOfStock ? "Stok Habis" : `Tambah ${prod.name} ke Keranjang`}
                     >
-                      <ShoppingBag className="w-3 h-3" />
-                      <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
+                      <ShoppingBag className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

@@ -260,7 +260,7 @@ export default function HomePage() {
 
 
       {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
-      <main className="flex-1 pt-[72px] sm:pt-24 pb-24 sm:pb-14 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
+      <main className="flex-1 pt-[72px] sm:pt-24 pb-32 sm:pb-16 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
         {/* SECTION 1: HERO SLIDER CAROUSEL (Unified Desktop & Mobile Look) */}
         {/* ============================================================== */}
@@ -444,23 +444,23 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* 4 Kolom di Mobile dan Desktop: Tampil Bersih, Mewah & Proporsional */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-5">
+          {/* 4 Kategori Kapsul Vertikal (Emerald & Soft Mint Standard) */}
+          <div className="grid grid-cols-4 gap-2.5 sm:gap-4">
             {categoryCircles.map((cat) => {
               const IconComponent = cat.icon;
               return (
                 <Link
                   key={cat.name}
-                  className="group flex flex-col items-center justify-center p-2.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#2E9E6B] transition-all duration-300 text-center active:scale-95"
+                  className="group flex flex-col items-center justify-center min-w-[64px] h-[88px] sm:h-[104px] p-2 sm:p-3 rounded-[28px] sm:rounded-[34px] bg-[#F2F7F4] border border-[#D5EADF] hover:bg-[#123829] hover:border-[#123829] text-center transition-all duration-200 active:scale-95 shadow-2xs hover:shadow-[0_8px_18px_-4px_rgba(18,56,41,0.3)]"
                   href={`/produk?category=${cat.slug}`}
                 >
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-[#F2F7F4] border border-[#D5EADF] flex items-center justify-center text-[#123829] group-hover:bg-[#123829] group-hover:text-white group-hover:border-[#123829] group-hover:scale-105 transition-all duration-300 shadow-2xs mb-1.5 sm:mb-2.5">
-                    <IconComponent className="w-5 h-5 sm:w-7 sm:h-7 transition-transform group-hover:scale-110" />
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-[#123829] group-hover:text-white transition-colors mb-1">
+                    <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:scale-110" />
                   </div>
-                  <h3 className="font-extrabold text-xs sm:text-base text-[#111915] group-hover:text-[#123829] transition-colors leading-tight">
+                  <h3 className="font-bold text-[11px] sm:text-sm text-[#111915] group-hover:text-white transition-colors leading-tight line-clamp-1">
                     {cat.name}
                   </h3>
-                  <p className="text-[11px] text-[#687871] font-medium hidden md:block mt-1 leading-snug">
+                  <p className="text-[10px] text-[#687871] group-hover:text-white/80 font-medium hidden md:block leading-none mt-0.5">
                     {cat.desc}
                   </p>
                 </Link>
@@ -528,10 +528,10 @@ export default function HomePage() {
               return (
                 <article
                   key={prod.id}
-                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-[#D5EADF] bg-white shadow-2xs transition-all duration-300 hover:border-[#47C98E] hover:shadow-card rounded-2xl justify-between"
+                  className="group relative flex flex-col min-w-0 w-full overflow-hidden border border-[#D5EADF] bg-[#E8F5EE] shadow-2xs transition-all duration-300 hover:border-[#47C98E] hover:shadow-card hover:-translate-y-0.5 rounded-[22px] p-3 sm:p-3.5 justify-between gap-2.5"
                 >
-                  {/* Photo: aspect-square agar foto kue utuh tidak kepotong atas/bawah */}
-                  <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
+                  {/* Photo container: height 130px sm:155px, border-radius 16px, object-cover */}
+                  <div className="relative w-full h-[130px] sm:h-[155px] rounded-[16px] overflow-hidden bg-white shrink-0">
                     <Link
                       className="block w-full h-full"
                       href={`/produk/${prod.slug}`}
@@ -546,91 +546,65 @@ export default function HomePage() {
                       />
                     </Link>
 
-                    {/* Status Badge Esensial (Tidak menutupi kelezatan foto kue) */}
-                    <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
+                    {/* Tombol Wishlist Bulat 32px di kiri atas */}
+                    <div className="absolute top-2 left-2 z-10">
+                      <ProductLikeButton product={prod} size="sm" />
+                    </div>
+
+                    {/* Status Badge Kapsul di kanan atas */}
+                    <div className="absolute top-2 right-2 z-10 pointer-events-none">
                       {isOutOfStock ? (
-                        <span className="rounded-lg bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                        <span className="rounded-full bg-red-600/90 text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
                           Habis
                         </span>
                       ) : prod.isBestSeller ? (
-                        <span className="rounded-lg bg-[#2E9E6B] text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs backdrop-blur-2xs">
+                        <span className="rounded-full bg-[#2E9E6B] text-white px-2 py-0.5 text-[9px] font-bold uppercase shadow-2xs">
                           Favorit
                         </span>
                       ) : null}
                     </div>
-
-                    {/* Tombol Like pojok kanan atas */}
-                    <div className="absolute top-2 right-2 z-10">
-                      <ProductLikeButton product={prod} size="sm" />
-                    </div>
                   </div>
 
-                  {/* Body Info: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
-                  <div className="p-2.5 sm:p-3.5 flex flex-1 flex-col justify-between space-y-1.5 min-w-0 bg-white">
+                  {/* Body Info & Bottom Action Bar */}
+                  <div className="flex flex-1 flex-col justify-between min-w-0 gap-2">
                     <div className="min-w-0">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold uppercase text-[#2E9E6B] tracking-wide block truncate mb-0.5">
+                      <span className="text-[9px] font-bold uppercase text-[#2E9E6B] tracking-wider block truncate">
                         {categoryDisplay}
                       </span>
-                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0">
-                        <h3 className="font-extrabold text-xs sm:text-sm text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px]">
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block leading-snug min-w-0 mt-0.5">
+                        <h3 className="font-extrabold text-xs sm:text-sm text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1">
                           {prod.name}
                         </h3>
                       </Link>
                     </div>
 
-                    {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
-                    <div className="pt-1.5 border-t border-[#D5EADF]/60 mt-auto min-w-0">
-                      {/* Mobile Layout (< sm): Harga Jelas & Tombol Full-Width Anti-Potong */}
-                      <div className="sm:hidden space-y-1.5">
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-xs font-black text-[#123829] font-mono leading-none">
-                            {formatPrice(currentPrice)}
-                          </span>
-                          <span className="text-[9px] text-[#687871] font-medium">/{prod.unit}</span>
-                        </div>
-                        <button
-                          type="button"
-                          disabled={isOutOfStock}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleQuickAdd(prod);
-                          }}
-                          className={`w-full h-7 rounded-xl text-[10px] font-extrabold flex items-center justify-center gap-1 shadow-2xs active:scale-95 transition-all cursor-pointer ${
-                            isOutOfStock
-                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                              : "bg-[#123829] text-white hover:bg-[#1A4D39]"
-                          }`}
-                        >
-                          <ShoppingCart className="w-3 h-3" />
-                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
-                        </button>
+                    {/* Bottom Row: Price on left, Round + Action Button on right */}
+                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#D5EADF]/60 mt-auto min-w-0">
+                      <div className="min-w-0 flex flex-col">
+                        <span className="text-xs sm:text-base font-extrabold text-[#2E9E6B] font-mono leading-none truncate">
+                          {formatPrice(currentPrice)}
+                        </span>
+                        <span className="text-[9px] text-[#687871] font-medium leading-none mt-0.5">/{prod.unit}</span>
                       </div>
 
-                      {/* Desktop Layout (>= sm): Berdampingan Rapi */}
-                      <div className="hidden sm:flex items-center justify-between gap-1.5">
-                        <p className="text-sm md:text-base font-extrabold text-[#123829] font-mono leading-none truncate">
-                          {formatPrice(currentPrice)}
-                        </p>
-                        <button
-                          type="button"
-                          disabled={isOutOfStock}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            handleQuickAdd(prod);
-                          }}
-                          className={`h-7 px-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
-                            isOutOfStock
-                              ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                              : "bg-[#123829] hover:bg-[#1A4D39] text-white"
-                          }`}
-                          title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
-                        >
-                          <ShoppingCart className="w-3 h-3" />
-                          <span>{isOutOfStock ? "Habis" : "+ Keranjang"}</span>
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        disabled={isOutOfStock}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleQuickAdd(prod);
+                        }}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-xs transition-transform active:scale-90 cursor-pointer ${
+                          isOutOfStock
+                            ? "bg-slate-200 text-slate-400 cursor-not-allowed"
+                            : "bg-[#123829] hover:bg-[#1A4D39] text-white"
+                        }`}
+                        title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
+                        aria-label={isOutOfStock ? "Stok Habis" : `Tambah ${prod.name} ke Keranjang`}
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </article>

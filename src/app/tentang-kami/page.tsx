@@ -31,7 +31,7 @@ export default function AboutPage() {
   const waDisplayNum = getWhatsAppDisplayNumber(settings?.whatsappNumber);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-24 sm:pb-16 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-32 sm:pb-16 space-y-16">
       {/* Hero Section Tentang Kami */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">

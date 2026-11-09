@@ -191,18 +191,18 @@ export default function WishlistDrawer() {
               <button
                 type="button"
                 onClick={handleAddAllToCart}
-                className="w-full py-2.5 px-3 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl text-center flex items-center justify-center gap-1.5 shadow-md shadow-[#123829]/20 transition active:scale-95 text-xs sm:text-sm cursor-pointer"
+                className="w-full py-2.5 px-3 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-full text-center flex items-center justify-center gap-1.5 shadow-md shadow-[#123829]/20 transition active:scale-95 text-xs sm:text-sm cursor-pointer"
               >
-                <ShoppingCart className="w-3.5 h-3.5" />
+                <ShoppingCart className="w-3.5 h-3.5 text-[#47C98E]" />
                 <span>Masukkan Semua ke Keranjang</span>
               </button>
 
               <Link
                 href="/produk"
                 onClick={() => setIsWishlistOpen(false)}
-                className="w-full py-2 px-3 rounded-xl border border-stone-300 hover:bg-stone-100 text-stone-700 font-bold text-xs text-center flex items-center justify-center gap-1 transition"
+                className="w-full py-2 px-3 rounded-full border border-[#D5EADF] hover:bg-[#E8F5EE] text-[#123829] font-bold text-xs text-center flex items-center justify-center gap-1 transition"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3.5 h-3.5 text-[#2E9E6B]" />
                 <span>Lanjutkan Belanja Menu Lainnya</span>
               </Link>
             </div>
