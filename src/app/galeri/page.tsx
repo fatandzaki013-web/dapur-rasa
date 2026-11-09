@@ -16,8 +16,6 @@ import { DEFAULT_GALLERY_ITEMS, GalleryItem } from "@/lib/constants";
 
 export default function GalleryPage() {
   const [items, setItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
-  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
-  const [selectedTag, setSelectedTag] = useState<string>("Semua");
   const [isLoading, setIsLoading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -27,26 +25,13 @@ export default function GalleryPage() {
     fetch("/api/public/gallery")
       .then((res) => res.json())
       .then((data) => {
-        if (data.items) {
+        if (data.items && data.items.length > 0) {
           setItems(data.items);
-          setFilteredItems(data.items);
         }
       })
       .catch((e) => console.error("Error loading gallery:", e))
       .finally(() => setIsLoading(false));
   }, []);
-
-  // Filter items by category tag
-  useEffect(() => {
-    if (selectedTag === "Semua") {
-      setFilteredItems(items);
-    } else {
-      setFilteredItems(items.filter((item) => item.categoryTag === selectedTag));
-    }
-  }, [selectedTag, items]);
-
-  // Extract unique category tags
-  const tags = ["Semua", ...Array.from(new Set(items.map((i) => i.categoryTag).filter(Boolean)))];
 
   // Lightbox keyboard handler
   useEffect(() => {
@@ -59,76 +44,56 @@ export default function GalleryPage() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [lightboxIndex, filteredItems.length]);
+  }, [lightboxIndex, items.length]);
 
   const handlePrev = () => {
-    if (lightboxIndex === null || filteredItems.length === 0) return;
-    setLightboxIndex((prev) => (prev! - 1 + filteredItems.length) % filteredItems.length);
+    if (lightboxIndex === null || items.length === 0) return;
+    setLightboxIndex((prev) => (prev! - 1 + items.length) % items.length);
   };
 
   const handleNext = () => {
-    if (lightboxIndex === null || filteredItems.length === 0) return;
-    setLightboxIndex((prev) => (prev! + 1) % filteredItems.length);
+    if (lightboxIndex === null || items.length === 0) return;
+    setLightboxIndex((prev) => (prev! + 1) % items.length);
   };
 
-  const currentItem = lightboxIndex !== null ? filteredItems[lightboxIndex] : null;
+  const currentItem = lightboxIndex !== null ? items[lightboxIndex] : null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-32 sm:pb-16">
       {/* Header Halaman */}
       <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
+        <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
           <UtensilsCrossed className="w-3.5 h-3.5 text-[#2E9E6B]" />
-          Koleksi Visual Toko
+          Koleksi Visual Toko ({items.length} Foto Lengkap)
         </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight font-heading">
           Galeri Foto Kue &amp; Camilan
         </h1>
         <p className="text-gray-500 text-xs sm:text-sm max-w-xl mx-auto">
-          Lihat ragam foto kelezatan aneka pastel renyah, risol mayo lumer, bolu lembut, brownies panggang, dan paket snack box berkualitas kami.
+          Semua foto asli olahan kelezatan aneka pastel renyah, risol mayo lumer, bolu lembut, brownies panggang, dan paket snack box berkualitas Dapur Rasa bersatu di sini.
         </p>
-
-        {/* Tag Filters (Liquid Glass Pilihan) */}
-        <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
-          {tags.map((tag) => {
-            const isSelected = selectedTag === tag;
-            return (
-              <button
-                key={tag}
-                onClick={() => setSelectedTag(tag as string)}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap liquid-glass-shine active:scale-95 ${
-                  isSelected
-                    ? "liquid-glass-active shadow-md"
-                    : "liquid-glass text-gray-800 hover:text-[#123829]"
-                }`}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
-      {/* Grid Foto Galeri dengan NAMA KUE JELAS */}
+      {/* Grid Foto Galeri Lengkap (Semua Foto Bersatu) */}
       {isLoading ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="aspect-square bg-gray-100 rounded-3xl animate-pulse" />
           ))}
         </div>
-      ) : filteredItems.length === 0 ? (
+      ) : items.length === 0 ? (
         <div className="text-center py-20 px-4 bg-white rounded-3xl border border-gray-200">
           <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-gray-800 font-semibold mb-1">Belum ada foto dalam kategori ini</h3>
-          <p className="text-xs text-gray-500">Silakan pilih kategori galeri lainnya.</p>
+          <h3 className="text-gray-800 font-semibold mb-1">Belum ada foto galeri</h3>
+          <p className="text-xs text-gray-500">Silakan kembali lagi nanti.</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6 w-full max-w-full overflow-hidden">
-          {filteredItems.map((item, index) => (
+          {items.map((item, index) => (
             <div
               key={item.id}
               onClick={() => setLightboxIndex(index)}
-              className="group bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between"
+              className="group bg-white rounded-3xl overflow-hidden border border-[#D5EADF] shadow-xs hover:shadow-card hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between"
             >
               {/* Photo */}
               <div className="relative aspect-square overflow-hidden bg-gray-50">
@@ -137,6 +102,7 @@ export default function GalleryPage() {
                   src={item.imageUrl}
                   alt={item.altText || item.title}
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500"
+                  loading="lazy"
                 />
 
                 {item.categoryTag && (

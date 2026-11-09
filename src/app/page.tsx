@@ -60,7 +60,6 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoadingProducts, setIsLoadingProducts] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(DEFAULT_GALLERY_ITEMS);
-  const [selectedGalleryTag, setSelectedGalleryTag] = useState<string>("Semua");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const [activeSlide, setActiveSlide] = useState(0);
@@ -68,8 +67,6 @@ export default function HomePage() {
   const [quickViewProduct, setQuickViewProduct] = useState<QuickViewProduct | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [galleryPage, setGalleryPage] = useState(1);
-  const GALLERY_PER_PAGE = 8;
 
   // 5 Default Hero Slider Banners (Shofi Frozen Style - 16:9 on Desktop, 1:1 on Mobile)
   const defaultHeroSlides = [
@@ -193,39 +190,14 @@ export default function HomePage() {
       .catch((e) => console.error("Error fetching gallery:", e));
   }, []);
 
-  // Filter gallery items by selected tag
-  const filteredGalleryItems = useMemo(() => {
-    if (selectedGalleryTag === "Semua") return galleryItems;
-    return galleryItems.filter((item) => item.categoryTag === selectedGalleryTag);
-  }, [galleryItems, selectedGalleryTag]);
-
-  // Gallery pagination: 8 foto per halaman (4 di kiri, 4 di kanan pada mobile 2 kolom)
-  const totalGalleryPages = Math.max(1, Math.ceil(filteredGalleryItems.length / GALLERY_PER_PAGE));
-  const displayedGalleryItems = useMemo(() => {
-    const start = (galleryPage - 1) * GALLERY_PER_PAGE;
-    return filteredGalleryItems.slice(start, start + GALLERY_PER_PAGE);
-  }, [filteredGalleryItems, galleryPage]);
-
-  // Reset halaman ke 1 saat ganti kategori
-  const handleGalleryTagChange = (tag: string) => {
-    setSelectedGalleryTag(tag);
-    setGalleryPage(1);
-  };
-
-  // Unique gallery tags
-  const galleryTags = useMemo(() => {
-    const rawTags = galleryItems.map((i) => i.categoryTag).filter(Boolean) as string[];
-    return ["Semua", ...Array.from(new Set(rawTags))];
-  }, [galleryItems]);
-
   const handlePrevLightbox = () => {
-    if (lightboxIndex === null || filteredGalleryItems.length === 0) return;
-    setLightboxIndex((prev) => (prev! - 1 + filteredGalleryItems.length) % filteredGalleryItems.length);
+    if (lightboxIndex === null || galleryItems.length === 0) return;
+    setLightboxIndex((prev) => (prev! - 1 + galleryItems.length) % galleryItems.length);
   };
 
   const handleNextLightbox = () => {
-    if (lightboxIndex === null || filteredGalleryItems.length === 0) return;
-    setLightboxIndex((prev) => (prev! + 1) % filteredGalleryItems.length);
+    if (lightboxIndex === null || galleryItems.length === 0) return;
+    setLightboxIndex((prev) => (prev! + 1) % galleryItems.length);
   };
 
   const touchStartXRef = useRef<number | null>(null);
@@ -289,15 +261,39 @@ export default function HomePage() {
     }
   };
 
-  // Filter produk Top Picks sesuai kapsul kategori aktif
+  // Filter produk Top Picks sesuai kapsul kategori aktif (Presisi & Bebas Bug)
   const topPickProducts = useMemo(() => {
     if (selectedCategory === "all") return products;
     return products.filter((p) => {
       const pCat = (typeof p.category === "string" ? p.category : (p.category as any)?.slug || (p.category as any)?.name || "").toLowerCase();
-      if (selectedCategory === "nasi") return pCat.includes("nasi");
-      if (selectedCategory === "kue") return pCat.includes("kue") || pCat.includes("brownies") || pCat.includes("bolu");
-      if (selectedCategory === "frozen-food") return pCat.includes("frozen");
-      if (selectedCategory === "snack-box") return pCat.includes("snack") || pCat.includes("box");
+      const pName = (p.name || "").toLowerCase();
+      if (selectedCategory === "nasi") {
+        return pCat.includes("nasi") || pName.includes("nasi") || pName.includes("tumpeng");
+      }
+      if (selectedCategory === "kue") {
+        return (
+          pCat.includes("kue") ||
+          pCat.includes("pastel") ||
+          pCat.includes("risol") ||
+          pCat.includes("sosis") ||
+          pCat.includes("brownies") ||
+          pCat.includes("bolu") ||
+          pCat.includes("roti") ||
+          pCat.includes("pie") ||
+          pName.includes("pastel") ||
+          pName.includes("risol") ||
+          pName.includes("sosis") ||
+          pName.includes("kue") ||
+          pName.includes("brownies") ||
+          pName.includes("bolu")
+        );
+      }
+      if (selectedCategory === "frozen-food") {
+        return pCat.includes("frozen") || pName.includes("frozen") || pName.includes("beku") || pName.includes("siap goreng");
+      }
+      if (selectedCategory === "snack-box") {
+        return pCat.includes("snack") || pCat.includes("box") || pName.includes("snack") || pName.includes("box") || pName.includes("paket");
+      }
       return pCat === selectedCategory;
     });
   }, [products, selectedCategory]);
@@ -494,7 +490,7 @@ export default function HomePage() {
         {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Liquid Glass Capsule)  */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="liquid-glass-track p-2 sm:p-2.5 rounded-[34px] flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+          <div className="liquid-glass-track p-2 sm:p-2.5 rounded-[34px] flex items-center justify-between sm:justify-center gap-2 sm:gap-3 overflow-x-auto scrollbar-none">
             {categoryCapsules.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = selectedCategory === cat.slug;
@@ -503,9 +499,9 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[58px] sm:min-w-[70px] h-[78px] sm:h-[84px] rounded-[26px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 liquid-glass-shine ${
+                  className={`min-w-[62px] sm:min-w-[76px] h-[82px] sm:h-[86px] rounded-[28px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 liquid-glass-shine ${
                     isActive
-                      ? "liquid-glass-active"
+                      ? "liquid-glass-active shadow-md"
                       : "liquid-glass text-[#111915]"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
@@ -560,6 +556,24 @@ export default function HomePage() {
                 />
               ))}
             </div>
+          ) : topPickProducts.length === 0 ? (
+            <div className="p-8 rounded-[24px] bg-[#E8F5EE] border border-[#D5EADF] text-center space-y-3">
+              <Cake className="w-10 h-10 text-[#2E9E6B] mx-auto opacity-75" />
+              <h3 className="font-extrabold text-sm sm:text-base text-[#111915]">
+                Menu kategori ini belum tersedia
+              </h3>
+              <p className="text-xs text-[#687871] max-w-sm mx-auto">
+                Silakan jelajahi menu lezat lainnya atau hubungi kami langsung via WhatsApp untuk pesanan khusus.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("all")}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#123829] text-white text-xs font-bold shadow-xs hover:bg-[#1A4D39] transition active:scale-95 cursor-pointer"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Tampilkan Semua Menu</span>
+              </button>
+            </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 w-full">
               {topPickProducts.map((prod) => {
@@ -579,13 +593,13 @@ export default function HomePage() {
                     key={prod.id}
                     className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[24px] p-3.5 shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-200 cursor-pointer min-w-0"
                   >
-                    {/* Sudut Kiri Atas: Tombol Wishlist Ikon Hati Garis SVG 20px, background transparent */}
+                    {/* Sudut Kiri Atas: Tombol Wishlist Bulat Putih 32px x 32px */}
                     <div className="absolute top-3 left-3 z-10">
-                      <ProductLikeButton product={prod} variant="minimal" />
+                      <ProductLikeButton product={prod} size="md" />
                     </div>
 
-                    {/* Wadah Foto Seragam 126px object-cover rounded 16px */}
-                    <div className="w-full h-[126px] sm:h-[145px] rounded-[16px] overflow-hidden flex items-center justify-center mt-6 mb-2 bg-white/60">
+                    {/* Wadah Foto Seragam 130px object-cover rounded 16px */}
+                    <div className="w-full h-[130px] sm:h-[148px] rounded-[16px] overflow-hidden flex items-center justify-center mt-6 mb-2 bg-white/60">
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="w-full h-full block">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -600,7 +614,7 @@ export default function HomePage() {
                     {/* Area Informasi Bawah */}
                     <div className="min-w-0 pr-8">
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="block">
-                        <h3 className="text-[0.94rem] font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
+                        <h3 className="text-[0.92rem] font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
                           {prod.name}
                         </h3>
                       </Link>
@@ -612,7 +626,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Tombol Bulat + Sudut Kanan Bawah Kartu 34px x 34px */}
+                    {/* Tombol Bulat + Sudut Kanan Bawah Kartu 36px x 36px */}
                     <button
                       type="button"
                       disabled={isOutOfStock}
@@ -621,7 +635,7 @@ export default function HomePage() {
                         e.stopPropagation();
                         handleQuickAdd(prod);
                       }}
-                      className={`absolute bottom-3.5 right-3.5 w-[34px] h-[34px] rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white inline-flex items-center justify-center active:scale-90 shadow-xs transition-transform cursor-pointer ${
+                      className={`absolute bottom-3.5 right-3.5 w-[36px] h-[36px] rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white inline-flex items-center justify-center active:scale-90 shadow-xs transition-transform cursor-pointer ${
                         isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
@@ -637,58 +651,38 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 5: GALERI FOTO KUE & CAMILAN (Visual Showcase Dapur Rasa) */}
+        {/* SECTION 5: GALERI FOTO KUE & CAMILAN (Semua Foto Bersatu)     */}
         {/* ============================================================== */}
         <section id="galeri-section" className="mx-auto max-w-7xl px-2.5 sm:px-6 space-y-4 sm:space-y-6 pt-4 border-t border-[#D5EADF]/60 scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#123829] mb-1">
                 <ImageIcon className="w-3.5 h-3.5 text-[#2E9E6B]" />
-                <span>Koleksi Visual Toko</span>
+                <span>Koleksi Visual Toko ({galleryItems.length} Foto Asli)</span>
               </div>
               <h2 className="text-lg sm:text-2xl font-extrabold text-[#111915] tracking-tight">
                 Galeri Foto Kue &amp; Camilan
               </h2>
               <p className="text-xs sm:text-sm text-[#687871]">
-                Foto asli olahan aneka pastel renyah, risol mayo lumer, kue basah, dan snack box Dapur Rasa
+                Semua foto asli olahan aneka pastel renyah, risol mayo lumer, kue basah, dan snack box Dapur Rasa
               </p>
             </div>
             <Link
               className="text-xs sm:text-sm font-semibold text-[#123829] hover:text-[#2E9E6B] hover:underline flex items-center gap-0.5 shrink-0 self-start sm:self-auto transition-colors"
               href="/galeri"
             >
-              <span>Buka Galeri Lengkap</span>
+              <span>Buka Halaman Galeri</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          {/* Gallery Category Filter Pills (Liquid Glass) */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1">
-            {galleryTags.map((tag) => {
-              const isSelected = selectedGalleryTag === tag;
-              return (
-                <button
-                  key={tag as string}
-                  onClick={() => handleGalleryTagChange(tag as string)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap liquid-glass-shine active:scale-95 ${
-                    isSelected
-                      ? "liquid-glass-active shadow-md"
-                      : "liquid-glass text-[#111915] hover:text-[#123829]"
-                  }`}
-                >
-                  {tag}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Gallery Grid (2 Columns on Mobile, 3 on Tablet, 4 on Desktop) */}
+          {/* Grid Semua Foto Galeri (1 Tampilan Utuh Rapi & Bebas Bug) */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
-            {displayedGalleryItems.map((item, idx) => (
+            {galleryItems.map((item, idx) => (
               <div
                 key={item.id}
-                onClick={() => setLightboxIndex((galleryPage - 1) * GALLERY_PER_PAGE + idx)}
-                className="group relative flex flex-col overflow-hidden bg-white rounded-2xl sm:rounded-3xl border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#47C98E] transition-all duration-300 cursor-pointer"
+                onClick={() => setLightboxIndex(idx)}
+                className="group relative flex flex-col overflow-hidden bg-white rounded-2xl sm:rounded-3xl border border-[#D5EADF] shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
                 {/* Photo with zoom effect */}
                 <div className="relative aspect-square overflow-hidden bg-gray-100">
@@ -697,6 +691,7 @@ export default function HomePage() {
                     alt={item.altText || item.title}
                     src={item.imageUrl}
                     className="w-full h-full object-cover transition duration-500 group-hover:scale-108"
+                    loading="lazy"
                   />
                   {item.categoryTag && (
                     <span className="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-full bg-white/95 backdrop-blur-xs px-2 sm:px-2.5 py-0.5 text-[8.5px] sm:text-[9.5px] font-extrabold uppercase tracking-wide text-[#123829] shadow-xs">
@@ -725,63 +720,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-          {/* Gallery Pagination Controls (8 foto per halaman) */}
-          {totalGalleryPages > 1 && (
-            <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#D5EADF]/60">
-              <span className="text-xs text-[#687871] order-2 sm:order-1 font-medium">
-                Menampilkan {(galleryPage - 1) * GALLERY_PER_PAGE + 1}&ndash;{Math.min(galleryPage * GALLERY_PER_PAGE, filteredGalleryItems.length)} dari{" "}
-                <strong className="text-[#111915]">{filteredGalleryItems.length}</strong> foto galeri
-              </span>
-
-              <div className="flex items-center gap-1.5 order-1 sm:order-2">
-                <button
-                  type="button"
-                  disabled={galleryPage === 1}
-                  onClick={() => {
-                    setGalleryPage((p) => Math.max(1, p - 1));
-                    document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className="px-3 py-1.5 rounded-xl border border-[#D5EADF] bg-white text-xs font-bold text-gray-700 hover:bg-[#E8F5EE] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition shadow-2xs cursor-pointer"
-                  aria-label="Halaman Sebelumnya"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                  <span className="hidden xs:inline">Prev</span>
-                </button>
-
-                {Array.from({ length: totalGalleryPages }, (_, i) => i + 1).map((pageNum) => (
-                  <button
-                    key={pageNum}
-                    type="button"
-                    onClick={() => {
-                      setGalleryPage(pageNum);
-                      document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                    }}
-                    className={`min-w-[34px] h-[34px] px-2 rounded-xl text-xs font-bold flex items-center justify-center transition cursor-pointer ${
-                      galleryPage === pageNum
-                        ? "bg-[#123829] text-white shadow-xs font-extrabold"
-                        : "bg-white text-gray-700 border border-[#D5EADF] hover:bg-[#E8F5EE]"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  disabled={galleryPage === totalGalleryPages}
-                  onClick={() => {
-                    setGalleryPage((p) => Math.min(totalGalleryPages, p + 1));
-                    document.getElementById("galeri-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                  className="px-3 py-1.5 rounded-xl border border-[#D5EADF] bg-white text-xs font-bold text-gray-700 hover:bg-[#E8F5EE] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 transition shadow-2xs cursor-pointer"
-                  aria-label="Halaman Selanjutnya"
-                >
-                  <span className="hidden xs:inline">Next</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          )}
         </section>
 
         {/* ============================================================== */}
@@ -969,7 +907,7 @@ export default function HomePage() {
       </main>
 
       {/* Homepage Gallery Lightbox Modal */}
-      {lightboxIndex !== null && filteredGalleryItems[lightboxIndex] && (
+      {lightboxIndex !== null && galleryItems[lightboxIndex] && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
           {/* Close button */}
           <button
@@ -1003,26 +941,26 @@ export default function HomePage() {
             <div className="relative w-full max-h-[60vh] flex items-center justify-center bg-black">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={filteredGalleryItems[lightboxIndex].imageUrl}
-                alt={filteredGalleryItems[lightboxIndex].title}
+                src={galleryItems[lightboxIndex].imageUrl}
+                alt={galleryItems[lightboxIndex].title}
                 className="max-h-[60vh] w-auto max-w-full object-contain"
               />
             </div>
             <div className="p-4 sm:p-6 text-white w-full space-y-1.5 bg-gray-900">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#123829] text-white">
-                  {filteredGalleryItems[lightboxIndex].categoryTag || "Koleksi Dapur Rasa"}
+                  {galleryItems[lightboxIndex].categoryTag || "Koleksi Dapur Rasa"}
                 </span>
                 <span className="text-xs text-gray-400 font-medium">
-                  {lightboxIndex + 1} / {filteredGalleryItems.length}
+                  {lightboxIndex + 1} / {galleryItems.length}
                 </span>
               </div>
               <h3 className="text-base sm:text-xl font-bold">
-                {filteredGalleryItems[lightboxIndex].title}
+                {galleryItems[lightboxIndex].title}
               </h3>
-              {filteredGalleryItems[lightboxIndex].caption && (
+              {galleryItems[lightboxIndex].caption && (
                 <p className="text-xs sm:text-sm text-gray-300">
-                  {filteredGalleryItems[lightboxIndex].caption}
+                  {galleryItems[lightboxIndex].caption}
                 </p>
               )}
             </div>
