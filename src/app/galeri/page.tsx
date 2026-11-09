@@ -78,8 +78,8 @@ export default function GalleryPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 sm:pb-16">
       {/* Header Halaman */}
       <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A0E4E]/10 text-[#4A0E4E] text-xs font-bold uppercase tracking-wider">
-          <UtensilsCrossed className="w-3.5 h-3.5" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
+          <UtensilsCrossed className="w-3.5 h-3.5 text-[#2E9E6B]" />
           Koleksi Visual Toko
         </span>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
@@ -99,8 +99,8 @@ export default function GalleryPage() {
                 onClick={() => setSelectedTag(tag as string)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-[#4A0E4E] text-white shadow-sm"
-                    : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                    ? "bg-[#123829] text-white shadow-sm"
+                    : "bg-white text-gray-700 border border-[#D5EADF] hover:bg-[#E8F5EE]"
                 }`}
               >
                 {tag}
@@ -141,7 +141,7 @@ export default function GalleryPage() {
                 />
 
                 {item.categoryTag && (
-                  <span className="absolute top-3 left-3 rounded-full bg-white/95 backdrop-blur-xs px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#4A0E4E] shadow-sm">
+                  <span className="absolute top-3 left-3 rounded-full bg-white/95 backdrop-blur-xs px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#123829] shadow-sm">
                     {item.categoryTag}
                   </span>
                 )}
@@ -149,7 +149,7 @@ export default function GalleryPage() {
 
               {/* NAMA KUE DI BAGIAN BAWAH KARTU (TERLIHAT JELAS) */}
               <div className="p-4 flex flex-col justify-between space-y-1 bg-white">
-                <h3 className="font-extrabold text-sm sm:text-[15px] text-gray-900 group-hover:text-[#4A0E4E] transition-colors line-clamp-1">
+                <h3 className="font-extrabold text-sm sm:text-[15px] text-gray-900 group-hover:text-[#123829] transition-colors line-clamp-1">
                   {item.title}
                 </h3>
                 {item.caption && (
@@ -222,7 +222,7 @@ export default function GalleryPage() {
                   <Link
                     href={`/produk/${currentItem.product.slug}`}
                     onClick={() => setLightboxIndex(null)}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-semibold shadow-md transition-all"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-semibold shadow-md transition-all"
                   >
                     <ShoppingBag className="w-3.5 h-3.5" />
                     <span>Lihat &amp; Pesan Kue Ini ({currentItem.product.name})</span>

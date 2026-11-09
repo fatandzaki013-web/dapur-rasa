@@ -86,7 +86,7 @@ export default function AdminLoginModal({
             <X className="w-5 h-5" />
           </button>
 
-          <div className="w-12 h-12 rounded-2xl bg-[#4A0E4E] text-white flex items-center justify-center mx-auto mb-3 shadow-md shadow-[#4A0E4E]/20">
+          <div className="w-12 h-12 rounded-2xl bg-[#123829] text-white flex items-center justify-center mx-auto mb-3 shadow-md shadow-[#123829]/20">
             <UtensilsCrossed className="w-6 h-6 text-amber-200" />
           </div>
 
@@ -96,7 +96,7 @@ export default function AdminLoginModal({
           </div>
 
           <h2 className="text-xl font-extrabold text-slate-900 tracking-tight font-heading">
-            Masuk Dashboard <span className="text-[#4A0E4E]">Dapur Rasa</span>
+            Masuk Dashboard <span className="text-[#123829]">Dapur Rasa</span>
           </h2>
           <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
             Masukkan akun admin untuk mengelola website toko
@@ -126,7 +126,7 @@ export default function AdminLoginModal({
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder=""
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#2E9E6B] focus:ring-4 focus:ring-[#2E9E6B]/15 transition-all placeholder:text-slate-400 font-medium"
                 />
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function AdminLoginModal({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan kata sandi"
-                  className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium"
+                  className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#2E9E6B] focus:ring-4 focus:ring-[#2E9E6B]/15 transition-all placeholder:text-slate-400 font-medium"
                 />
                 <button
                   type="button"
@@ -159,10 +159,10 @@ export default function AdminLoginModal({
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full py-3 px-4 rounded-xl text-white font-bold text-sm shadow-md shadow-[#4A0E4E]/20 flex items-center justify-center gap-2 transition-all mt-2 ${
+              className={`w-full py-3 px-4 rounded-xl text-white font-bold text-sm shadow-md shadow-[#123829]/20 flex items-center justify-center gap-2 transition-all mt-2 ${
                 isLoading
                   ? "bg-slate-400 cursor-not-allowed opacity-90"
-                  : "bg-[#4A0E4E] hover:bg-[#3D0840] hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                  : "bg-[#123829] hover:bg-[#1A4D39] hover:shadow-lg active:scale-[0.99] cursor-pointer"
               }`}
             >
               {isLoading ? (

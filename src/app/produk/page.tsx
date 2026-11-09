@@ -185,7 +185,7 @@ function ProductsContent() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari kue (pastel, risol, brownies, sosis solo...)"
-              className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-stone-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              className="w-full pl-10 pr-10 py-2.5 rounded-2xl border border-[#D5EADF] bg-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/30 focus:border-[#2E9E6B]"
             />
             {searchTerm && (
               <button
@@ -202,7 +202,7 @@ function ProductsContent() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="px-3 py-2 rounded-xl border border-stone-200 text-xs font-medium text-stone-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              className="px-3 py-2 rounded-xl border border-[#D5EADF] text-xs font-medium text-stone-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/30 focus:border-[#2E9E6B]"
             >
               <option value="order">Urutan Rekomendasi</option>
               <option value="price-asc">Harga: Termurah</option>
@@ -215,8 +215,8 @@ function ProductsContent() {
               onClick={() => setOnlyAvailable(!onlyAvailable)}
               className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                 onlyAvailable
-                  ? "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold"
-                  : "bg-white text-stone-600 border-stone-200 hover:bg-stone-50"
+                  ? "bg-[#E8F5EE] text-[#123829] border-[#D5EADF] font-bold"
+                  : "bg-white text-stone-600 border-[#D5EADF] hover:bg-[#F2F7F4]"
               }`}
             >
               {onlyAvailable ? "✓ Hanya Yang Tersedia" : "Tampilkan Semua"}
@@ -226,16 +226,16 @@ function ProductsContent() {
 
         {/* Active Search & Filter Feedback Banner */}
         {searchTerm && (
-          <div className="flex items-center justify-between p-3 bg-purple-50 rounded-2xl border border-purple-200 text-xs text-[#4A0E4E] animate-fadeIn">
+          <div className="flex items-center justify-between p-3 bg-[#E8F5EE] rounded-2xl border border-[#D5EADF] text-xs text-[#123829] animate-fadeIn">
             <span className="flex items-center gap-1.5 truncate">
-              <Search className="w-4 h-4 text-[#4A0E4E] shrink-0" />
+              <Search className="w-4 h-4 text-[#2E9E6B] shrink-0" />
               <span className="truncate">
                 Hasil pencarian untuk: <strong>&ldquo;{searchTerm}&rdquo;</strong> ({filteredProducts.length} menu ditemukan)
               </span>
             </span>
             <button
               onClick={() => setSearchTerm("")}
-              className="text-xs font-bold text-[#4A0E4E] hover:underline flex items-center gap-1 cursor-pointer shrink-0 ml-2"
+              className="text-xs font-bold text-[#123829] hover:underline flex items-center gap-1 cursor-pointer shrink-0 ml-2"
             >
               <X className="w-3.5 h-3.5" />
               <span>Hapus</span>
@@ -244,13 +244,13 @@ function ProductsContent() {
         )}
 
         {/* Categories Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-stone-100">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-[#D5EADF]/60">
           <button
             onClick={() => setSelectedCategory("")}
             className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
               selectedCategory === ""
-                ? "bg-[#4A0E4E] text-white shadow-xs"
-                : "bg-stone-100 hover:bg-stone-200 text-stone-700"
+                ? "bg-[#123829] text-white shadow-xs font-bold"
+                : "bg-[#F2F7F4] hover:bg-[#E8F5EE] text-[#111915] border border-[#D5EADF]"
             }`}
           >
             {selectedCategory === "" ? `Semua Menu (${filteredProducts.length})` : "Semua Menu"}
@@ -268,8 +268,8 @@ function ProductsContent() {
                 onClick={() => handleCategorySelect(cat.slug)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-[#4A0E4E] text-white shadow-xs"
-                    : "bg-stone-100 hover:bg-stone-200 text-stone-700"
+                    ? "bg-[#123829] text-white shadow-xs font-bold"
+                    : "bg-[#F2F7F4] hover:bg-[#E8F5EE] text-[#111915] border border-[#D5EADF]"
                 }`}
               >
                 {cat.name}
@@ -291,14 +291,14 @@ function ProductsContent() {
           ))}
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-16 px-4 bg-white rounded-3xl border border-stone-200/90 shadow-sm max-w-lg mx-auto my-6 animate-fadeIn">
-          <div className="w-16 h-16 bg-purple-50 text-[#4A0E4E] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
-            <Search className="w-8 h-8 text-[#4A0E4E]" />
+        <div className="text-center py-16 px-4 bg-white rounded-3xl border border-[#D5EADF] shadow-sm max-w-lg mx-auto my-6 animate-fadeIn">
+          <div className="w-16 h-16 bg-[#E8F5EE] text-[#123829] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+            <Search className="w-8 h-8 text-[#2E9E6B]" />
           </div>
           <h3 className="text-stone-900 font-extrabold text-lg sm:text-xl font-heading mb-1.5">
             Menu Tidak Ditemukan
           </h3>
-          <p className="text-xs sm:text-sm text-stone-600 max-w-md mx-auto mb-6 leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#687871] max-w-md mx-auto mb-6 leading-relaxed">
             Menu yang Anda cari tidak ditemukan. Coba kata kunci lain atau lihat kategori lainnya.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -306,7 +306,7 @@ function ProductsContent() {
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
-                className="px-4 py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold rounded-xl transition cursor-pointer"
+                className="px-4 py-2 bg-[#F2F7F4] hover:bg-[#E8F5EE] text-[#111915] text-xs font-bold rounded-xl transition border border-[#D5EADF] cursor-pointer"
               >
                 Hapus Pencarian (&ldquo;{searchTerm}&rdquo;)
               </button>
@@ -315,7 +315,7 @@ function ProductsContent() {
               <button
                 type="button"
                 onClick={() => setSelectedCategory("")}
-                className="px-4 py-2 bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs font-bold rounded-xl transition shadow-xs cursor-pointer"
+                className="px-4 py-2 bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold rounded-xl transition shadow-xs cursor-pointer"
               >
                 Lihat Semua Kategori
               </button>
@@ -339,7 +339,7 @@ function ProductsContent() {
             return (
               <div
                 key={prod.id}
-                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-2xl border border-stone-200/90 shadow-2xs hover:shadow-md hover:border-purple-200 transition-all duration-300 justify-between"
+                className="group relative flex flex-col min-w-0 w-full overflow-hidden bg-white rounded-2xl border border-[#D5EADF] shadow-2xs hover:shadow-card hover:border-[#47C98E] transition-all duration-300 justify-between"
               >
                 {/* Product Image: aspect-square agar foto kue utuh tidak terpotong */}
                 <div className="relative aspect-square w-full bg-stone-50 overflow-hidden">
@@ -394,13 +394,13 @@ function ProductsContent() {
                 {/* Info Card: Judul Kue 2 Baris Lengkap Tidak Terpotong */}
                 <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col justify-between space-y-1.5 min-w-0 bg-white">
                   <div className="min-w-0">
-                    <span className="text-[8.5px] sm:text-[9.5px] text-[#4A0E4E] font-bold uppercase tracking-wide truncate block mb-0.5">
+                    <span className="text-[8.5px] sm:text-[9.5px] text-[#2E9E6B] font-bold uppercase tracking-wide truncate block mb-0.5">
                       {categoryDisplay}
                     </span>
                     <Link
                       href={`/produk/${prod.slug}`}
                       prefetch={true}
-                      className="font-bold text-stone-900 text-xs sm:text-sm hover:text-[#4A0E4E] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px] block leading-snug"
+                      className="font-bold text-stone-900 text-xs sm:text-sm hover:text-[#123829] transition-colors line-clamp-2 min-h-[32px] sm:min-h-[40px] block leading-snug"
                     >
                       {prod.name}
                     </Link>
@@ -409,7 +409,7 @@ function ProductsContent() {
                   {/* Bottom Action Bar: Harga & Tombol + Keranjang */}
                   <div className="pt-1.5 border-t border-stone-100 flex items-center justify-between gap-1.5 mt-auto min-w-0">
                     <div className="min-w-0">
-                      <div className="text-xs sm:text-base font-extrabold text-[#4A0E4E] font-mono leading-none truncate">
+                      <div className="text-xs sm:text-base font-extrabold text-[#123829] font-mono leading-none truncate">
                         {formatPrice(currentPrice)}
                       </div>
                     </div>
@@ -421,7 +421,7 @@ function ProductsContent() {
                       className={`h-7 px-2 sm:px-2.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 shadow-2xs shrink-0 active:scale-95 cursor-pointer ${
                         isOutOfStock
                           ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                          : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
+                          : "bg-[#123829] hover:bg-[#1A4D39] text-white"
                       }`}
                       title={isOutOfStock ? "Habis" : "Tambah ke Keranjang"}
                     >

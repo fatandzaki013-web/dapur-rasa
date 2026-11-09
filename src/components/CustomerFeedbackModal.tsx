@@ -215,7 +215,7 @@ Terima kasih banyak!`;
                       onClick={() => setFeedbackType(tab.id as any)}
                       className={`p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer text-xs font-bold ${
                         isSelected
-                          ? "border-[#4A0E4E] bg-purple-50 text-[#4A0E4E] ring-1 ring-[#4A0E4E]/30"
+                          ? "border-[#2E9E6B] bg-[#E8F5EE] text-[#123829] ring-1 ring-[#2E9E6B]/30"
                           : "border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100"
                       }`}
                     >
@@ -280,7 +280,7 @@ Terima kasih banyak!`;
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Misal: Ibu Rina / Dimas"
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20"
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
                 />
               </div>
 
@@ -293,7 +293,7 @@ Terima kasih banyak!`;
                   value={eventOrProduct}
                   onChange={(e) => setEventOrProduct(e.target.value)}
                   placeholder="Misal: Pastel & Risol Mayo"
-                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20"
+                  className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
                 />
               </div>
             </div>
@@ -315,7 +315,7 @@ Terima kasih banyak!`;
                     ? "Tuliskan kritik jujur Anda agar kami bisa segera mengevaluasi dapur kami..."
                     : "Ceritakan rasa kue, kerenyahan pastel, dan pengalaman berbelanja Anda..."
                 }
-                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
               />
             </div>
 
@@ -332,7 +332,7 @@ Terima kasih banyak!`;
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="px-6 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{isSubmitting ? "Mengirim..." : "Kirim Masukan"}</span>

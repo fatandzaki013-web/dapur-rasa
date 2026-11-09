@@ -655,7 +655,7 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-[#4A0E4E] text-xs font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Katalog Dinamis Supabase</span>
             </span>
@@ -671,10 +671,10 @@ export default function AdminDashboardPage() {
         <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/admin/orders"
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-purple-200 bg-purple-50 hover:bg-purple-100 text-[#4A0E4E] text-xs font-bold transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-[#D5EADF] bg-[#E8F5EE] hover:bg-[#E8F5EE] text-[#123829] text-xs font-bold transition shadow-2xs cursor-pointer"
             title="Kelola Pesanan Masuk Pelanggan"
           >
-            <ShoppingBag className="w-4 h-4 text-[#4A0E4E]" />
+            <ShoppingBag className="w-4 h-4 text-[#123829]" />
             <span className="hidden sm:inline">Pesanan Masuk</span>
           </Link>
 
@@ -692,7 +692,7 @@ export default function AdminDashboardPage() {
           <button
             type="button"
             onClick={openAddModal}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <Plus className="w-4 h-4 text-amber-200" />
             <span>Tambah Produk Baru</span>
@@ -726,7 +726,7 @@ export default function AdminDashboardPage() {
             <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Menu</div>
             <div className="text-2xl font-extrabold text-slate-900 mt-1 font-heading">{metrics.total}</div>
           </div>
-          <div className="w-11 h-11 rounded-xl bg-purple-50 text-[#4A0E4E] flex items-center justify-center shrink-0">
+          <div className="w-11 h-11 rounded-xl bg-[#E8F5EE] text-[#123829] flex items-center justify-center shrink-0">
             <Package className="w-5 h-5" />
           </div>
         </div>
@@ -774,7 +774,7 @@ export default function AdminDashboardPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari nama menu atau deskripsi..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10 transition"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10 transition"
           />
           {searchTerm && (
             <button
@@ -840,7 +840,7 @@ export default function AdminDashboardPage() {
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-[#4A0E4E] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#123829] animate-spin" />
             <span className="text-sm font-semibold text-slate-500">Memuat data produk dari Supabase...</span>
           </div>
         ) : filteredProducts.length === 0 ? (
@@ -855,7 +855,7 @@ export default function AdminDashboardPage() {
             <button
               type="button"
               onClick={openAddModal}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4A0E4E] text-white text-xs font-bold hover:bg-[#3D0840] transition cursor-pointer"
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#123829] text-white text-xs font-bold hover:bg-[#1A4D39] transition cursor-pointer"
             >
               <Plus className="w-4 h-4 text-amber-200" />
               <span>Tambah Produk Baru</span>
@@ -943,7 +943,7 @@ export default function AdminDashboardPage() {
                                 if (e.key === "Escape") handleCancelEditPrice();
                               }}
                               autoFocus
-                              className="w-24 px-2 py-1 text-xs font-bold border-2 border-[#4A0E4E] rounded-lg focus:outline-none bg-white text-slate-900 shadow-xs"
+                              className="w-24 px-2 py-1 text-xs font-bold border-2 border-[#123829] rounded-lg focus:outline-none bg-white text-slate-900 shadow-xs"
                             />
                             <button
                               type="button"
@@ -976,7 +976,7 @@ export default function AdminDashboardPage() {
                             <button
                               type="button"
                               onClick={() => handleStartEditPrice(product)}
-                              className="opacity-70 group-hover/price:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-[#4A0E4E] hover:bg-purple-50 transition cursor-pointer"
+                              className="opacity-70 group-hover/price:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-[#123829] hover:bg-[#E8F5EE] transition cursor-pointer"
                               title="Ubah harga produk langsung"
                             >
                               <Edit2 className="w-3.5 h-3.5" />
@@ -1012,7 +1012,7 @@ export default function AdminDashboardPage() {
                           <button
                             type="button"
                             onClick={() => openEditModal(product)}
-                            className="p-2 rounded-xl text-slate-600 hover:text-[#4A0E4E] hover:bg-purple-50 transition cursor-pointer"
+                            className="p-2 rounded-xl text-slate-600 hover:text-[#123829] hover:bg-[#E8F5EE] transition cursor-pointer"
                             title="Edit Produk"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -1079,7 +1079,7 @@ export default function AdminDashboardPage() {
                   className={`w-full px-3.5 py-2.5 rounded-xl border text-sm transition focus:outline-none ${
                     formErrors.name
                       ? "border-rose-400 bg-rose-50/40 text-rose-900 focus:border-rose-500 focus:ring-2 focus:ring-rose-200"
-                      : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
+                      : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10"
                   }`}
                 />
                 {formErrors.name && (
@@ -1097,7 +1097,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10"
                   >
                     {CATEGORY_OPTIONS.map((c) => (
                       <option key={c} value={c}>
@@ -1113,7 +1113,7 @@ export default function AdminDashboardPage() {
                       value={formCustomCategory}
                       onChange={(e) => setFormCustomCategory(e.target.value)}
                       placeholder="Ketik kategori kustom..."
-                      className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#4A0E4E]"
+                      className="mt-2 w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#123829]"
                     />
                   )}
                   {formErrors.category && (
@@ -1129,7 +1129,7 @@ export default function AdminDashboardPage() {
                   <select
                     value={formUnit}
                     onChange={(e) => setFormUnit(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10"
                   >
                     {UNIT_OPTIONS.map((u) => (
                       <option key={u} value={u}>
@@ -1151,7 +1151,7 @@ export default function AdminDashboardPage() {
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
                       Harga (Rp) <span className="text-rose-500">*</span>
                     </label>
-                    <span className="text-[11px] font-bold text-[#4A0E4E]">
+                    <span className="text-[11px] font-bold text-[#123829]">
                       {formatIDR(Number(formPrice) || 0)}
                     </span>
                   </div>
@@ -1165,7 +1165,7 @@ export default function AdminDashboardPage() {
                     className={`w-full px-3.5 py-2.5 rounded-xl border text-sm font-semibold transition focus:outline-none ${
                       formErrors.price
                         ? "border-rose-400 bg-rose-50/40 text-rose-900 focus:border-rose-500"
-                        : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
+                        : "border-slate-200 bg-slate-50/60 focus:bg-white focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10"
                     }`}
                   />
                   {/* Preset Nominal Cepat */}
@@ -1177,7 +1177,7 @@ export default function AdminDashboardPage() {
                         onClick={() => setFormPrice(String(nominal))}
                         className={`text-[10px] font-bold px-2 py-0.5 rounded-md border transition-all cursor-pointer ${
                           Number(formPrice) === nominal
-                            ? "bg-[#4A0E4E] text-white border-[#4A0E4E]"
+                            ? "bg-[#123829] text-white border-[#123829]"
                             : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
                         }`}
                       >
@@ -1216,7 +1216,7 @@ export default function AdminDashboardPage() {
                     value={formBadge}
                     onChange={(e) => setFormBadge(e.target.value)}
                     placeholder="Favorit / Best Seller / Promo"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#4A0E4E]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#123829]"
                   />
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {BADGE_PRESETS.map((b) => (
@@ -1270,10 +1270,10 @@ export default function AdminDashboardPage() {
                   onDrop={handleDrop}
                   className={`relative rounded-2xl border-2 border-dashed transition-all duration-200 overflow-hidden ${
                     isDragging
-                      ? "border-[#4A0E4E] bg-purple-50/70 scale-[1.01]"
+                      ? "border-[#123829] bg-[#E8F5EE]/70 scale-[1.01]"
                       : imagePreviewUrl
                       ? "border-slate-200 bg-slate-50/50 p-4"
-                      : "border-slate-300 hover:border-[#4A0E4E]/60 bg-slate-50/70 p-6 text-center"
+                      : "border-slate-300 hover:border-[#123829]/60 bg-slate-50/70 p-6 text-center"
                   }`}
                 >
                   {imagePreviewUrl ? (
@@ -1303,7 +1303,7 @@ export default function AdminDashboardPage() {
                               <span>Foto Baru Terpilih</span>
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-50 text-[#4A0E4E] border border-purple-200 text-[10px] font-bold">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8F5EE] text-[#123829] border border-[#D5EADF] text-[10px] font-bold">
                               <Sparkles className="w-3 h-3 text-amber-600" />
                               <span>Foto Produk Saat Ini</span>
                             </span>
@@ -1331,7 +1331,7 @@ export default function AdminDashboardPage() {
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-xs transition cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-xs transition cursor-pointer"
                           >
                             <Camera className="w-3.5 h-3.5 text-amber-200" />
                             <span>Pilih File / Upload Foto Lain</span>
@@ -1349,7 +1349,7 @@ export default function AdminDashboardPage() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-3">
-                      <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#4A0E4E] flex items-center justify-center mb-2.5 shadow-2xs">
+                      <div className="w-12 h-12 rounded-2xl bg-[#E8F5EE] text-[#123829] flex items-center justify-center mb-2.5 shadow-2xs">
                         <UploadCloud className="w-6 h-6" />
                       </div>
                       <p className="text-xs font-bold text-slate-800">
@@ -1361,7 +1361,7 @@ export default function AdminDashboardPage() {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="mt-3.5 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                        className="mt-3.5 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                       >
                         <FileImage className="w-4 h-4 text-amber-200" />
                         <span>Pilih File / Upload Foto</span>
@@ -1394,7 +1394,7 @@ export default function AdminDashboardPage() {
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
                   placeholder="Keterangan bumbu, isi paket, atau saran penyajian..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/60 focus:bg-white text-sm focus:outline-none focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10"
                 />
               </div>
 
@@ -1412,7 +1412,7 @@ export default function AdminDashboardPage() {
                   type="button"
                   onClick={() => setFormIsAvailable(!formIsAvailable)}
                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    formIsAvailable ? "bg-[#4A0E4E]" : "bg-slate-300"
+                    formIsAvailable ? "bg-[#123829]" : "bg-slate-300"
                   }`}
                 >
                   <span
@@ -1436,7 +1436,7 @@ export default function AdminDashboardPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || isUploadingImage}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting || isUploadingImage ? (
                     <>

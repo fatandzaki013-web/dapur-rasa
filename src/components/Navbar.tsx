@@ -154,15 +154,15 @@ export default function Navbar() {
                   className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-xl"
                 />
               ) : (
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#4A0E4E] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                  <UtensilsCrossed className="w-4 h-4 sm:w-5 sm:h-5 text-amber-200" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#123829] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+                  <UtensilsCrossed className="w-4 h-4 sm:w-5 sm:h-5 text-[#47C98E]" />
                 </div>
               )}
               <div className="flex flex-col">
-                <span className="font-extrabold text-sm sm:text-xl tracking-tight text-[#4A0E4E] leading-tight truncate max-w-[140px] sm:max-w-none">
+                <span className="font-extrabold text-sm sm:text-xl tracking-tight text-[#123829] leading-tight truncate max-w-[140px] sm:max-w-none">
                   {brandName}
                 </span>
-                <span className="text-[8.5px] sm:text-[9px] text-gray-400 font-semibold -mt-0.5 tracking-wider uppercase hidden sm:inline">
+                <span className="text-[8.5px] sm:text-[9px] text-[#687871] font-semibold -mt-0.5 tracking-wider uppercase hidden sm:inline">
                   Kue &amp; Camilan Rumahan
                 </span>
               </div>
@@ -181,8 +181,8 @@ export default function Navbar() {
                     href={link.href}
                     className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? "bg-[#4A0E4E]/10 text-[#4A0E4E] font-bold"
-                        : "text-gray-600 hover:text-[#4A0E4E] hover:bg-[#4A0E4E]/5"
+                        ? "bg-[#E8F5EE] text-[#123829] font-bold"
+                        : "text-[#687871] hover:text-[#123829] hover:bg-[#F2F7F4]"
                     }`}
                   >
                     {link.label}
@@ -201,11 +201,11 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari produk favoritmu..."
-                className="w-full h-8 pl-3 pr-8 rounded-full border border-gray-200/80 focus:outline-none focus:border-[#4A0E4E]/50 text-[11px] transition bg-gray-50/50 focus:bg-white text-gray-800 placeholder-gray-400"
+                className="w-full h-8 pl-3 pr-8 rounded-full border border-[#D5EADF] focus:outline-none focus:border-[#2E9E6B] focus:ring-1 focus:ring-[#2E9E6B]/30 text-[11px] transition bg-[#F2F7F4]/60 focus:bg-white text-[#111915] placeholder-[#687871]"
               />
               <button
                 type="submit"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4A0E4E] cursor-pointer"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#687871] hover:text-[#123829] cursor-pointer"
                 title="Cari"
               >
                 <Search className="h-3.5 w-3.5" />
@@ -239,13 +239,13 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#4A0E4E]/10 relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#4A0E4E] cursor-pointer"
+                className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#E8F5EE] relative w-8 h-8 sm:w-9 sm:h-9 text-[#687871] hover:text-[#123829] cursor-pointer"
                 aria-label="Buka keranjang"
                 title="Keranjang Belanja"
               >
                 <ShoppingCart className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-[#4A0E4E] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-[#123829] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
                     {totalItems}
                   </span>
                 )}
@@ -257,8 +257,8 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className={`md:hidden flex items-center justify-center w-9 h-9 rounded-xl transition-all cursor-pointer ${
                   mobileMenuOpen
-                    ? "bg-[#4A0E4E] text-white shadow-xs"
-                    : "hover:bg-[#4A0E4E]/10 text-gray-800"
+                    ? "bg-[#123829] text-white shadow-xs"
+                    : "hover:bg-[#E8F5EE] text-[#111915]"
                 }`}
                 aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu navigasi"}
               >
@@ -283,16 +283,16 @@ export default function Navbar() {
           {/* Drawer Slide-down Card */}
           <div className="fixed inset-x-2.5 top-16 bottom-4 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col z-50 animate-slideDown">
             {/* Header Drawer */}
-            <div className="p-4 bg-[#4A0E4E] text-white flex items-center justify-between shadow-xs shrink-0">
+            <div className="p-4 bg-[#123829] text-white flex items-center justify-between shadow-xs shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center text-amber-300 border border-white/20">
+                <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center text-[#47C98E] border border-white/20">
                   <UtensilsCrossed className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base leading-tight font-heading">
                     {brandName}
                   </h3>
-                  <p className="text-[10px] text-amber-200 font-medium">
+                  <p className="text-[10px] text-[#47C98E] font-medium">
                     Kue Rumahan &amp; Frozen Food Fresh
                   </p>
                 </div>
@@ -316,14 +316,14 @@ export default function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari pastel, risol mayo, bolu, snack box..."
-                  className="w-full h-11 pl-10 pr-10 rounded-2xl border border-gray-200 text-xs bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E] text-gray-800"
+                  className="w-full h-11 pl-10 pr-10 rounded-2xl border border-[#D5EADF] text-xs bg-[#F2F7F4] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B] text-[#111915]"
                 />
-                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#687871] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#687871] hover:text-[#111915]"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -332,7 +332,7 @@ export default function Navbar() {
 
               {/* Kategori Populer Cepat (Chips) */}
               <div className="space-y-1.5">
-                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-gray-400 block px-0.5">
+                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#687871] block px-0.5">
                   Kategori Pilihan
                 </span>
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -341,7 +341,7 @@ export default function Navbar() {
                       key={cat.slug}
                       href={`/produk?category=${cat.slug}`}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-3.5 py-1.5 rounded-full bg-stone-100 hover:bg-[#4A0E4E] hover:text-white text-stone-700 text-xs font-medium shrink-0 transition-colors"
+                      className="px-3.5 py-1.5 rounded-full bg-[#F2F7F4] border border-[#D5EADF] hover:bg-[#123829] hover:text-white text-[#111915] text-xs font-medium shrink-0 transition-colors"
                     >
                       <span>{cat.name}</span>
                     </Link>
@@ -351,7 +351,7 @@ export default function Navbar() {
 
               {/* Navigasi Menu Lengkap Berdesain Kartu Cantik */}
               <div className="space-y-1.5 pt-1 border-t border-gray-100">
-                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-gray-400 block px-0.5">
+                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#687871] block px-0.5">
                   Menu Utama Toko
                 </span>
                 <div className="space-y-1">
@@ -368,8 +368,8 @@ export default function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`flex items-center justify-between p-2.5 rounded-2xl transition-all ${
                           isActive
-                            ? "bg-[#4A0E4E] text-white shadow-xs"
-                            : "hover:bg-stone-100 text-stone-800"
+                            ? "bg-[#123829] text-white shadow-xs"
+                            : "hover:bg-[#F2F7F4] text-[#111915]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -377,7 +377,7 @@ export default function Navbar() {
                             className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
                               isActive
                                 ? "bg-white/20 text-white"
-                                : "bg-purple-100 text-[#4A0E4E]"
+                                : "bg-[#E8F5EE] text-[#123829]"
                             }`}
                           >
                             <IconComponent className="w-4 h-4" />
@@ -388,7 +388,7 @@ export default function Navbar() {
                             </span>
                             <span
                               className={`text-[10px] block leading-tight mt-0.5 ${
-                                isActive ? "text-purple-200" : "text-gray-400"
+                                isActive ? "text-[#47C98E]" : "text-[#687871]"
                               }`}
                             >
                               {link.desc}
@@ -397,7 +397,7 @@ export default function Navbar() {
                         </div>
                         <ChevronRight
                           className={`w-4 h-4 shrink-0 ${
-                            isActive ? "text-white" : "text-gray-400"
+                            isActive ? "text-white" : "text-[#687871]"
                           }`}
                         />
                       </Link>
@@ -426,9 +426,9 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     setIsCartOpen(true);
                   }}
-                  className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-purple-50 border border-purple-200/80 text-[#4A0E4E] font-bold text-xs shadow-2xs active:scale-95 cursor-pointer"
+                  className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#E8F5EE] border border-[#D5EADF] text-[#123829] font-bold text-xs shadow-2xs active:scale-95 cursor-pointer"
                 >
-                  <ShoppingCart className="w-4 h-4 text-[#4A0E4E]" />
+                  <ShoppingCart className="w-4 h-4 text-[#123829]" />
                   <span>Keranjang ({totalItems})</span>
                 </button>
               </div>

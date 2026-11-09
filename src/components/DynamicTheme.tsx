@@ -9,12 +9,12 @@ export default function DynamicTheme() {
   useEffect(() => {
     if (!theme) return;
 
-    const primary = theme.primaryColor || "#4B291B";
-    const secondary = theme.secondaryColor || "#A9683B";
-    const bg = theme.backgroundColor || "#FAF5EF";
-    const surface = theme.surfaceColor || "#FFFDF9";
-    const accent = theme.accentColor || "#EBD9C7";
-    const text = theme.textColor || "#211A16";
+    const primary = theme.primaryColor || "#123829";
+    const secondary = theme.secondaryColor || "#2E9E6B";
+    const bg = theme.backgroundColor || "#FFFFFF";
+    const surface = theme.surfaceColor || "#FFFFFF";
+    const accent = theme.accentColor || "#E8F5EE";
+    const text = theme.textColor || "#111915";
 
     // Set CSS properties on root element
     const root = document.documentElement;
@@ -59,6 +59,7 @@ export default function DynamicTheme() {
       }
 
       /* Primary Background Overrides (Buttons, Badges, Banners, Logo) */
+      .bg-\\[\\#123829\\],
       .bg-\\[\\#4A0E4E\\],
       .bg-\\[\\#4B291B\\],
       .bg-theme-primary {
@@ -66,6 +67,7 @@ export default function DynamicTheme() {
       }
 
       /* Primary Text Overrides (Brand, Headings, Price, Icons) */
+      .text-\\[\\#123829\\],
       .text-\\[\\#4A0E4E\\],
       .text-\\[\\#4B291B\\],
       .text-theme-primary {
@@ -73,6 +75,7 @@ export default function DynamicTheme() {
       }
 
       /* Primary Border Overrides */
+      .border-\\[\\#123829\\],
       .border-\\[\\#4A0E4E\\],
       .border-\\[\\#4B291B\\],
       .border-theme-primary {
@@ -80,6 +83,7 @@ export default function DynamicTheme() {
       }
 
       /* Hover States */
+      .hover\\:bg-\\[\\#1A4D39\\]:hover,
       .hover\\:bg-\\[\\#5C1261\\]:hover,
       .hover\\:bg-\\[\\#4A0E4E\\]:hover,
       .hover\\:bg-\\[\\#3A1F14\\]:hover,
@@ -87,8 +91,10 @@ export default function DynamicTheme() {
         filter: brightness(0.88) !important;
       }
 
+      .hover\\:text-\\[\\#123829\\]:hover,
       .hover\\:text-\\[\\#4A0E4E\\]:hover,
       .hover\\:text-\\[\\#4B291B\\]:hover,
+      .group:hover .group-hover\\:text-\\[\\#123829\\],
       .group:hover .group-hover\\:text-\\[\\#4A0E4E\\],
       .group:hover .group-hover\\:text-\\[\\#4B291B\\] {
         color: ${primary} !important;

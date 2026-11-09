@@ -116,7 +116,7 @@ export default function AdminFaqPage() {
     <div className="space-y-6 max-w-6xl mx-auto font-sans pb-10">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#4A0E4E] text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-amber-400/40 animate-fadeIn">
+        <div className="fixed bottom-6 right-6 z-50 bg-[#123829] text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-amber-400/40 animate-fadeIn">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -128,10 +128,10 @@ export default function AdminFaqPage() {
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-1">
             <span>Admin</span>
             <span>/</span>
-            <span className="text-[#4A0E4E] font-bold">Tanya Jawab</span>
+            <span className="text-[#123829] font-bold">Tanya Jawab</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <HelpCircle className="w-6 h-6 text-[#4A0E4E]" />
+            <HelpCircle className="w-6 h-6 text-[#123829]" />
             <span>Kelola Tanya Jawab (FAQ)</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
@@ -141,7 +141,7 @@ export default function AdminFaqPage() {
 
         <button
           onClick={openCreateFaq}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer active:scale-98 shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all cursor-pointer active:scale-98 shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Tambah Pertanyaan Baru</span>
@@ -157,13 +157,13 @@ export default function AdminFaqPage() {
         <div className="bg-white rounded-3xl border border-slate-200/90 shadow-2xs overflow-hidden">
           {faqs.length === 0 ? (
             <div className="text-center py-16 space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-purple-50 text-[#4A0E4E] flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-[#E8F5EE] text-[#123829] flex items-center justify-center mx-auto">
                 <HelpCircle className="w-6 h-6" />
               </div>
               <p className="text-xs text-slate-500">Belum ada data pertanyaan FAQ tersimpan.</p>
               <button
                 onClick={openCreateFaq}
-                className="px-4 py-2 bg-[#4A0E4E] text-white text-xs font-bold rounded-xl"
+                className="px-4 py-2 bg-[#123829] text-white text-xs font-bold rounded-xl"
               >
                 + Tambah FAQ Pertama
               </button>
@@ -184,8 +184,8 @@ export default function AdminFaqPage() {
                 <tbody className="divide-y divide-slate-100">
                   {faqs.map((f) => (
                     <tr key={f.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-[#4A0E4E] whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-full bg-purple-50 text-[#4A0E4E] text-[11px] font-bold border border-purple-100">
+                      <td className="py-3.5 px-4 font-bold text-[#123829] whitespace-nowrap">
+                        <span className="px-2.5 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-[11px] font-bold border border-[#D5EADF]">
                           {f.category}
                         </span>
                       </td>
@@ -213,7 +213,7 @@ export default function AdminFaqPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openEditFaq(f)}
-                            className="p-1.5 text-slate-600 hover:text-[#4A0E4E] hover:bg-purple-50 rounded-lg transition cursor-pointer"
+                            className="p-1.5 text-slate-600 hover:text-[#123829] hover:bg-[#E8F5EE] rounded-lg transition cursor-pointer"
                             title="Edit Pertanyaan"
                           >
                             <Edit2 className="w-4 h-4" />
@@ -263,7 +263,7 @@ export default function AdminFaqPage() {
                   value={faqQuestion}
                   onChange={(e) => setFaqQuestion(e.target.value)}
                   placeholder="Contoh: Apakah ada gratis ongkir ke Griya Cileungsi 5?"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
 
@@ -277,7 +277,7 @@ export default function AdminFaqPage() {
                   value={faqAnswer}
                   onChange={(e) => setFaqAnswer(e.target.value)}
                   placeholder="Tuliskan jawaban penjelasan yang informatif dan ramah..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
 
@@ -289,7 +289,7 @@ export default function AdminFaqPage() {
                   <select
                     value={faqCategory}
                     onChange={(e) => setFaqCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                   >
                     <option value="Pemesanan">Pemesanan</option>
                     <option value="Pengantaran & Ongkir">Pengantaran &amp; Ongkir</option>
@@ -309,7 +309,7 @@ export default function AdminFaqPage() {
                     type="number"
                     value={faqOrder}
                     onChange={(e) => setFaqOrder(Number(e.target.value))}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                   />
                 </div>
               </div>
@@ -320,7 +320,7 @@ export default function AdminFaqPage() {
                   id="faqActive"
                   checked={faqActive}
                   onChange={(e) => setFaqActive(e.target.checked)}
-                  className="rounded text-[#4A0E4E] focus:ring-[#4A0E4E] w-4 h-4 cursor-pointer"
+                  className="rounded text-[#123829] focus:ring-[#123829] w-4 h-4 cursor-pointer"
                 />
                 <label htmlFor="faqActive" className="text-xs font-semibold text-slate-700 cursor-pointer">
                   Tampilkan pertanyaan ini di website utama
@@ -337,7 +337,7 @@ export default function AdminFaqPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+                  className="px-5 py-2 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
                 >
                   {isEditingFaq ? "Perbarui FAQ" : "Simpan FAQ"}
                 </button>

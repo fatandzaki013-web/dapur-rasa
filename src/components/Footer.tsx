@@ -61,8 +61,8 @@ export default function Footer() {
 
           {/* Badge 2: Pengantaran Griya Cileungsi 5 */}
           <div className="flex items-center gap-2.5 sm:gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-900/70 border border-slate-800/80 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-950/70 text-purple-400 flex items-center justify-center shrink-0 border border-purple-800/50">
-              <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-[#123829]/70 text-[#47C98E] flex items-center justify-center shrink-0 border border-[#2E9E6B]/50">
+              <Truck className="w-4 h-4 sm:w-5 sm:h-5 text-[#47C98E]" />
             </div>
             <div className="min-w-0">
               <h4 className="text-[11px] sm:text-xs font-bold text-white truncate">Antar Griya Cileungsi 5</h4>
@@ -111,7 +111,7 @@ export default function Footer() {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <div className="w-full h-full rounded-lg bg-[#4A0E4E] flex items-center justify-center text-white font-bold text-base">
+                  <div className="w-full h-full rounded-lg bg-[#123829] flex items-center justify-center text-white font-bold text-base">
                     <UtensilsCrossed className="w-5 h-5 text-amber-200" />
                   </div>
                 )}
@@ -243,7 +243,7 @@ export default function Footer() {
               </div>
 
               <div className="flex items-start gap-2">
-                <Clock className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
+                <Clock className="w-3.5 h-3.5 text-[#47C98E] shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-slate-200">Layanan Pemesanan</p>
                   <p className="leading-snug text-[11px] text-slate-400 mt-0.5">

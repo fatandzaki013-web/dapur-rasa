@@ -13,7 +13,7 @@ export default function AdminProductsRedirect() {
 
   return (
     <div className="p-12 flex flex-col items-center justify-center gap-3">
-      <Loader2 className="w-8 h-8 text-[#4A0E4E] animate-spin" />
+      <Loader2 className="w-8 h-8 text-[#123829] animate-spin" />
       <span className="text-sm font-semibold text-slate-500">Mengarahkan ke Katalog Menu...</span>
     </div>
   );

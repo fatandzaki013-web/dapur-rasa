@@ -28,10 +28,10 @@ export default function MobileBottomNav() {
         <Link
           href="/"
           className={`flex flex-col items-center justify-center py-1 transition-colors ${
-            isHome ? "text-[#4A0E4E] font-bold" : "text-stone-500 hover:text-stone-800"
+            isHome ? "text-[#123829] font-bold" : "text-[#687871] hover:text-[#111915]"
           }`}
         >
-          <div className={`p-1 rounded-xl transition-all ${isHome ? "bg-[#4A0E4E]/10" : ""}`}>
+          <div className={`p-1 rounded-xl transition-all ${isHome ? "bg-[#E8F5EE]" : ""}`}>
             <Home className="w-5 h-5" />
           </div>
           <span className="text-[10px] leading-tight mt-0.5">Beranda</span>
@@ -41,10 +41,10 @@ export default function MobileBottomNav() {
         <Link
           href="/produk"
           className={`flex flex-col items-center justify-center py-1 transition-colors ${
-            isProducts ? "text-[#4A0E4E] font-bold" : "text-stone-500 hover:text-stone-800"
+            isProducts ? "text-[#123829] font-bold" : "text-[#687871] hover:text-[#111915]"
           }`}
         >
-          <div className={`p-1 rounded-xl transition-all ${isProducts ? "bg-[#4A0E4E]/10" : ""}`}>
+          <div className={`p-1 rounded-xl transition-all ${isProducts ? "bg-[#E8F5EE]" : ""}`}>
             <Cake className="w-5 h-5" />
           </div>
           <span className="text-[10px] leading-tight mt-0.5">Menu Kue</span>
@@ -54,10 +54,10 @@ export default function MobileBottomNav() {
         <Link
           href="/galeri"
           className={`flex flex-col items-center justify-center py-1 transition-colors ${
-            isGallery ? "text-[#4A0E4E] font-bold" : "text-stone-500 hover:text-stone-800"
+            isGallery ? "text-[#123829] font-bold" : "text-[#687871] hover:text-[#111915]"
           }`}
         >
-          <div className={`p-1 rounded-xl transition-all ${isGallery ? "bg-[#4A0E4E]/10" : ""}`}>
+          <div className={`p-1 rounded-xl transition-all ${isGallery ? "bg-[#E8F5EE]" : ""}`}>
             <ImageIcon className="w-5 h-5" />
           </div>
           <span className="text-[10px] leading-tight mt-0.5">Galeri</span>
@@ -67,7 +67,7 @@ export default function MobileBottomNav() {
         <button
           type="button"
           onClick={() => setIsWishlistOpen(true)}
-          className="flex flex-col items-center justify-center py-1 text-stone-500 hover:text-rose-600 transition-colors relative cursor-pointer"
+          className="flex flex-col items-center justify-center py-1 text-[#687871] hover:text-rose-600 transition-colors relative cursor-pointer"
           aria-label="Produk Disukai"
         >
           <div className="p-1 rounded-xl relative">
@@ -85,18 +85,18 @@ export default function MobileBottomNav() {
         <button
           type="button"
           onClick={() => setIsCartOpen(true)}
-          className="flex flex-col items-center justify-center py-1 text-stone-500 hover:text-[#4A0E4E] transition-colors relative cursor-pointer"
+          className="flex flex-col items-center justify-center py-1 text-[#687871] hover:text-[#123829] transition-colors relative cursor-pointer"
           aria-label="Keranjang Belanja"
         >
           <div className="p-1 rounded-xl relative">
-            <ShoppingCart className="w-5 h-5 text-[#4A0E4E]" />
+            <ShoppingCart className="w-5 h-5 text-[#123829]" />
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md animate-scaleIn border-2 border-white">
                 {totalItems > 99 ? "99+" : totalItems}
               </span>
             )}
           </div>
-          <span className="text-[10px] font-bold text-[#4A0E4E] leading-tight mt-0.5">
+          <span className="text-[10px] font-bold text-[#123829] leading-tight mt-0.5">
             Keranjang
           </span>
         </button>

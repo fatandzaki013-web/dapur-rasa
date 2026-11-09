@@ -205,14 +205,14 @@ export default function AdminLoginPage() {
       {/* Decorative ambient background glows */}
       <div className="absolute -top-24 -left-24 w-80 h-80 bg-amber-200/25 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-amber-100/35 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-100/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#E8F5EE]/15 rounded-full blur-3xl pointer-events-none" />
 
       {/* Main Login Card Container */}
       <div className="relative w-full max-w-md mx-auto z-10 animate-fadeIn">
         <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50 p-6 sm:p-9">
           {/* Header Branding */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#4A0E4E] text-white shadow-md shadow-[#4A0E4E]/20 mb-3.5 hover:scale-105 transition-transform">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#123829] text-white shadow-md shadow-[#123829]/20 mb-3.5 hover:scale-105 transition-transform">
               <UtensilsCrossed className="w-6 h-6 text-amber-200" />
             </div>
 
@@ -224,7 +224,7 @@ export default function AdminLoginPage() {
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-heading">
-              Pusat Kendali <span className="text-[#4A0E4E]">Dapur Rasa</span>
+              Pusat Kendali <span className="text-[#123829]">Dapur Rasa</span>
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-slate-500 leading-relaxed max-w-xs mx-auto">
               Silakan login dengan akun Supabase Admin untuk mengelola katalog menu, harga, dan pesanan pelanggan.
@@ -270,7 +270,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@dapurrasa.com"
-                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#123829] focus:ring-4 focus:ring-[#123829]/10 transition-all placeholder:text-slate-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan kata sandi"
-                  className="w-full pl-10 pr-11 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-4 focus:ring-[#4A0E4E]/10 transition-all placeholder:text-slate-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full pl-10 pr-11 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-sm text-slate-900 focus:outline-none focus:border-[#123829] focus:ring-4 focus:ring-[#123829]/10 transition-all placeholder:text-slate-400 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
@@ -322,7 +322,7 @@ export default function AdminLoginPage() {
                     ? "bg-slate-400 cursor-not-allowed shadow-none"
                     : isLoading
                     ? "bg-slate-400 cursor-not-allowed opacity-90 shadow-none"
-                    : "bg-[#4A0E4E] hover:bg-[#3D0840] shadow-[#4A0E4E]/20 hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                    : "bg-[#123829] hover:bg-[#1A4D39] shadow-[#123829]/20 hover:shadow-lg active:scale-[0.99] cursor-pointer"
                 }`}
               >
                 {isLoading ? (
@@ -353,7 +353,7 @@ export default function AdminLoginPage() {
             </span>
             <Link
               href="/"
-              className="font-bold text-[#4A0E4E] hover:text-amber-600 transition-colors flex items-center gap-1"
+              className="font-bold text-[#123829] hover:text-amber-600 transition-colors flex items-center gap-1"
             >
               <ArrowLeft className="w-3 h-3" />
               <span>Ke Toko Pelanggan</span>

@@ -38,8 +38,18 @@ interface BackgroundSwatch {
 
 const THEME_PRESETS: ThemePreset[] = [
   {
+    name: "Emerald & Soft Mint (Brand Resmi)",
+    desc: "Hijau zamrud elegan dengan aksen mint segar & bersih (Default)",
+    primary: "#123829",
+    secondary: "#2E9E6B",
+    bg: "#DCEEE5",
+    surface: "#FFFFFF",
+    accent: "#E8F5EE",
+    text: "#111915",
+  },
+  {
     name: "Warm Bakery & Chocolate",
-    desc: "Cokelat hangat khas bakery tradisional (Default)",
+    desc: "Cokelat hangat khas bakery tradisional",
     primary: "#4B291B",
     secondary: "#A9683B",
     bg: "#FAF5EF",
@@ -151,24 +161,24 @@ export default function AdminThemePage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Theme states
-  const [primaryColor, setPrimaryColor] = useState("#4B291B");
-  const [secondaryColor, setSecondaryColor] = useState("#A9683B");
-  const [backgroundColor, setBackgroundColor] = useState("#FAF5EF");
-  const [surfaceColor, setSurfaceColor] = useState("#FFFDF9");
-  const [accentColor, setAccentColor] = useState("#EBD9C7");
-  const [textColor, setTextColor] = useState("#211A16");
+  const [primaryColor, setPrimaryColor] = useState("#123829");
+  const [secondaryColor, setSecondaryColor] = useState("#2E9E6B");
+  const [backgroundColor, setBackgroundColor] = useState("#DCEEE5");
+  const [surfaceColor, setSurfaceColor] = useState("#FFFFFF");
+  const [accentColor, setAccentColor] = useState("#E8F5EE");
+  const [textColor, setTextColor] = useState("#111915");
 
   const fetchTheme = async () => {
     try {
       const res = await fetch("/api/admin/theme");
       const data = await res.json();
       if (data.theme) {
-        setPrimaryColor(data.theme.primaryColor || "#4B291B");
-        setSecondaryColor(data.theme.secondaryColor || "#A9683B");
-        setBackgroundColor(data.theme.backgroundColor || "#FAF5EF");
-        setSurfaceColor(data.theme.surfaceColor || "#FFFDF9");
-        setAccentColor(data.theme.accentColor || "#EBD9C7");
-        setTextColor(data.theme.textColor || "#211A16");
+        setPrimaryColor(data.theme.primaryColor || "#123829");
+        setSecondaryColor(data.theme.secondaryColor || "#2E9E6B");
+        setBackgroundColor(data.theme.backgroundColor || "#DCEEE5");
+        setSurfaceColor(data.theme.surfaceColor || "#FFFFFF");
+        setAccentColor(data.theme.accentColor || "#E8F5EE");
+        setTextColor(data.theme.textColor || "#111915");
       }
     } catch (e) {
       console.error("Gagal memuat tema:", e);

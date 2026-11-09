@@ -306,7 +306,7 @@ export default function AdminHomepageBuilderPage() {
             href="/"
             className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white border border-stone-300 hover:bg-stone-50 text-stone-800 text-xs font-bold rounded-xl shadow-2xs transition-all"
           >
-            <Eye className="w-4 h-4 text-[#4A0E4E]" />
+            <Eye className="w-4 h-4 text-[#123829]" />
             <span>Lihat Website Toko</span>
           </Link>
 
@@ -383,10 +383,10 @@ export default function AdminHomepageBuilderPage() {
                   <div className="p-5 sm:p-6 space-y-6 text-xs bg-white animate-fadeIn">
                     {/* KHUSUS HERO SECTION: FITUR UNGGAH FOTO SENDIRI DARI KOMPUTER UNTUK 5 BANNER SLIDER */}
                     {sec.sectionKey === "hero" && (
-                      <div className="p-5 bg-purple-50/60 rounded-2xl border border-purple-200/80 space-y-6">
+                      <div className="p-5 bg-[#E8F5EE]/60 rounded-2xl border border-[#D5EADF]/80 space-y-6">
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex items-center gap-2.5">
-                            <div className="p-2 bg-[#4A0E4E] text-white rounded-xl">
+                            <div className="p-2 bg-[#123829] text-white rounded-xl">
                               <Sparkles className="w-4 h-4" />
                             </div>
                             <div>
@@ -411,10 +411,10 @@ export default function AdminHomepageBuilderPage() {
                                 className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm space-y-4"
                               >
                                 <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-                                  <span className="font-bold text-sm text-[#4A0E4E] font-heading">
+                                  <span className="font-bold text-sm text-[#123829] font-heading">
                                     Slide #{idx + 1}: {slide.title}
                                   </span>
-                                  <span className="text-[10px] bg-[#4A0E4E]/10 text-[#4A0E4E] font-bold px-2 py-0.5 rounded-full">
+                                  <span className="text-[10px] bg-[#123829]/10 text-[#123829] font-bold px-2 py-0.5 rounded-full">
                                     {slide.badge}
                                   </span>
                                 </div>
@@ -492,7 +492,7 @@ export default function AdminHomepageBuilderPage() {
                                         </span>
                                       </div>
 
-                                      <label className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-lg cursor-pointer shadow-sm active:scale-95 transition-all text-xs shrink-0">
+                                      <label className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-lg cursor-pointer shadow-sm active:scale-95 transition-all text-xs shrink-0">
                                         <Upload className="w-3.5 h-3.5" />
                                         <span>Pilih File Foto</span>
                                         <input
@@ -543,7 +543,7 @@ export default function AdminHomepageBuilderPage() {
                         )}
 
                         <div className="flex items-center gap-3">
-                          <label className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl cursor-pointer shadow-sm text-xs transition-all">
+                          <label className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl cursor-pointer shadow-sm text-xs transition-all">
                             <Upload className="w-4 h-4" />
                             <span>Unggah Foto dari Komputer</span>
                             <input

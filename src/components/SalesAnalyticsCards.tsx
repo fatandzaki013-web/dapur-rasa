@@ -215,7 +215,7 @@ export default function SalesAnalyticsCards({
               onClick={() => setTimeRange("ALL")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 timeRange === "ALL"
-                  ? "bg-[#4A0E4E] text-white shadow-xs"
+                  ? "bg-[#123829] text-white shadow-xs"
                   : "hover:text-slate-900 hover:bg-slate-200/60"
               }`}
             >
@@ -226,7 +226,7 @@ export default function SalesAnalyticsCards({
               onClick={() => setTimeRange("THIS_MONTH")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 timeRange === "THIS_MONTH"
-                  ? "bg-[#4A0E4E] text-white shadow-xs"
+                  ? "bg-[#123829] text-white shadow-xs"
                   : "hover:text-slate-900 hover:bg-slate-200/60"
               }`}
             >
@@ -237,7 +237,7 @@ export default function SalesAnalyticsCards({
               onClick={() => setTimeRange("TODAY")}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 timeRange === "TODAY"
-                  ? "bg-[#4A0E4E] text-white shadow-xs"
+                  ? "bg-[#123829] text-white shadow-xs"
                   : "hover:text-slate-900 hover:bg-slate-200/60"
               }`}
             >
@@ -252,7 +252,7 @@ export default function SalesAnalyticsCards({
             className="p-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 transition shadow-2xs cursor-pointer disabled:opacity-50"
             title="Segarkan data analitik"
           >
-            <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-[#4A0E4E]" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin text-[#123829]" : ""}`} />
           </button>
         </div>
       </div>
@@ -304,13 +304,13 @@ export default function SalesAnalyticsCards({
           {/* KARTU 2: Total Pesanan Masuk */}
           <Link
             href="/admin/orders"
-            className="group bg-white hover:bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all hover:border-purple-200"
+            className="group bg-white hover:bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between transition-all hover:border-[#47C98E]"
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                 Total Pesanan Masuk
               </span>
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-[#4A0E4E] group-hover:bg-[#4A0E4E] group-hover:text-white flex items-center justify-center shadow-xs shrink-0 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-[#E8F5EE] text-[#123829] group-hover:bg-[#123829] group-hover:text-white flex items-center justify-center shadow-xs shrink-0 transition-colors">
                 <ShoppingBag className="w-5 h-5" />
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function SalesAnalyticsCards({
               </div>
               <div className="flex items-center justify-between mt-1.5 text-xs text-slate-500 font-medium">
                 <span>Semua status ({timeRangeLabel})</span>
-                <span className="text-[#4A0E4E] font-bold inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+                <span className="text-[#123829] font-bold inline-flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
                   Kelola <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
@@ -454,7 +454,7 @@ export default function SalesAnalyticsCards({
             <h4 className="text-sm font-bold text-slate-800">Belum ada data transaksi menu</h4>
             <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
               Data menu terlaris akan otomatis terisi dan diperbarui saat ada pesanan masuk yang statusnya diubah menjadi &quot;selesai&quot; di{" "}
-              <Link href="/admin/orders" className="text-[#4A0E4E] font-bold underline">
+              <Link href="/admin/orders" className="text-[#123829] font-bold underline">
                 Halaman Pesanan
               </Link>.
             </p>
@@ -492,7 +492,7 @@ export default function SalesAnalyticsCards({
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0 text-right">
-                      <span className="font-bold text-[#4A0E4E]">
+                      <span className="font-bold text-[#123829]">
                         {item.quantity}{" "}
                         <span className="text-[11px] font-normal text-slate-500">terjual</span>
                       </span>
@@ -507,10 +507,10 @@ export default function SalesAnalyticsCards({
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         rank === 1
-                          ? "bg-gradient-to-r from-amber-500 to-[#4A0E4E]"
+                          ? "bg-gradient-to-r from-amber-500 to-[#123829]"
                           : rank === 2
-                          ? "bg-gradient-to-r from-purple-500 to-[#4A0E4E]"
-                          : "bg-[#4A0E4E]/80"
+                          ? "bg-gradient-to-r from-[#2E9E6B] to-[#123829]"
+                          : "bg-[#123829]/80"
                       }`}
                       style={{ width: `${percentage}%` }}
                     />

@@ -34,8 +34,8 @@ export default function AboutPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-24 sm:pb-16 space-y-16">
       {/* Hero Section Tentang Kami */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A0E4E]/10 text-[#4A0E4E] text-xs font-bold uppercase tracking-wider">
-          <UtensilsCrossed className="w-3.5 h-3.5" />
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
+          <UtensilsCrossed className="w-3.5 h-3.5 text-[#2E9E6B]" />
           Mengenal Dapur Kami
         </span>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-stone-900 font-heading tracking-tight leading-tight">
@@ -61,7 +61,7 @@ export default function AboutPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
             <div className="text-white space-y-1">
-              <span className="text-xs font-semibold bg-[#4A0E4E] px-2.5 py-0.5 rounded-full inline-block">
+              <span className="text-xs font-semibold bg-[#123829] px-2.5 py-0.5 rounded-full inline-block">
                 Dapur Produksi Rumahan
               </span>
               <p className="text-sm font-bold flex items-center gap-1.5">
@@ -82,8 +82,8 @@ export default function AboutPage() {
           <p>
             Setiap hari, kami mengolah adonan fresh: memilin kulit pastel hingga membentuk lapisan renyah berlapis (*crispy puff*), menggulung risol mayo dengan isian saus creamy berlimpah, serta mengukus kue basah tradisional menggunakan santan murni dan aroma daun pandan asli.
           </p>
-          <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-200/80 space-y-2">
-            <h4 className="font-bold text-[#4A0E4E] text-sm flex items-center gap-1.5">
+          <div className="p-4 bg-[#E8F5EE] rounded-2xl border border-[#D5EADF] space-y-2">
+            <h4 className="font-bold text-[#123829] text-sm flex items-center gap-1.5">
               <PackageCheck className="w-4 h-4" />
               <span>Spesialis Paket Snack Box Acara (&gt; 50 Box)</span>
             </h4>
@@ -95,7 +95,7 @@ export default function AboutPage() {
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <Link
               href="/produk"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95"
             >
               <span>Lihat Katalog Produk Kue</span>
               <ArrowRight className="w-4 h-4" />
@@ -165,7 +165,7 @@ export default function AboutPage() {
           </div>
 
           <div className="p-5 sm:p-6 rounded-3xl bg-white border border-stone-200/80 shadow-xs hover:shadow-md transition-shadow">
-            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-[#4A0E4E] flex items-center justify-center mb-4">
+            <div className="w-12 h-12 rounded-2xl bg-[#E8F5EE] text-[#123829] flex items-center justify-center mb-4">
               <Truck className="w-6 h-6" />
             </div>
             <h3 className="font-heading font-bold text-base text-stone-900 mb-1.5">
@@ -179,14 +179,14 @@ export default function AboutPage() {
       </div>
 
       {/* Informasi Operasional & Alamat Kontak */}
-      <div className="bg-[#4A0E4E] text-white p-6 sm:p-10 rounded-3xl shadow-xl">
+      <div className="bg-[#123829] text-white p-6 sm:p-10 rounded-3xl shadow-xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
           <div className="space-y-1">
             <span className="text-xs font-bold text-amber-300 uppercase tracking-wider block">
               Lokasi Dapur Toko
             </span>
             <p className="font-bold text-base sm:text-lg">{address}</p>
-            <p className="text-xs text-purple-200">
+            <p className="text-xs text-[#DCEEE5]">
               Cileungsi, Kabupaten Bogor, Jawa Barat
             </p>
           </div>
@@ -196,7 +196,7 @@ export default function AboutPage() {
               Layanan Pemesanan
             </span>
             <p className="font-bold text-base sm:text-lg">Online via WhatsApp</p>
-            <p className="text-xs text-purple-200">
+            <p className="text-xs text-[#DCEEE5]">
               Pemesanan aneka kue &amp; snack box setiap hari
             </p>
           </div>

@@ -35,7 +35,7 @@ interface AdminUser {
 // Brand Logo: Golden & dark plum teardrop emblem with cake icon
 function BrandLogoIcon() {
   return (
-    <div className="w-9 h-9 rounded-xl bg-[#4A0E4E] text-white flex items-center justify-center shadow-xs font-bold text-lg shrink-0">
+    <div className="w-9 h-9 rounded-xl bg-[#123829] text-white flex items-center justify-center shadow-xs font-bold text-lg shrink-0">
       🧁
     </div>
   );
@@ -245,11 +245,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 href={item.href}
                 className={`flex items-center gap-3.5 px-3.5 py-2.5 rounded-xl text-[13.5px] font-medium transition-all ${
                   isActive
-                    ? "bg-[#4A0E4E]/10 text-[#4A0E4E] font-bold shadow-2xs"
+                    ? "bg-[#E8F5EE] text-[#123829] font-bold shadow-2xs"
                     : "text-slate-700 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
-                <Icon className={`w-5 h-5 shrink-0 stroke-[1.8] ${isActive ? "text-[#4A0E4E]" : "text-slate-700"}`} />
+                <Icon className={`w-5 h-5 shrink-0 stroke-[1.8] ${isActive ? "text-[#123829]" : "text-slate-700"}`} />
                 <span className="truncate">{item.label}</span>
               </Link>
             );
@@ -369,7 +369,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="p-4 border-t border-slate-100 bg-white space-y-3">
           {/* User Profile */}
           <div className="flex items-center gap-3 px-2 py-2 rounded-2xl bg-slate-50 border border-slate-100">
-            <div className="w-10 h-10 rounded-full bg-[#4A0E4E] text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="w-10 h-10 rounded-full bg-[#123829] text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-2xs">
               {adminUser?.email?.charAt(0).toUpperCase() || "A"}
             </div>
             <div className="min-w-0 flex-1">
@@ -430,10 +430,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link
               href="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#4A0E4E]/30 hover:border-[#4A0E4E] bg-purple-50/50 hover:bg-purple-50 text-[#4A0E4E] text-xs font-bold shadow-2xs transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[#D5EADF] hover:border-[#2E9E6B] bg-[#E8F5EE]/60 hover:bg-[#E8F5EE] text-[#123829] text-xs font-bold shadow-2xs transition-all"
             >
               <span>Lihat Toko Pelanggan</span>
-              <ExternalLink className="w-3.5 h-3.5 text-[#4A0E4E]" />
+              <ExternalLink className="w-3.5 h-3.5 text-[#2E9E6B]" />
             </Link>
           </div>
         </header>
@@ -475,7 +475,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       onClick={() => setIsMobileSidebarOpen(false)}
                       className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                         isActive
-                          ? "bg-[#4A0E4E]/10 text-[#4A0E4E] font-bold"
+                          ? "bg-[#E8F5EE] text-[#123829] font-bold"
                           : "text-slate-700 hover:bg-slate-50"
                       }`}
                     >
@@ -549,7 +549,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               {/* Profile & Logout Mobile */}
               <div className="p-4 border-t border-slate-100 bg-white space-y-2.5">
                 <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl bg-slate-50 border border-slate-100">
-                  <div className="w-9 h-9 rounded-full bg-[#4A0E4E] text-white font-bold text-sm flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[#123829] text-white font-bold text-sm flex items-center justify-center shrink-0">
                     {adminUser?.email?.charAt(0).toUpperCase() || "A"}
                   </div>
                   <div className="min-w-0 flex-1">

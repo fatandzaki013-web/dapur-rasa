@@ -53,7 +53,7 @@ export default function AdminSettingsPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
 
   // Theme Config State
-  const [primaryColor, setPrimaryColor] = useState("#4A0E4E");
+  const [primaryColor, setPrimaryColor] = useState("#123829");
   const [secondaryColor, setSecondaryColor] = useState("#F59E0B");
   const [backgroundColor, setBackgroundColor] = useState("#FAF5EF");
   const [surfaceColor, setSurfaceColor] = useState("#FFFDF9");
@@ -90,7 +90,7 @@ export default function AdminSettingsPage() {
       }
 
       if (tData.theme) {
-        setPrimaryColor(tData.theme.primaryColor || "#4A0E4E");
+        setPrimaryColor(tData.theme.primaryColor || "#123829");
         setSecondaryColor(tData.theme.secondaryColor || "#F59E0B");
         setBackgroundColor(tData.theme.backgroundColor || "#FAF5EF");
         setSurfaceColor(tData.theme.surfaceColor || "#FFFDF9");
@@ -253,7 +253,7 @@ export default function AdminSettingsPage() {
   };
 
   const resetThemeToDefault = () => {
-    setPrimaryColor("#4A0E4E");
+    setPrimaryColor("#123829");
     setSecondaryColor("#F59E0B");
     setBackgroundColor("#FAF5EF");
     setSurfaceColor("#FFFDF9");
@@ -265,7 +265,7 @@ export default function AdminSettingsPage() {
     <div className="space-y-6 max-w-5xl mx-auto font-sans pb-12">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 bg-[#4A0E4E] text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-fadeIn border border-amber-400/40">
+        <div className="fixed top-20 right-6 z-50 bg-[#123829] text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-fadeIn border border-amber-400/40">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -277,7 +277,7 @@ export default function AdminSettingsPage() {
           <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-1">
             <span>Admin</span>
             <span>/</span>
-            <span className="text-[#4A0E4E] font-bold">Pengaturan</span>
+            <span className="text-[#123829] font-bold">Pengaturan</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
             Pusat Pengaturan Toko &amp; Akun
@@ -306,7 +306,7 @@ export default function AdminSettingsPage() {
           }}
           className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "store"
-              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              ? "border-[#123829] text-[#123829] bg-[#E8F5EE]/50"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -322,7 +322,7 @@ export default function AdminSettingsPage() {
           }}
           className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "account"
-              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              ? "border-[#123829] text-[#123829] bg-[#E8F5EE]/50"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -338,7 +338,7 @@ export default function AdminSettingsPage() {
           }}
           className={`px-4 py-2.5 rounded-t-xl font-bold text-xs sm:text-sm flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
             activeTab === "theme"
-              ? "border-[#4A0E4E] text-[#4A0E4E] bg-purple-50/50"
+              ? "border-[#123829] text-[#123829] bg-[#E8F5EE]/50"
               : "border-transparent text-slate-500 hover:text-slate-800"
           }`}
         >
@@ -358,7 +358,7 @@ export default function AdminSettingsPage() {
             <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
               <div>
                 <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                  <Store className="w-4 h-4 text-[#4A0E4E]" />
+                  <Store className="w-4 h-4 text-[#123829]" />
                   <span>Informasi Kontak &amp; Operasional Toko</span>
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
@@ -378,7 +378,7 @@ export default function AdminSettingsPage() {
                   value={whatsappNumber}
                   onChange={(e) => setWhatsappNumber(e.target.value)}
                   placeholder="085888159765"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
                 <span className="text-[11px] text-slate-400 mt-1 block">
                   * Berlaku otomatis di seluruh website: tombol WhatsApp mengambang, footer, dan redirect checkout. (Contoh: 085888159765).
@@ -394,7 +394,7 @@ export default function AdminSettingsPage() {
                   value={brandName}
                   onChange={(e) => setBrandName(e.target.value)}
                   placeholder="Dapur Rasa"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
             </div>
@@ -409,7 +409,7 @@ export default function AdminSettingsPage() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi, Jawa Barat"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
               />
               <span className="text-[11px] text-slate-400 mt-1 block">
                 Alamat ini tampil di footer website dan petunjuk titik ambil pesanan pelanggan.
@@ -426,7 +426,7 @@ export default function AdminSettingsPage() {
                   value={operationalHours}
                   onChange={(e) => setOperationalHours(e.target.value)}
                   placeholder="Pemesanan Online via WhatsApp Setiap Hari"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
 
@@ -439,7 +439,7 @@ export default function AdminSettingsPage() {
                   value={tagline}
                   onChange={(e) => setTagline(e.target.value)}
                   placeholder="Kue & Camilan Rumahan Kualitas Premium"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
             </div>
@@ -455,7 +455,7 @@ export default function AdminSettingsPage() {
                   value={defaultShippingFee}
                   onChange={(e) => setDefaultShippingFee(e.target.value)}
                   placeholder="0 untuk gratis ongkir"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
                 <span className="text-[11px] text-slate-400 mt-1 block">
                   Isi 0 jika pengantaran ke area Perum Griya Cileungsi 5 adalah Gratis Ongkir.
@@ -472,7 +472,7 @@ export default function AdminSettingsPage() {
                   value={minOrderAmount}
                   onChange={(e) => setMinOrderAmount(e.target.value)}
                   placeholder="0 jika tidak ada batas minimal"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                 />
               </div>
             </div>
@@ -486,7 +486,7 @@ export default function AdminSettingsPage() {
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
                 placeholder="Dapur Rasa | Toko Kue Rumahan Lezat & Higienis"
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
               />
             </div>
 
@@ -499,7 +499,7 @@ export default function AdminSettingsPage() {
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
                 placeholder="Pesan aneka kue basah, pastel renyah, risol mayo lumer untuk acara dan kumpul keluarga..."
-                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
               />
             </div>
 
@@ -507,7 +507,7 @@ export default function AdminSettingsPage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
+                className="px-6 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSaving ? "Menyimpan..." : "Simpan Pengaturan Toko"}</span>
@@ -521,7 +521,7 @@ export default function AdminSettingsPage() {
           <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs space-y-6">
             <div className="border-b border-slate-100 pb-3">
               <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-[#4A0E4E]" />
+                <KeyRound className="w-4 h-4 text-[#123829]" />
                 <span>Ganti Username &amp; Kata Sandi Akun Admin</span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -530,11 +530,11 @@ export default function AdminSettingsPage() {
             </div>
 
             {/* Info Box */}
-            <div className="p-4 bg-purple-50/70 rounded-2xl border border-purple-100 text-xs text-[#4A0E4E] flex items-start gap-3">
-              <ShieldCheck className="w-5 h-5 text-[#4A0E4E] shrink-0 mt-0.5" />
+            <div className="p-4 bg-[#E8F5EE]/70 rounded-2xl border border-[#D5EADF] text-xs text-[#123829] flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-[#123829] shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <span className="font-bold block">Petunjuk Keamanan Akun:</span>
-                <p className="text-purple-900/80 leading-relaxed">
+                <p className="text-[#111915]/80 leading-relaxed">
                   Username dan kata sandi baru akan langsung aktif setelah Anda klik <strong>Simpan Perubahan Akun</strong>. Pastikan Anda mengingat atau mencatat kredensial baru tersebut untuk login berikutnya.
                 </p>
               </div>
@@ -553,7 +553,7 @@ export default function AdminSettingsPage() {
                     value={adminName}
                     onChange={(e) => setAdminName(e.target.value)}
                     placeholder="Admin Dapur Rasa"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                   />
                 </div>
               </div>
@@ -572,7 +572,7 @@ export default function AdminSettingsPage() {
                     value={adminUsername}
                     onChange={(e) => setAdminUsername(e.target.value)}
                     placeholder="admin"
-                    className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                    className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                   />
                 </div>
                 <span className="text-[11px] text-slate-400 mt-1 block">
@@ -601,7 +601,7 @@ export default function AdminSettingsPage() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Minimal 6 karakter"
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                     />
                     <button
                       type="button"
@@ -624,7 +624,7 @@ export default function AdminSettingsPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Ketik ulang kata sandi baru"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                     />
                   </div>
                 </div>
@@ -643,7 +643,7 @@ export default function AdminSettingsPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       placeholder="Masukkan kata sandi lama Anda"
-                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#4A0E4E]/20 focus:border-[#4A0E4E]"
+                      className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#123829]/20 focus:border-[#123829]"
                     />
                     <button
                       type="button"
@@ -664,7 +664,7 @@ export default function AdminSettingsPage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
+                className="px-6 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSaving ? "Menyimpan..." : "Simpan Perubahan Akun & Sandi"}</span>
@@ -676,9 +676,9 @@ export default function AdminSettingsPage() {
         /* Tab 3: Palet Warna */
         <form onSubmit={handleSaveTheme} className="space-y-6 text-xs sm:text-sm">
           <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200/90 shadow-2xs space-y-6">
-            <div className="bg-gradient-to-r from-purple-500/10 to-amber-500/10 p-4 rounded-2xl border border-purple-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-gradient-to-r from-purple-500/10 to-amber-500/10 p-4 rounded-2xl border border-[#D5EADF]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="font-bold text-[#4A0E4E] block text-xs sm:text-sm">
+                <span className="font-bold text-[#123829] block text-xs sm:text-sm">
                   Studio Kustomisasi Warna Website
                 </span>
                 <span className="text-xs text-slate-600">
@@ -687,7 +687,7 @@ export default function AdminSettingsPage() {
               </div>
               <Link
                 href="/admin/theme"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold text-xs shadow-xs shrink-0 transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white font-bold text-xs shadow-xs shrink-0 transition"
               >
                 <Palette className="w-3.5 h-3.5" />
                 <span>Buka Studio Tema Lengkap</span>
@@ -707,7 +707,7 @@ export default function AdminSettingsPage() {
               <button
                 type="button"
                 onClick={resetThemeToDefault}
-                className="text-[#4A0E4E] font-bold hover:underline inline-flex items-center gap-1 cursor-pointer text-xs"
+                className="text-[#123829] font-bold hover:underline inline-flex items-center gap-1 cursor-pointer text-xs"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Warna Default Toko</span>
@@ -731,7 +731,7 @@ export default function AdminSettingsPage() {
                     className="flex-1 px-2.5 py-1.5 rounded-lg border font-mono text-xs"
                   />
                 </div>
-                <span className="text-[10px] text-slate-400 block">Default: #4A0E4E (Dapur Rasa Purple)</span>
+                <span className="text-[10px] text-slate-400 block">Default: #123829 (Dapur Rasa Purple)</span>
               </div>
 
               <div className="space-y-1.5 p-3 rounded-2xl border border-slate-200">
@@ -777,7 +777,7 @@ export default function AdminSettingsPage() {
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-[#4A0E4E] hover:bg-[#5C1261] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
+                className="px-6 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer active:scale-98"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSaving ? "Menyimpan..." : "Simpan Palet Warna"}</span>

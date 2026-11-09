@@ -308,7 +308,7 @@ export default function AdminOrdersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 text-[#4A0E4E] text-xs font-bold uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E8F5EE] text-[#123829] text-xs font-bold uppercase tracking-wider">
               <ShoppingBag className="w-3.5 h-3.5" />
               <span>Database Pesanan Supabase</span>
             </span>
@@ -343,7 +343,7 @@ export default function AdminOrdersPage() {
           </button>
           <Link
             href="/admin"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition"
           >
             <span>Kelola Katalog Menu</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -366,12 +366,12 @@ export default function AdminOrdersPage() {
           <div className="text-2xl font-black text-amber-900 mt-1 font-heading">{metrics.pending}</div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-purple-200 bg-purple-50/30 shadow-xs">
-          <div className="text-[11px] font-bold text-[#4A0E4E] uppercase tracking-wider flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-[#4A0E4E]" />
+        <div className="bg-white p-4 rounded-2xl border border-[#D5EADF] bg-[#E8F5EE]/30 shadow-xs">
+          <div className="text-[11px] font-bold text-[#123829] uppercase tracking-wider flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-[#123829]" />
             <span>Diproses</span>
           </div>
-          <div className="text-2xl font-black text-[#4A0E4E] mt-1 font-heading">{metrics.diproses}</div>
+          <div className="text-2xl font-black text-[#123829] mt-1 font-heading">{metrics.diproses}</div>
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-emerald-200 bg-emerald-50/30 shadow-xs">
@@ -402,7 +402,7 @@ export default function AdminOrdersPage() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Cari nama, no WA, atau alamat..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#4A0E4E] focus:ring-2 focus:ring-[#4A0E4E]/10 transition"
+            className="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 focus:bg-white text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-[#123829] focus:ring-2 focus:ring-[#123829]/10 transition"
           />
           {searchTerm && (
             <button
@@ -447,7 +447,7 @@ export default function AdminOrdersPage() {
       <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         {isLoading ? (
           <div className="p-16 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="w-8 h-8 text-[#4A0E4E] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#123829] animate-spin" />
             <span className="text-sm font-semibold text-slate-500">Memuat pesanan dari Supabase...</span>
           </div>
         ) : filteredOrders.length === 0 ? (
@@ -541,7 +541,7 @@ export default function AdminOrdersPage() {
                             </div>
                           ))}
                           {parsedItems.length > 2 && (
-                            <span className="text-[11px] text-purple-700 font-bold">
+                            <span className="text-[11px] text-[#2E9E6B] font-bold">
                               +{parsedItems.length - 2} menu lainnya...
                             </span>
                           )}
@@ -566,7 +566,7 @@ export default function AdminOrdersPage() {
                               status === "selesai"
                                 ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
                                 : status === "diproses"
-                                ? "bg-purple-50 text-[#4A0E4E] border-purple-300 hover:bg-purple-100"
+                                ? "bg-[#E8F5EE] text-[#123829] border-[#D5EADF] hover:bg-[#E8F5EE]"
                                 : "bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100"
                             }`}
                           >
@@ -583,7 +583,7 @@ export default function AdminOrdersPage() {
                           <button
                             type="button"
                             onClick={() => setSelectedOrder(order)}
-                            className="p-2 rounded-xl text-slate-600 hover:text-[#4A0E4E] hover:bg-purple-50 transition cursor-pointer"
+                            className="p-2 rounded-xl text-slate-600 hover:text-[#123829] hover:bg-[#E8F5EE] transition cursor-pointer"
                             title="Lihat Detail Pesanan"
                           >
                             <Eye className="w-4 h-4" />
@@ -689,14 +689,14 @@ export default function AdminOrdersPage() {
                           {formatIDR(it.price)} x {it.quantity}
                         </div>
                       </div>
-                      <div className="font-extrabold text-[#4A0E4E]">
+                      <div className="font-extrabold text-[#123829]">
                         {formatIDR(it.subtotal || it.price * it.quantity)}
                       </div>
                     </div>
                   ))}
-                  <div className="p-3 bg-purple-50/40 flex justify-between items-center font-bold">
+                  <div className="p-3 bg-[#E8F5EE]/40 flex justify-between items-center font-bold">
                     <span>Total Pembayaran:</span>
-                    <span className="text-base font-black text-[#4A0E4E] font-heading">
+                    <span className="text-base font-black text-[#123829] font-heading">
                       {formatIDR(selectedOrder.total_price)}
                     </span>
                   </div>
@@ -709,7 +709,7 @@ export default function AdminOrdersPage() {
                 <select
                   value={(selectedOrder.status || "pending").toLowerCase()}
                   onChange={(e) => handleStatusChange(selectedOrder.id, e.target.value)}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 bg-white cursor-pointer focus:outline-none focus:border-[#4A0E4E]"
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold border border-slate-300 bg-white cursor-pointer focus:outline-none focus:border-[#123829]"
                 >
                   <option value="pending">⏳ Pending (Menunggu)</option>
                   <option value="diproses">🔄 Sedang Diproses</option>
@@ -734,7 +734,7 @@ export default function AdminOrdersPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedOrder(null)}
-                  className="px-4 py-2 rounded-xl bg-[#4A0E4E] text-white font-bold text-xs hover:bg-[#3D0840] transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#123829] text-white font-bold text-xs hover:bg-[#1A4D39] transition cursor-pointer"
                 >
                   Tutup
                 </button>
@@ -769,7 +769,7 @@ export default function AdminOrdersPage() {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Cetak / PDF</span>
@@ -790,7 +790,7 @@ export default function AdminOrdersPage() {
               {/* Header Toko */}
               <div className="text-center pb-4 border-b-2 border-dashed border-stone-300">
                 <div className="inline-block p-1 rounded-full bg-amber-50 mb-1">
-                  <span className="font-heading font-black text-2xl tracking-wider text-[#4A0E4E]">
+                  <span className="font-heading font-black text-2xl tracking-wider text-[#123829]">
                     DAPUR RASA
                   </span>
                 </div>
@@ -901,7 +901,7 @@ export default function AdminOrdersPage() {
                   <span className="font-extrabold uppercase tracking-wide text-stone-900">
                     Total Pembayaran:
                   </span>
-                  <span className="font-black text-lg text-[#4A0E4E] font-heading">
+                  <span className="font-black text-lg text-[#123829] font-heading">
                     {formatIDR(receiptOrder.total_price)}
                   </span>
                 </div>
@@ -931,7 +931,7 @@ export default function AdminOrdersPage() {
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#4A0E4E] hover:bg-[#3D0840] text-white text-xs font-bold shadow-md shadow-[#4A0E4E]/20 transition cursor-pointer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-md shadow-[#123829]/20 transition cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Cetak Struk Sekarang</span>

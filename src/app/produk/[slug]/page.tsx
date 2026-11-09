@@ -202,7 +202,7 @@ export default function ProductDetailPage({
         <Link
           href="/produk"
           prefetch={true}
-          className="px-5 py-2.5 bg-[#4A0E4E] text-white text-xs font-semibold rounded-xl"
+          className="px-5 py-2.5 bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-semibold rounded-xl"
         >
           Kembali ke Katalog
         </Link>
@@ -360,7 +360,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
         {/* Right: Rincian Produk & Tombol Aksi */}
         <div className="lg:col-span-6 space-y-3.5 sm:space-y-5 w-full min-w-0">
           <div>
-            <span className="text-[11px] sm:text-xs font-bold text-[#4A0E4E] uppercase tracking-wider block mb-1">
+            <span className="text-[11px] sm:text-xs font-bold text-[#2E9E6B] uppercase tracking-wider block mb-1">
               {product.category.name}
             </span>
             <h1 className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-stone-900 font-heading leading-snug break-words">
@@ -374,7 +374,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
           {/* Kotak Harga & Status Stok */}
           <div className="p-3 sm:p-4 rounded-2xl bg-stone-50 border border-stone-200/90 flex items-center justify-between gap-2 w-full">
             <div className="flex items-baseline gap-1.5 min-w-0">
-              <span className="text-xl sm:text-3xl font-extrabold text-[#4A0E4E] font-heading truncate">
+              <span className="text-xl sm:text-3xl font-extrabold text-[#123829] font-heading truncate">
                 {formatPrice(unitPrice)}
               </span>
               <span className="text-xs sm:text-sm text-stone-500 font-medium shrink-0">/{product.unit}</span>
@@ -434,7 +434,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
 
               <div className="text-xs text-stone-500 text-right sm:text-left">
                 <span>Total: </span>
-                <strong className="text-stone-900 font-extrabold text-sm sm:text-base text-[#4A0E4E]">
+                <strong className="text-stone-900 font-extrabold text-sm sm:text-base text-[#123829]">
                   {formatPrice(totalPrice)}
                 </strong>
               </div>
@@ -449,7 +449,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               className={`py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-1.5 sm:gap-2 shadow-md transition-all ${
                 isOutOfStock
                   ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                  : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white active:scale-95 cursor-pointer shadow-purple-950/20"
+                  : "bg-[#123829] hover:bg-[#1A4D39] text-white active:scale-95 cursor-pointer shadow-[#123829]/20"
               }`}
             >
               <ShoppingBag className="w-4 h-4 shrink-0" />
@@ -587,10 +587,10 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                   )}
                 </div>
                 <div className="p-2.5 sm:p-4">
-                  <h4 className="font-bold text-stone-900 text-xs sm:text-sm group-hover:text-[#4A0E4E] transition-colors line-clamp-2 leading-tight">
+                  <h4 className="font-bold text-stone-900 text-xs sm:text-sm group-hover:text-[#123829] transition-colors line-clamp-2 leading-tight">
                     {rel.name}
                   </h4>
-                  <div className="text-xs sm:text-base font-extrabold text-[#4A0E4E] mt-1 font-mono leading-none">
+                  <div className="text-xs sm:text-base font-extrabold text-[#123829] mt-1 font-mono leading-none">
                     {formatPrice(rel.promoPrice && rel.promoPrice > 0 ? rel.promoPrice : rel.price)}
                   </div>
                 </div>
@@ -603,14 +603,14 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       {/* ============================================================== */}
       {/* MOBILE STICKY BOTTOM BAR (TETAP TERLIHAT DI LAYAR HP TANPA TERPOTONG) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 shadow-[0_-4px_25px_rgba(0,0,0,0.12)] px-3.5 pt-2.5 pb-[max(0.65rem,env(safe-area-inset-bottom,0.65rem))]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(0,0,0,0.12)] px-3.5 pt-2.5 pb-[max(0.65rem,env(safe-area-inset-bottom,0.65rem))]">
         <div className="flex items-center justify-between gap-2.5 max-w-lg mx-auto">
           {/* Info Harga & Kuantitas */}
           <div className="min-w-0 flex-1">
             <span className="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">
               Total ({quantity} {product.unit}):
             </span>
-            <span className="font-extrabold text-sm sm:text-base text-[#4A0E4E] font-heading block truncate">
+            <span className="font-extrabold text-sm sm:text-base text-[#123829] font-heading block truncate">
               {formatPrice(totalPrice)}
             </span>
           </div>
@@ -635,7 +635,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               className={`px-3.5 py-2 rounded-xl font-extrabold text-xs flex items-center gap-1.5 shadow-md transition active:scale-95 cursor-pointer ${
                 isOutOfStock
                   ? "bg-stone-300 text-stone-500 cursor-not-allowed"
-                  : "bg-[#4A0E4E] hover:bg-[#5C1261] text-white"
+                  : "bg-[#123829] hover:bg-[#1A4D39] text-white"
               }`}
             >
               <ShoppingBag className="w-3.5 h-3.5 shrink-0" />
