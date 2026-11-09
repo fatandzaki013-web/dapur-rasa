@@ -174,8 +174,8 @@ function ProductsContent() {
         </p>
       </div>
 
-      {/* Filter & Search Bar (Squircle Standard) */}
-      <div className="bg-white rounded-[26px] border border-[#D5EADF] p-4 sm:p-5 shadow-card mb-8 space-y-4">
+      {/* Filter & Search Bar (Liquid Glass Container) */}
+      <div className="liquid-glass-card rounded-[26px] p-4 sm:p-5 mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
           {/* Search Input */}
           <div className="relative flex-1">
@@ -185,7 +185,7 @@ function ProductsContent() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari kue (pastel, risol, brownies, sosis solo...)"
-              className="w-full pl-10 pr-10 h-12 rounded-[16px] border border-[#D5EADF] bg-[#F2F7F4] text-xs sm:text-sm text-[#111915] focus:outline-none focus:border-[#123829] focus:bg-white transition-all"
+              className="w-full pl-10 pr-10 h-12 rounded-[16px] border border-[#D5EADF] liquid-glass text-xs sm:text-sm text-[#111915] focus:outline-none focus:border-[#123829] focus:bg-white transition-all"
             />
             {searchTerm && (
               <button
@@ -197,12 +197,12 @@ function ProductsContent() {
             )}
           </div>
 
-          {/* Sort & Availability Selectors */}
+          {/* Sort & Availability Selectors (Liquid Glass) */}
           <div className="flex items-center gap-2.5 flex-wrap">
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="h-11 px-3.5 rounded-[14px] border border-[#D5EADF] text-xs font-semibold text-[#111915] bg-[#F2F7F4] focus:outline-none focus:border-[#123829]"
+              className="h-11 px-3.5 rounded-[14px] liquid-glass text-xs font-semibold text-[#111915] focus:outline-none focus:border-[#123829] cursor-pointer"
             >
               <option value="order">Urutan Rekomendasi</option>
               <option value="price-asc">Harga: Termurah</option>
@@ -213,10 +213,10 @@ function ProductsContent() {
 
             <button
               onClick={() => setOnlyAvailable(!onlyAvailable)}
-              className={`h-11 px-3.5 rounded-[14px] text-xs font-semibold border transition-all cursor-pointer ${
+              className={`h-11 px-4 rounded-[14px] text-xs font-semibold transition-all cursor-pointer liquid-glass-shine ${
                 onlyAvailable
-                  ? "bg-[#E8F5EE] text-[#123829] border-[#D5EADF] font-bold"
-                  : "bg-[#F2F7F4] text-[#687871] border-[#D5EADF] hover:bg-[#E8F5EE]"
+                  ? "liquid-glass-mint text-[#123829] font-bold shadow-xs"
+                  : "liquid-glass text-[#687871] hover:text-[#111915]"
               }`}
             >
               {onlyAvailable ? "✓ Hanya Yang Tersedia" : "Tampilkan Semua"}
@@ -226,7 +226,7 @@ function ProductsContent() {
 
         {/* Active Search & Filter Feedback Banner */}
         {searchTerm && (
-          <div className="flex items-center justify-between p-3 bg-[#E8F5EE] rounded-2xl border border-[#D5EADF] text-xs text-[#123829] animate-fadeIn">
+          <div className="flex items-center justify-between p-3 liquid-glass-mint rounded-2xl text-xs text-[#123829] animate-fadeIn">
             <span className="flex items-center gap-1.5 truncate">
               <Search className="w-4 h-4 text-[#2E9E6B] shrink-0" />
               <span className="truncate">
@@ -243,14 +243,14 @@ function ProductsContent() {
           </div>
         )}
 
-        {/* Categories Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-[#D5EADF]/60">
+        {/* Categories Pills (Liquid Glass Fitur Pilihan) */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none pt-2 border-t border-[#D5EADF]/60">
           <button
             onClick={() => setSelectedCategory("")}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer liquid-glass-shine active:scale-95 ${
               selectedCategory === ""
-                ? "bg-[#123829] text-white shadow-xs font-bold"
-                : "bg-[#F2F7F4] hover:bg-[#E8F5EE] text-[#111915] border border-[#D5EADF]"
+                ? "liquid-glass-active shadow-md"
+                : "liquid-glass text-[#111915] hover:text-[#123829]"
             }`}
           >
             {selectedCategory === "" ? `Semua Menu (${filteredProducts.length})` : "Semua Menu"}
@@ -266,10 +266,10 @@ function ProductsContent() {
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.slug)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer liquid-glass-shine active:scale-95 ${
                   isSelected
-                    ? "bg-[#123829] text-white shadow-xs font-bold"
-                    : "bg-[#F2F7F4] hover:bg-[#E8F5EE] text-[#111915] border border-[#D5EADF]"
+                    ? "liquid-glass-active shadow-md"
+                    : "liquid-glass text-[#111915] hover:text-[#123829]"
                 }`}
               >
                 {cat.name}

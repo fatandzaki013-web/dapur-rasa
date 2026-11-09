@@ -30,14 +30,14 @@ export default function MobileBottomNav() {
   return (
     <nav
       aria-label="Curved-Notch Floating Bottom Navigation Dock"
-      className="md:hidden fixed bottom-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-28px)] max-w-[394px] h-[68px] bg-[#123829] rounded-[26px] flex items-center justify-between px-[26px] z-50 shadow-[0_16px_32px_-6px_rgba(18,56,41,0.26)]"
+      className="md:hidden fixed bottom-[14px] left-1/2 -translate-x-1/2 w-[calc(100%-28px)] max-w-[394px] h-[68px] bg-[#123829]/92 backdrop-blur-xl border border-white/25 rounded-[26px] flex items-center justify-between px-[26px] z-50 shadow-[0_18px_38px_-6px_rgba(18,56,41,0.42),inset_0_1px_1.5px_rgba(255,255,255,0.25)]"
     >
       {/* 1. Home */}
       <Link
         href="/"
         aria-label="Beranda"
-        className={`flex items-center justify-center p-2 rounded-xl transition-colors ${
-          isHome ? "text-[#47C98E]" : "text-white/75 hover:text-white"
+        className={`flex items-center justify-center p-2.5 rounded-2xl transition-all duration-300 ${
+          isHome ? "text-[#47C98E] bg-white/10 shadow-inner" : "text-white/75 hover:text-white"
         }`}
       >
         <Home className="w-[22px] h-[22px] stroke-[1.9] transition-transform active:scale-90" />
@@ -47,8 +47,8 @@ export default function MobileBottomNav() {
       <Link
         href="/produk"
         aria-label="Menu Produk"
-        className={`flex items-center justify-center p-2 rounded-xl transition-colors ${
-          isProducts ? "text-[#47C98E]" : "text-white/75 hover:text-white"
+        className={`flex items-center justify-center p-2.5 rounded-2xl transition-all duration-300 ${
+          isProducts ? "text-[#47C98E] bg-white/10 shadow-inner" : "text-white/75 hover:text-white"
         }`}
       >
         <Cake className="w-[22px] h-[22px] stroke-[1.9] transition-transform active:scale-90" />
@@ -56,11 +56,11 @@ export default function MobileBottomNav() {
 
       {/* 3. Lekukan Cekung (Concave Cutout) & Center FAB (Keranjang) */}
       <div className="relative flex items-center justify-center shrink-0">
-        <div className="w-[72px] h-[72px] rounded-full bg-white -translate-y-[22px] flex items-center justify-center shadow-xs">
+        <div className="w-[72px] h-[72px] rounded-full bg-white/95 backdrop-blur-md -translate-y-[22px] flex items-center justify-center shadow-md border border-white/60">
           <button
             type="button"
             onClick={() => setIsCartOpen(true)}
-            className="w-[56px] h-[56px] rounded-full bg-gradient-to-br from-[#47C98E] to-[#2E9E6B] shadow-[0_8px_20px_rgba(46,158,107,0.42)] flex items-center justify-center text-white active:scale-95 hover:scale-105 transition-transform cursor-pointer relative"
+            className="w-[56px] h-[56px] rounded-full bg-gradient-to-br from-[#47C98E] to-[#2E9E6B] shadow-[0_8px_22px_rgba(46,158,107,0.48)] flex items-center justify-center text-white active:scale-95 hover:scale-105 transition-transform cursor-pointer relative liquid-glass-shine"
             aria-label="Buka Keranjang Belanja"
           >
             <ShoppingCart className="w-[22px] h-[22px] text-white stroke-[2.2]" />
@@ -78,10 +78,10 @@ export default function MobileBottomNav() {
         type="button"
         onClick={() => setIsWishlistOpen(true)}
         aria-label="Produk Disukai"
-        className="flex items-center justify-center p-2 rounded-xl text-white/75 hover:text-white transition-colors relative cursor-pointer"
+        className="flex items-center justify-center p-2.5 rounded-2xl text-white/75 hover:text-white transition-all relative cursor-pointer active:scale-90"
       >
         <Heart
-          className={`w-[22px] h-[22px] stroke-[1.9] transition-transform active:scale-90 ${
+          className={`w-[22px] h-[22px] stroke-[1.9] transition-transform ${
             totalWishlist > 0 ? "fill-rose-400 text-rose-400 stroke-rose-400" : ""
           }`}
         />
@@ -96,8 +96,8 @@ export default function MobileBottomNav() {
       <Link
         href="/galeri"
         aria-label="Galeri Foto"
-        className={`flex items-center justify-center p-2 rounded-xl transition-colors ${
-          isGallery ? "text-[#47C98E]" : "text-white/75 hover:text-white"
+        className={`flex items-center justify-center p-2.5 rounded-2xl transition-all duration-300 ${
+          isGallery ? "text-[#47C98E] bg-white/10 shadow-inner" : "text-white/75 hover:text-white"
         }`}
       >
         <ImageIcon className="w-[22px] h-[22px] stroke-[1.9] transition-transform active:scale-90" />

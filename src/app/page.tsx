@@ -491,10 +491,10 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Kapsul Vertikal Aktif)  */}
+        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Liquid Glass Capsule)  */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="flex items-center justify-between gap-2 overflow-x-auto scrollbar-none py-2 px-1">
+          <div className="liquid-glass-track p-2 sm:p-2.5 rounded-[34px] flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
             {categoryCapsules.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = selectedCategory === cat.slug;
@@ -503,21 +503,21 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[58px] sm:min-w-[68px] h-[78px] sm:h-[84px] rounded-[30px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
+                  className={`min-w-[58px] sm:min-w-[70px] h-[78px] sm:h-[84px] rounded-[26px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 liquid-glass-shine ${
                     isActive
-                      ? "bg-[#123829] text-white shadow-[0_8px_18px_-4px_rgba(18,56,41,0.28)]"
-                      : "bg-transparent hover:bg-[#F4F7F5] text-[#111915]"
+                      ? "liquid-glass-active"
+                      : "liquid-glass text-[#111915]"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
                 >
                   <IconComponent
                     className={`w-5 h-5 transition-transform ${
-                      isActive ? "text-white" : "text-[#111915] stroke-[1.8]"
+                      isActive ? "text-white scale-110" : "text-[#111915] stroke-[1.8]"
                     }`}
                   />
                   <span
                     className={`text-[0.72rem] leading-none ${
-                      isActive ? "font-semibold text-white" : "font-medium text-[#687871]"
+                      isActive ? "font-bold text-white tracking-wide" : "font-semibold text-[#4A5D54]"
                     }`}
                   >
                     {cat.name}
@@ -662,18 +662,18 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Gallery Category Filter Pills */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {/* Gallery Category Filter Pills (Liquid Glass) */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none py-1">
             {galleryTags.map((tag) => {
               const isSelected = selectedGalleryTag === tag;
               return (
                 <button
                   key={tag as string}
                   onClick={() => handleGalleryTagChange(tag as string)}
-                  className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap liquid-glass-shine active:scale-95 ${
                     isSelected
-                      ? "bg-[#123829] text-white shadow-xs"
-                      : "bg-white text-[#111915] border border-[#D5EADF] hover:bg-[#E8F5EE]"
+                      ? "liquid-glass-active shadow-md"
+                      : "liquid-glass text-[#111915] hover:text-[#123829]"
                   }`}
                 >
                   {tag}
@@ -933,7 +933,11 @@ export default function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-[#D5EADF] bg-white overflow-hidden transition-all shadow-2xs"
+                  className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+                    isOpen
+                      ? "liquid-glass-card border-[#47C98E]/40 shadow-card"
+                      : "liquid-glass hover:border-[#2E9E6B]/30"
+                  }`}
                 >
                   <button
                     type="button"

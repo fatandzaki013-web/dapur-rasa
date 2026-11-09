@@ -109,13 +109,13 @@ export default function CartDrawer() {
                       {formatPrice(item.price)}
                     </div>
 
-                    {/* Quantity controls (Squircle) */}
+                    {/* Quantity controls (Liquid Glass) */}
                     <div className="flex items-center gap-2 mt-1.5">
-                      <div className="flex items-center border border-[#D5EADF] rounded-[10px] bg-white overflow-hidden shadow-2xs h-6 sm:h-7">
+                      <div className="flex items-center rounded-[10px] liquid-glass overflow-hidden h-6 sm:h-7">
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="px-1.5 h-full hover:bg-[#F2F7F4] text-[#123829] transition-colors flex items-center justify-center cursor-pointer"
+                          className="px-1.5 h-full hover:bg-white/80 text-[#123829] transition-colors flex items-center justify-center cursor-pointer"
                           aria-label="Kurangi"
                         >
                           <Minus className="w-3 h-3" />
@@ -126,7 +126,7 @@ export default function CartDrawer() {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="px-1.5 h-full hover:bg-[#F2F7F4] text-[#123829] transition-colors flex items-center justify-center cursor-pointer"
+                          className="px-1.5 h-full hover:bg-white/80 text-[#123829] transition-colors flex items-center justify-center cursor-pointer"
                           aria-label="Tambah"
                         >
                           <Plus className="w-3 h-3" />
@@ -155,9 +155,9 @@ export default function CartDrawer() {
 
           {/* Footer Drawer Ringkas & Rapi di Mobile (Bebas Halangan) */}
           {items.length > 0 && (
-            <div className="p-4 bg-white border-t border-[#D5EADF] space-y-3 shrink-0 shadow-lg pb-[max(1.25rem,env(safe-area-inset-bottom,1.25rem))]">
+            <div className="p-4 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] space-y-3 shrink-0 shadow-lg pb-[max(1.25rem,env(safe-area-inset-bottom,1.25rem))]">
               {/* Badge 1-Baris Free Ongkir */}
-              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-[#E8F5EE] border border-[#D5EADF] text-[11px] font-semibold text-[#123829]">
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl liquid-glass-mint text-[11px] font-semibold text-[#123829]">
                 <div className="flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-[#2E9E6B] shrink-0" />
                   <span>Free Ongkir Area Griya Cileungsi 5</span>
@@ -175,13 +175,13 @@ export default function CartDrawer() {
                 </span>
               </div>
 
-              {/* Action Buttons: 2 Tombol Berdampingan Rapi & Nyaman Ditekan */}
+              {/* Action Buttons (Liquid Glass) */}
               <div className="grid grid-cols-2 gap-2.5 pt-0.5">
                 {/* Tombol 1: Tambah Menu */}
                 <Link
                   href="/produk"
                   onClick={() => setIsCartOpen(false)}
-                  className="h-11 px-3 rounded-full border border-[#D5EADF] hover:border-[#123829] bg-[#F4F7F5] text-[#111915] font-bold text-xs text-center flex items-center justify-center gap-1.5 shadow-2xs transition active:scale-95 cursor-pointer truncate"
+                  className="h-11 px-3 rounded-full liquid-glass text-[#111915] font-bold text-xs text-center flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer truncate liquid-glass-shine"
                 >
                   <Plus className="w-3.5 h-3.5 text-[#2E9E6B] shrink-0" />
                   <span className="truncate">Tambah Menu</span>
@@ -191,7 +191,7 @@ export default function CartDrawer() {
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartOpen(false)}
-                  className="h-11 px-4 bg-[#123829] hover:bg-[#1A4D39] text-white font-extrabold rounded-full text-center flex items-center justify-center gap-2 shadow-floating transition active:scale-95 text-xs sm:text-sm cursor-pointer truncate"
+                  className="h-11 px-4 liquid-glass-active text-white font-extrabold rounded-full text-center flex items-center justify-center gap-2 shadow-floating transition active:scale-95 text-xs sm:text-sm cursor-pointer truncate liquid-glass-shine"
                 >
                   <span className="truncate">Lanjut Bayar</span>
                   <ArrowRight className="w-4 h-4 shrink-0 text-[#47C98E]" />

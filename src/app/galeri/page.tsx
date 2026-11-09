@@ -88,7 +88,7 @@ export default function GalleryPage() {
           Lihat ragam foto kelezatan aneka pastel renyah, risol mayo lumer, bolu lembut, brownies panggang, dan paket snack box berkualitas kami.
         </p>
 
-        {/* Tag Filters */}
+        {/* Tag Filters (Liquid Glass Pilihan) */}
         <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
           {tags.map((tag) => {
             const isSelected = selectedTag === tag;
@@ -96,10 +96,10 @@ export default function GalleryPage() {
               <button
                 key={tag}
                 onClick={() => setSelectedTag(tag as string)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap liquid-glass-shine active:scale-95 ${
                   isSelected
-                    ? "bg-[#123829] text-white shadow-sm"
-                    : "bg-white text-gray-700 border border-[#D5EADF] hover:bg-[#E8F5EE]"
+                    ? "liquid-glass-active shadow-md"
+                    : "liquid-glass text-gray-800 hover:text-[#123829]"
                 }`}
               >
                 {tag}

@@ -194,12 +194,12 @@ Terima kasih banyak!`;
               </div>
             )}
 
-            {/* Pilihan Jenis Masukan: 3 Tabs */}
+            {/* Pilihan Jenis Masukan: 3 Tabs (Liquid Glass) */}
             <div className="space-y-1">
               <label className="block text-[11px] font-bold text-stone-700">
                 Pilih Jenis Masukan:
               </label>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: "ULASAN", label: "Ulasan & Review", icon: ThumbsUp },
                   { id: "SARAN", label: "Saran Menu", icon: Lightbulb },
@@ -212,13 +212,13 @@ Terima kasih banyak!`;
                       key={tab.id}
                       type="button"
                       onClick={() => setFeedbackType(tab.id as any)}
-                      className={`p-2 rounded-xl border text-center flex flex-col items-center gap-1 transition cursor-pointer text-xs font-bold ${
+                      className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 transition-all cursor-pointer text-xs font-bold liquid-glass-shine active:scale-95 ${
                         isSelected
-                          ? "border-[#2E9E6B] bg-[#E8F5EE] text-[#123829] ring-1 ring-[#2E9E6B]/30"
-                          : "border-stone-200 bg-stone-50 text-stone-600 hover:bg-stone-100"
+                          ? "liquid-glass-mint border-[#2E9E6B] text-[#123829] shadow-sm ring-1 ring-[#2E9E6B]/30"
+                          : "liquid-glass text-stone-600 hover:text-[#123829]"
                       }`}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="w-4 h-4" />
                       <span className="text-[10px] leading-tight">{tab.label}</span>
                     </button>
                   );

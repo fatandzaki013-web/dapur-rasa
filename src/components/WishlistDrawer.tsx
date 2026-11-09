@@ -122,7 +122,7 @@ export default function WishlistDrawer() {
                   return (
                     <div
                       key={item.id}
-                      className="flex gap-3 p-2.5 sm:p-3 bg-stone-50 rounded-2xl border border-stone-200/90 items-center hover:bg-stone-100/60 transition shadow-2xs"
+                      className="flex gap-3 p-2.5 sm:p-3 liquid-glass-card rounded-2xl items-center transition"
                     >
                       {/* Thumbnail */}
                       <Link
@@ -153,7 +153,7 @@ export default function WishlistDrawer() {
                         >
                           {item.name}
                         </Link>
-                        <div className="text-[11px] text-stone-500 mt-0.5">
+                        <div className="text-[11px] text-[#687871] mt-0.5">
                           {formatPrice(item.price)}
                         </div>
 
@@ -162,7 +162,7 @@ export default function WishlistDrawer() {
                           <button
                             type="button"
                             onClick={() => handleAddToCart(item)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#123829] hover:bg-[#1A4D39] text-white rounded-lg text-[10.5px] font-bold shadow-2xs transition active:scale-95 cursor-pointer"
+                            className="inline-flex items-center gap-1 px-3 py-1 liquid-glass-active text-white rounded-lg text-[10.5px] font-bold shadow-2xs transition active:scale-95 cursor-pointer liquid-glass-shine"
                           >
                             <ShoppingCart className="w-3 h-3" />
                             <span>+ Keranjang</span>
@@ -187,11 +187,11 @@ export default function WishlistDrawer() {
 
           {/* Footer Drawer */}
           {wishlist.length > 0 && (
-            <div className="p-3.5 sm:p-4 bg-stone-50 border-t border-stone-200 space-y-2 shrink-0">
+            <div className="p-3.5 sm:p-4 bg-white/95 backdrop-blur-md border-t border-stone-200 space-y-2 shrink-0">
               <button
                 type="button"
                 onClick={handleAddAllToCart}
-                className="w-full py-2.5 px-3 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-full text-center flex items-center justify-center gap-1.5 shadow-md shadow-[#123829]/20 transition active:scale-95 text-xs sm:text-sm cursor-pointer"
+                className="w-full py-2.5 px-3 liquid-glass-active text-white font-bold rounded-full text-center flex items-center justify-center gap-1.5 shadow-floating transition active:scale-95 text-xs sm:text-sm cursor-pointer liquid-glass-shine"
               >
                 <ShoppingCart className="w-3.5 h-3.5 text-[#47C98E]" />
                 <span>Masukkan Semua ke Keranjang</span>

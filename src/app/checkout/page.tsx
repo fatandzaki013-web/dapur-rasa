@@ -857,15 +857,15 @@ Mohon segera diproses ya, terima kasih!`;
               <span>Pilihan Pengantaran / Pengambilan Pesanan</span>
             </h2>
 
-            {/* 2 Opsi Radio: Ambil Sendiri vs Diantar */}
+            {/* 2 Opsi Radio: Ambil Sendiri vs Diantar (Liquid Glass Pilihan) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {/* Opsi 1: Ambil Sendiri di Dapur */}
               <label
                 onClick={() => setFulfillmentType("PICKUP")}
-                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
+                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer liquid-glass-shine active:scale-98 ${
                   fulfillmentType === "PICKUP"
-                    ? "border-[#2E9E6B] bg-[#E8F5EE] ring-2 ring-[#2E9E6B]/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                    ? "liquid-glass-mint border-[#2E9E6B] ring-2 ring-[#2E9E6B]/25 shadow-md"
+                    : "liquid-glass border-stone-200/80 hover:border-[#2E9E6B]/30"
                 }`}
               >
                 <div>
@@ -902,10 +902,10 @@ Mohon segera diproses ya, terima kasih!`;
               {/* Opsi 2: Diantar ke Rumah */}
               <label
                 onClick={() => setFulfillmentType("DELIVERY")}
-                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer ${
+                className={`p-4 rounded-2xl border-2 text-left flex flex-col justify-between transition-all cursor-pointer liquid-glass-shine active:scale-98 ${
                   fulfillmentType === "DELIVERY"
-                    ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                    ? "liquid-glass-mint border-[#2E9E6B] ring-2 ring-[#2E9E6B]/25 shadow-md"
+                    : "liquid-glass border-stone-200/80 hover:border-[#2E9E6B]/30"
                 }`}
               >
                 <div>
@@ -1008,10 +1008,10 @@ Mohon segera diproses ya, terima kasih!`;
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Opsi 1: COD */}
               <label
-                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all ${
+                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all liquid-glass-shine active:scale-98 ${
                   paymentMethod === "COD"
-                    ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                    ? "liquid-glass-mint border-[#2E9E6B] ring-2 ring-[#2E9E6B]/25 shadow-md"
+                    : "liquid-glass border-stone-200/80 hover:border-[#2E9E6B]/30"
                 }`}
               >
                 <div>
@@ -1025,7 +1025,7 @@ Mohon segera diproses ya, terima kasih!`;
                       value="COD"
                       checked={paymentMethod === "COD"}
                       onChange={() => setPaymentMethod("COD")}
-                      className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      className="h-4 w-4 text-[#123829] focus:ring-[#2E9E6B] cursor-pointer"
                     />
                   </div>
                   <h4 className="font-extrabold text-xs sm:text-sm text-stone-900">
@@ -1039,10 +1039,10 @@ Mohon segera diproses ya, terima kasih!`;
 
               {/* Opsi 2: QRIS */}
               <label
-                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all ${
+                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all liquid-glass-shine active:scale-98 ${
                   paymentMethod === "QRIS"
-                    ? "border-[#2E9E6B] bg-[#E8F5EE] ring-2 ring-[#2E9E6B]/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                    ? "liquid-glass-mint border-[#2E9E6B] ring-2 ring-[#2E9E6B]/25 shadow-md"
+                    : "liquid-glass border-stone-200/80 hover:border-[#2E9E6B]/30"
                 }`}
               >
                 <div>
@@ -1070,10 +1070,10 @@ Mohon segera diproses ya, terima kasih!`;
 
               {/* Opsi 3: No Rek (Khusus GoPay) */}
               <label
-                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all ${
+                className={`p-3.5 rounded-2xl border-2 flex flex-col justify-between cursor-pointer transition-all liquid-glass-shine active:scale-98 ${
                   paymentMethod === "GOPAY"
-                    ? "border-sky-600 bg-sky-50/60 ring-2 ring-sky-500/20 shadow-xs"
-                    : "border-stone-200 hover:border-stone-300 hover:bg-stone-50/60"
+                    ? "liquid-glass-mint border-sky-500 ring-2 ring-sky-500/25 shadow-md"
+                    : "liquid-glass border-stone-200/80 hover:border-sky-400/30"
                 }`}
               >
                 <div>

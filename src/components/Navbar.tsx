@@ -135,8 +135,8 @@ export default function Navbar() {
       >
         <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
           <div
-            className={`flex items-center justify-between transition-all duration-300 h-14 sm:h-16 px-3 sm:px-6 rounded-2xl bg-white/95 backdrop-blur-md shadow-sm sm:shadow-md border border-gray-100 ${
-              isScrolled ? "shadow-md border-gray-200" : ""
+            className={`flex items-center justify-between transition-all duration-300 h-14 sm:h-16 px-3 sm:px-6 rounded-2xl liquid-glass border border-white/80 ${
+              isScrolled ? "shadow-md border-[#D5EADF]/80" : "shadow-xs"
             }`}
           >
             {/* Brand Logo & Name */}
@@ -167,8 +167,8 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1">
+            {/* Desktop Navigation Links (Liquid Glass) */}
+            <nav className="hidden md:flex items-center gap-1.5">
               {navLinks.slice(0, 6).map((link) => {
                 const isActive =
                   link.href === "/"
@@ -178,10 +178,10 @@ export default function Navbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 liquid-glass-shine ${
                       isActive
-                        ? "bg-[#E8F5EE] text-[#123829] font-bold"
-                        : "text-[#687871] hover:text-[#123829] hover:bg-[#F2F7F4]"
+                        ? "liquid-glass-mint text-[#123829] shadow-xs"
+                        : "text-[#4A5D54] hover:text-[#123829] hover:bg-white/60"
                     }`}
                   >
                     {link.label}
@@ -190,7 +190,7 @@ export default function Navbar() {
               })}
             </nav>
 
-            {/* Desktop Search Form */}
+            {/* Desktop Search Form (Liquid Glass) */}
             <form
               onSubmit={handleSearchSubmit}
               className="hidden md:flex items-center relative max-w-[190px] lg:max-w-[240px] w-full mx-2"
@@ -200,7 +200,7 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari produk favoritmu..."
-                className="w-full h-8 pl-3 pr-8 rounded-full border border-[#D5EADF] focus:outline-none focus:border-[#2E9E6B] focus:ring-1 focus:ring-[#2E9E6B]/30 text-[11px] transition bg-[#F2F7F4]/60 focus:bg-white text-[#111915] placeholder-[#687871]"
+                className="w-full h-8 pl-3 pr-8 rounded-full border border-white/80 liquid-glass focus:outline-none focus:border-[#2E9E6B] focus:ring-1 focus:ring-[#2E9E6B]/30 text-[11px] transition text-[#111915] placeholder-[#687871]"
               />
               <button
                 type="submit"

@@ -421,7 +421,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             </p>
           </div>
 
-          {/* Pemilih Varian Visual (4 Kotak Thumbnail Squircle) */}
+          {/* Pemilih Varian Visual (4 Kotak Thumbnail Squircle Liquid Glass) */}
           <div className="space-y-2.5">
             <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
               Pilih Varian &amp; Paket:
@@ -435,16 +435,16 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               ].map((variant, idx) => (
                 <div
                   key={idx}
-                  className={`h-[64px] rounded-[16px] p-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+                  className={`h-[68px] rounded-[18px] p-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all liquid-glass-shine active:scale-95 ${
                     variant.active
-                      ? "bg-white border-2 border-[#123829] shadow-sm"
-                      : "bg-[#E8F5EE] border border-[#D5EADF] hover:bg-[#DCEEE5]"
+                      ? "liquid-glass-active shadow-md"
+                      : "liquid-glass hover:text-[#123829]"
                   }`}
                 >
-                  <span className={`text-xs font-bold leading-tight ${variant.active ? "text-[#123829]" : "text-[#111915]"}`}>
+                  <span className={`text-xs font-bold leading-tight ${variant.active ? "text-white" : "text-[#111915]"}`}>
                     {variant.label}
                   </span>
-                  <span className="text-[10px] text-[#687871] leading-none mt-1">
+                  <span className={`text-[10px] leading-none mt-1 ${variant.active ? "text-white/80" : "text-[#687871]"}`}>
                     {variant.sub}
                   </span>
                 </div>
@@ -452,7 +452,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             </div>
           </div>
 
-          {/* Pemilih Opsi Squircle (Pilih Ukuran / Porsi Rekomendasi) */}
+          {/* Pemilih Opsi Squircle (Pilih Ukuran / Porsi Rekomendasi Liquid Glass) */}
           <div className="space-y-2.5">
             <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
               Porsi / Jumlah Cepat:
@@ -465,10 +465,10 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                     key={qtyOption}
                     type="button"
                     onClick={() => setQuantity(Math.min(availableStock, qtyOption))}
-                    className={`min-w-[58px] h-[42px] px-3.5 rounded-[12px] font-bold text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer ${
+                    className={`min-w-[62px] h-[44px] px-4 rounded-[14px] font-bold text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer liquid-glass-shine active:scale-95 ${
                       isActive
-                        ? "bg-[#123829] text-white shadow-sm"
-                        : "bg-[#F4F7F5] text-[#111915] border border-[#D5EADF] hover:bg-[#E8F5EE]"
+                        ? "liquid-glass-active shadow-md"
+                        : "liquid-glass text-[#111915] hover:text-[#123829]"
                     }`}
                   >
                     {qtyOption} {product.unit}
@@ -478,7 +478,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             </div>
           </div>
 
-          {/* Pengatur Kuantitas Manual (- 1 +) & Total */}
+          {/* Pengatur Kuantitas Manual (- 1 +) & Total (Liquid Glass) */}
           <div className="space-y-2 pt-2 border-t border-[#D5EADF]/60">
             <div className="flex items-center justify-between gap-3 w-full">
               <div>
@@ -489,11 +489,11 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="flex items-center border border-[#D5EADF] rounded-[14px] bg-[#F4F7F5] overflow-hidden h-10 shrink-0">
+                <div className="flex items-center rounded-[16px] liquid-glass overflow-hidden h-11 shrink-0">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-10 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
+                    className="w-10 h-full hover:bg-white/80 text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
                     aria-label="Kurangi kuantitas"
                   >
                     <Minus className="w-4 h-4" />
@@ -504,7 +504,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.min(availableStock, q + 1))}
-                    className="w-10 h-full hover:bg-[#E8F5EE] text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
+                    className="w-10 h-full hover:bg-white/80 text-[#123829] transition-colors cursor-pointer flex items-center justify-center"
                     aria-label="Tambah kuantitas"
                   >
                     <Plus className="w-4 h-4" />
@@ -688,20 +688,20 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
       )}
 
       {/* ============================================================== */}
-      {/* MOBILE & TABLET STICKY BOTTOM ACTION BAR (SQUIRCLE WA + PILL CTA) */}
+      {/* MOBILE & TABLET STICKY BOTTOM ACTION BAR (Liquid Glass System) */}
       {/* ============================================================== */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-4px_25px_rgba(18,56,41,0.12)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
+      <div className="fixed bottom-0 left-0 right-0 z-40 liquid-glass-track border-t border-white/80 shadow-[0_-6px_30px_rgba(18,56,41,0.14)] px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
-          {/* Squircle Tombol WhatsApp */}
+          {/* Squircle Tombol WhatsApp (Liquid Glass Mint) */}
           <button
             type="button"
             onClick={handleDirectWhatsApp}
             disabled={!product.isAvailable}
-            className="w-[50px] h-[50px] rounded-[16px] bg-[#F4F7F5] border border-[#D5EADF] text-[#2E9E6B] flex items-center justify-center hover:bg-[#E8F5EE] transition active:scale-95 shadow-xs cursor-pointer shrink-0"
+            className="w-[50px] h-[50px] rounded-[16px] liquid-glass-mint flex items-center justify-center transition active:scale-95 shadow-xs cursor-pointer shrink-0"
             aria-label="Pesan via WhatsApp"
             title="Pesan via WhatsApp"
           >
-            <Phone className="w-5 h-5 text-[#2E9E6B]" />
+            <Phone className="w-5 h-5 text-[#123829]" />
           </button>
 
           {/* CTA Pill Penuh (+ Keranjang & Total Harga) */}
@@ -709,10 +709,10 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
             type="button"
             onClick={handleAddToCart}
             disabled={isOutOfStock}
-            className={`flex-1 h-[50px] rounded-full font-bold text-xs sm:text-sm flex items-center justify-between px-5 sm:px-6 shadow-floating transition active:scale-95 cursor-pointer ${
+            className={`flex-1 h-[50px] rounded-full font-bold text-xs sm:text-sm flex items-center justify-between px-5 sm:px-6 shadow-floating transition active:scale-95 cursor-pointer liquid-glass-shine ${
               isOutOfStock
                 ? "bg-stone-300 text-stone-500 cursor-not-allowed justify-center"
-                : "bg-[#123829] hover:bg-[#1A4D39] text-white"
+                : "liquid-glass-active text-white"
             }`}
           >
             <div className="flex items-center gap-2">
