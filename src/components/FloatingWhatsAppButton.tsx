@@ -3,6 +3,7 @@
 import React from "react";
 import { usePathname } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
+import { useCart } from "@/context/CartContext";
 import { buildWhatsAppLink, getWhatsAppNumber } from "@/lib/whatsapp";
 
 const DEFAULT_WA_MESSAGE = "Halo Dapur Rasa, saya ingin tanya seputar menu dan pemesanan kue.";
@@ -10,9 +11,15 @@ const DEFAULT_WA_MESSAGE = "Halo Dapur Rasa, saya ingin tanya seputar menu dan p
 export default function FloatingWhatsAppButton() {
   const pathname = usePathname();
   const { settings } = useStore();
+  const { isCartOpen } = useCart();
 
-  // Sembunyikan pada rute admin atau saat proses checkout berlangsung
-  if (pathname.startsWith("/admin") || pathname === "/checkout") {
+  // Sembunyikan pada rute admin, saat checkout, saat di detail produk, atau saat drawer keranjang terbuka
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/checkout") ||
+    (pathname.startsWith("/produk/") && pathname !== "/produk") ||
+    isCartOpen
+  ) {
     return null;
   }
 

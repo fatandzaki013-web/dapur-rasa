@@ -9,14 +9,16 @@ import { useWishlist } from "@/context/WishlistContext";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
-  const { totalItems, setIsCartOpen } = useCart();
-  const { totalWishlist, setIsWishlistOpen } = useWishlist();
+  const { totalItems, setIsCartOpen, isCartOpen } = useCart();
+  const { totalWishlist, setIsWishlistOpen, isWishlistOpen } = useWishlist();
 
-  // Sembunyikan bottom nav di dashboard admin, saat checkout, atau saat di detail produk
+  // Sembunyikan bottom nav di dashboard admin, saat checkout, saat di detail produk, atau saat drawer keranjang/wishlist aktif
   if (
     pathname.startsWith("/admin") ||
-    pathname === "/checkout" ||
-    (pathname.startsWith("/produk/") && pathname !== "/produk")
+    pathname.startsWith("/checkout") ||
+    (pathname.startsWith("/produk/") && pathname !== "/produk") ||
+    isCartOpen ||
+    isWishlistOpen
   ) {
     return null;
   }

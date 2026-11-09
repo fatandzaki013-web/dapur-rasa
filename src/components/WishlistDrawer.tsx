@@ -45,7 +45,7 @@ export default function WishlistDrawer() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-[100] overflow-hidden animate-fadeIn">
       {/* Toast Notification inside Wishlist */}
       {toastMessage && (
         <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 z-60 bg-stone-900 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold flex items-center gap-2 border border-emerald-500/40 animate-fadeIn">

@@ -48,7 +48,7 @@ export const checkoutOrderSchema = z
     customer_name: z
       .string()
       .trim()
-      .min(3, "Nama pemesan minimal 3 karakter, wajib diisi"),
+      .min(2, "Nama pemesan minimal 2 karakter, wajib diisi"),
     customer_phone: z
       .string()
       .trim()
@@ -56,11 +56,15 @@ export const checkoutOrderSchema = z
       .refine(
         (val) => {
           const clean = val.replace(/[^0-9]/g, "");
-          return clean.length >= 10 && (clean.startsWith("08") || clean.startsWith("628"));
+          const normalized = clean.startsWith("8") ? "0" + clean : clean;
+          return (
+            normalized.length >= 10 &&
+            (normalized.startsWith("08") || normalized.startsWith("628"))
+          );
         },
         {
           message:
-            "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, hanya angka)",
+            "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, contoh: 081234567890)",
         }
       ),
     fulfillment_type: z.enum(["PICKUP", "DELIVERY"]).default("PICKUP"),
@@ -76,13 +80,13 @@ export const checkoutOrderSchema = z
   .refine(
     (data) => {
       if (data.fulfillment_type === "DELIVERY") {
-        return (data.delivery_address || "").trim().length >= 5;
+        return (data.delivery_address || "").trim().length >= 3;
       }
       return true;
     },
     {
       message:
-        "Alamat / blok rumah wajib diisi jika memilih Diantar ke Rumah (minimal 5 karakter)",
+        "Alamat / blok rumah wajib diisi jika memilih Diantar ke Rumah (contoh: Blok A8 No. 12)",
       path: ["delivery_address"],
     }
   );
@@ -263,12 +267,23 @@ Terima kasih banyak telah memesan di ${brandName}!
     const validation = checkoutOrderSchema.safeParse(rawFormData);
     if (!validation.success) {
       const errors: Record<string, string> = {};
+      let firstErrorField = "";
       validation.error.issues.forEach((issue) => {
         const field = String(issue.path[0]);
-        errors[field] = issue.message;
+        if (!errors[field]) errors[field] = issue.message;
+        if (!firstErrorField) firstErrorField = field;
       });
       setFieldErrors(errors);
-      setErrorMessage("Silakan lengkapi formulir pesanan yang ditandai merah.");
+      setErrorMessage(errors[firstErrorField] || "Silakan lengkapi formulir pesanan yang ditandai merah.");
+
+      // Otomatis scroll mulus ke kolom yang belum lengkap agar tidak membingungkan pengguna
+      setTimeout(() => {
+        const el = document.getElementById(`field-${firstErrorField}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          (el as HTMLElement).focus?.();
+        }
+      }, 50);
       return;
     }
 
@@ -394,9 +409,16 @@ Mohon segera diproses ya, terima kasih!`;
 
       setCompletedOrder(completedData);
 
-      // 6. Buka link WhatsApp Web / App
+      // 6. Arahkan ke WhatsApp (dilengkapi fallback anti-blokir popup di mobile browser)
       if (whatsappUrl) {
-        window.open(whatsappUrl, "_blank");
+        try {
+          const opened = window.open(whatsappUrl, "_blank");
+          if (!opened || opened.closed || typeof opened.closed === "undefined") {
+            window.location.href = whatsappUrl;
+          }
+        } catch {
+          window.location.href = whatsappUrl;
+        }
       }
     } catch (err: any) {
       console.error("Checkout error:", err);
@@ -681,7 +703,7 @@ Mohon segera diproses ya, terima kasih!`;
   // VIEW: FORMULIR CHECKOUT RAPI & LENGKAP
   // ==============================================================
   return (
-    <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-28 pb-32 lg:pb-16 animate-fadeIn">
+    <div className="max-w-6xl mx-auto px-3 sm:px-6 pt-24 sm:pt-28 pb-40 lg:pb-20 animate-fadeIn">
       {/* Top Breadcrumb & Link Kembali */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
         <div className="flex items-center gap-1.5 text-xs text-stone-500 font-medium">
@@ -721,7 +743,7 @@ Mohon segera diproses ya, terima kasih!`;
         </div>
       )}
 
-      <form id="checkout-form" onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+      <form id="checkout-form" noValidate onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
         {/* ============================================================== */}
         {/* LEFT COLUMN: FORM DETAILS LENGKAP & RAPI (7 COLS) */}
         {/* ============================================================== */}
@@ -745,6 +767,8 @@ Mohon segera diproses ya, terima kasih!`;
                     <User className="w-4 h-4" />
                   </div>
                   <input
+                    id="field-customer_name"
+                    name="customer_name"
                     type="text"
                     required
                     value={customerName}
@@ -779,6 +803,8 @@ Mohon segera diproses ya, terima kasih!`;
                     <Phone className="w-4 h-4" />
                   </div>
                   <input
+                    id="field-customer_phone"
+                    name="customer_phone"
                     type="tel"
                     required
                     value={customerPhone}
@@ -926,6 +952,8 @@ Mohon segera diproses ya, terima kasih!`;
                     <MapPin className="w-4 h-4" />
                   </div>
                   <textarea
+                    id="field-delivery_address"
+                    name="delivery_address"
                     required
                     rows={2}
                     value={deliveryAddress}
@@ -1287,26 +1315,31 @@ Mohon segera diproses ya, terima kasih!`;
               </p>
             </div>
 
-            {/* Tombol Utama Kirim Pesanan */}
+            {/* Tombol Utama Kirim Pesanan Desktop */}
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`hidden lg:flex w-full py-4 px-6 rounded-2xl font-extrabold text-white items-center justify-center gap-2.5 shadow-lg transition-all text-sm sm:text-base cursor-pointer ${
+              className={`hidden lg:flex w-full py-4 px-6 rounded-full font-extrabold text-white items-center justify-between shadow-floating transition-all text-sm sm:text-base cursor-pointer active:scale-[0.99] ${
                 isSubmitting
                   ? "bg-stone-400 cursor-not-allowed"
-                  : "bg-emerald-600 hover:bg-emerald-700 hover:shadow-xl active:scale-[0.99]"
+                  : "bg-[#123829] hover:bg-[#1A4D39]"
               }`}
             >
               {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                <div className="flex items-center justify-center gap-2 w-full">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#47C98E]" />
                   <span>Memproses pesanan...</span>
-                </>
+                </div>
               ) : (
                 <>
-                  <Phone className="w-5 h-5" />
-                  <span>Pesan via WhatsApp</span>
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-5 h-5 text-[#47C98E]" />
+                    <span>Lanjut Bayar &amp; Pesan via WhatsApp</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 font-mono">
+                    <span>{formatPrice(totalAmount)}</span>
+                    <ArrowRight className="w-4 h-4 text-[#47C98E]" />
+                  </div>
                 </>
               )}
             </button>
@@ -1328,15 +1361,29 @@ Mohon segera diproses ya, terima kasih!`;
       </form>
 
       {/* ============================================================== */}
-      {/* MOBILE FLOATING BOTTOM BAR (AGAR FITUR TIDAK PERNAH TERPOTONG) */}
+      {/* MOBILE FLOATING BOTTOM BAR (100% BEBAS DARI HALANGAN & POPUP BLOCK) */}
       {/* ============================================================== */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0.75rem))]">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#D5EADF] shadow-[0_-6px_25px_rgba(18,56,41,0.15)] px-4 pt-3 pb-[max(0.85rem,env(safe-area-inset-bottom,0.85rem))]">
+        {/* Banner peringatan langsung jika ada data yang belum lengkap */}
+        {errorMessage && (
+          <div className="mb-2 p-2.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-xs font-semibold flex items-center justify-between gap-2 animate-fadeIn">
+            <span className="truncate">{errorMessage}</span>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-rose-600 font-bold text-xs shrink-0 px-1"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
           <div>
-            <span className="text-[10px] text-stone-500 font-bold block uppercase tracking-wider">
+            <span className="text-[10px] text-[#687871] font-bold block uppercase tracking-wider">
               Total ({totalItems} Menu):
             </span>
-            <span className="font-extrabold text-base sm:text-lg text-[#123829] font-heading">
+            <span className="font-extrabold text-base sm:text-lg text-[#123829] font-mono leading-none">
               {formatPrice(totalAmount)}
             </span>
           </div>
@@ -1344,19 +1391,31 @@ Mohon segera diproses ya, terima kasih!`;
             type="submit"
             form="checkout-form"
             disabled={isSubmitting}
-            className={`px-5 py-3 rounded-xl font-bold text-white text-xs sm:text-sm flex items-center gap-2 shadow-md shrink-0 cursor-pointer ${
-              isSubmitting ? "bg-stone-400" : "bg-emerald-600 hover:bg-emerald-700"
+            onClick={(e) => {
+              // Fallback jika form attribute tidak di-trigger oleh browser mobile tertentu
+              const form = document.getElementById("checkout-form") as HTMLFormElement;
+              if (form && typeof form.requestSubmit === "function") {
+                form.requestSubmit();
+              } else {
+                handleSubmit(e);
+              }
+            }}
+            className={`px-5 py-3 rounded-full font-extrabold text-white text-xs sm:text-sm flex items-center gap-2 shadow-floating shrink-0 cursor-pointer transition active:scale-95 ${
+              isSubmitting
+                ? "bg-stone-400 cursor-not-allowed"
+                : "bg-[#123829] hover:bg-[#1A4D39]"
             }`}
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#47C98E]" />
                 <span>Memproses...</span>
               </>
             ) : (
               <>
-                <Phone className="w-4 h-4" />
-                <span>Pesan via WhatsApp</span>
+                <Phone className="w-4 h-4 text-[#47C98E]" />
+                <span>Lanjut Bayar (WA)</span>
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>

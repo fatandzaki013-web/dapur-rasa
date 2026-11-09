@@ -23,7 +23,7 @@ export default function CartDrawer() {
   const totalQuantity = items.reduce((acc, it) => acc + it.quantity, 0);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden animate-fadeIn">
+    <div className="fixed inset-0 z-[100] overflow-hidden animate-fadeIn">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/55 backdrop-blur-xs transition-opacity"
@@ -153,48 +153,48 @@ export default function CartDrawer() {
             )}
           </div>
 
-          {/* Footer Drawer Ringkas & Rapi di Mobile */}
+          {/* Footer Drawer Ringkas & Rapi di Mobile (Bebas Halangan) */}
           {items.length > 0 && (
-            <div className="p-3.5 sm:p-4 bg-stone-50 border-t border-stone-200 space-y-2.5 shrink-0">
+            <div className="p-4 bg-white border-t border-[#D5EADF] space-y-3 shrink-0 shadow-lg pb-[max(1.25rem,env(safe-area-inset-bottom,1.25rem))]">
               {/* Badge 1-Baris Free Ongkir */}
-              <div className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-[#E8F5EE] border border-[#D5EADF] text-[10.5px] font-semibold text-[#123829]">
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-xl bg-[#E8F5EE] border border-[#D5EADF] text-[11px] font-semibold text-[#123829]">
                 <div className="flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-[#2E9E6B] shrink-0" />
                   <span>Free Ongkir Area Griya Cileungsi 5</span>
                 </div>
-                <span className="text-[9.5px] bg-[#DCEEE5] text-[#123829] px-1.5 py-0.2 rounded font-bold">
+                <span className="text-[10px] bg-[#DCEEE5] text-[#123829] px-2 py-0.5 rounded-full font-bold">
                   GRATIS
                 </span>
               </div>
 
               {/* Subtotal */}
               <div className="flex justify-between items-center text-xs sm:text-sm px-0.5">
-                <span className="text-stone-600 font-medium">Total Pesanan:</span>
-                <span className="text-base sm:text-lg font-black text-[#123829] font-heading">
+                <span className="text-[#687871] font-semibold">Total Pesanan:</span>
+                <span className="text-lg sm:text-xl font-extrabold text-[#123829] font-mono">
                   {formatPrice(subtotal)}
                 </span>
               </div>
 
-              {/* Action Buttons: 2 Tombol Berdampingan Rapi di Mobile */}
-              <div className="flex gap-2 pt-0.5">
-                {/* Tombol 1: Tambah Menu (Langsung ke /produk & tutup drawer) */}
+              {/* Action Buttons: 2 Tombol Berdampingan Rapi & Nyaman Ditekan */}
+              <div className="grid grid-cols-2 gap-2.5 pt-0.5">
+                {/* Tombol 1: Tambah Menu */}
                 <Link
                   href="/produk"
                   onClick={() => setIsCartOpen(false)}
-                  className="flex-1 py-2.5 px-3 rounded-full border border-[#D5EADF] hover:border-[#123829] bg-white text-[#111915] font-bold text-xs text-center flex items-center justify-center gap-1 shadow-2xs transition active:scale-95 cursor-pointer truncate"
+                  className="h-11 px-3 rounded-full border border-[#D5EADF] hover:border-[#123829] bg-[#F4F7F5] text-[#111915] font-bold text-xs text-center flex items-center justify-center gap-1.5 shadow-2xs transition active:scale-95 cursor-pointer truncate"
                 >
                   <Plus className="w-3.5 h-3.5 text-[#2E9E6B] shrink-0" />
-                  <span className="truncate">+ Tambah Menu</span>
+                  <span className="truncate">Tambah Menu</span>
                 </Link>
 
-                {/* Tombol 2: Checkout Pesanan */}
+                {/* Tombol 2: Lanjut Bayar / Checkout */}
                 <Link
                   href="/checkout"
                   onClick={() => setIsCartOpen(false)}
-                  className="flex-1 py-2.5 px-3 bg-[#123829] hover:bg-[#1A4D39] text-white font-bold rounded-full text-center flex items-center justify-center gap-1.5 shadow-md shadow-[#123829]/20 transition active:scale-95 text-xs sm:text-sm cursor-pointer truncate"
+                  className="h-11 px-4 bg-[#123829] hover:bg-[#1A4D39] text-white font-extrabold rounded-full text-center flex items-center justify-center gap-2 shadow-floating transition active:scale-95 text-xs sm:text-sm cursor-pointer truncate"
                 >
-                  <span className="truncate">Checkout</span>
-                  <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">Lanjut Bayar</span>
+                  <ArrowRight className="w-4 h-4 shrink-0 text-[#47C98E]" />
                 </Link>
               </div>
             </div>
