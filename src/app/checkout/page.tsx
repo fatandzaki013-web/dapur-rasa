@@ -133,33 +133,29 @@ export default function CheckoutPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  // Completed order data for rendering official receipt
+  // Completed order data for rendering official receipt (hanya untuk sesi transaksi saat ini)
   const [completedOrder, setCompletedOrder] = useState<CompletedOrderInfo | null>(null);
 
-  // Restore completed order from localStorage on mount (e.g. if refreshed or returned from WhatsApp)
+  // Bersihkan cache pesanan lama saat halaman dimuat agar setiap order baru selalu bersih
   React.useEffect(() => {
     try {
-      const stored = localStorage.getItem("dr_last_completed_order");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed && parsed.orderCode) {
-          const age = Date.now() - (parsed.savedAt || 0);
-          // Hanya muat jika pesanan dibuat dalam 24 jam terakhir
-          if (age < 24 * 60 * 60 * 1000) {
-            setCompletedOrder(parsed);
-          }
-        }
-      }
-    } catch (e) {
-      // Fallback
-    }
+      localStorage.removeItem("dr_last_completed_order");
+    } catch (e) {}
   }, []);
 
   const handleResetOrder = () => {
     try {
       localStorage.removeItem("dr_last_completed_order");
+      localStorage.removeItem("dr_cart_items_v1");
+      localStorage.setItem("dr_cart_items_v1", "[]");
       window.history.replaceState(null, "", window.location.pathname);
     } catch (e) {}
+    clearCart();
+    setCustomerName("");
+    setCustomerPhone("");
+    setDeliveryAddress("");
+    setNotes("");
+    setFieldErrors({});
     setCompletedOrder(null);
   };
 
@@ -376,12 +372,20 @@ Mohon segera diproses ya, terima kasih!`;
 
       const whatsappUrl = buildWhatsAppApiUrl(waText, settings?.whatsappNumber);
 
-      // 5. Bersihkan isi keranjang belanjaan setelah order berhasil disimpan
+      // 5. Bersihkan isi keranjang belanjaan dan form data secara menyeluruh setelah order berhasil
       clearCart();
       try {
         localStorage.removeItem("dr_cart_items_v1");
         localStorage.setItem("dr_cart_items_v1", "[]");
+        localStorage.removeItem("dr_last_completed_order");
       } catch {}
+
+      // Reset seluruh field data pemesan agar transaksi berikutnya wajib mengisi data baru
+      setCustomerName("");
+      setCustomerPhone("");
+      setDeliveryAddress("");
+      setNotes("");
+      setFieldErrors({});
 
       const completedData = {
         orderCode: generatedOrderCode,
@@ -402,7 +406,6 @@ Mohon segera diproses ya, terima kasih!`;
       };
 
       try {
-        localStorage.setItem("dr_last_completed_order", JSON.stringify(completedData));
         window.history.replaceState(null, "", "?order=" + generatedOrderCode);
       } catch {}
 

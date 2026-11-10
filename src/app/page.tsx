@@ -30,6 +30,7 @@ import {
   X,
   ExternalLink,
   Plus,
+  ArrowUp,
 } from "lucide-react";
 import ProductQuickViewModal, { QuickViewProduct } from "@/components/ProductQuickViewModal";
 import ProductLikeButton from "@/components/ProductLikeButton";
@@ -316,120 +317,196 @@ export default function HomePage() {
       />
 
 
-      {/* MAIN CONTAINER (Clean mobile padding so floating navbar never covers the banner) */}
-      <main className="flex-1 pt-[72px] sm:pt-24 pb-32 sm:pb-16 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
+      {/* MAIN CONTAINER (Clean padding for desktop header & mobile dock clearance) */}
+      <main className="flex-1 pt-[72px] sm:pt-24 md:pt-36 pb-32 md:pb-20 space-y-8 sm:space-y-12 bg-theme-bg transition-colors duration-300" style={{ backgroundColor: "var(--color-bg)" }}>
         {/* ============================================================== */}
-        {/* SECTION 1: HERO SLIDER CAROUSEL (FULL FOTO KUE & SWIPEABLE)    */}
+        {/* SECTION 1: HERO SHOWCASE (RESPONSIF: SLIDER MOBILE & DUAL DESKTOP) */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div
-            className="relative w-full overflow-hidden rounded-[26px] sm:rounded-[34px] shadow-[0_12px_32px_-8px_rgba(18,56,41,0.22)] border border-[#D5EADF]/60 select-none group"
-            style={{ touchAction: "pan-y" }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
-            {/* Track Slide: Geser Halus Otomatis & Manual */}
-            <div
-              className="flex transition-transform duration-700 ease-out h-full"
-              style={{ transform: `translateX(-${activeSlide * 100}%)` }}
-            >
-              {heroSlides.map((slide, idx) => (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-stretch">
+            {/* Kolom Kiri / Utama: Hero Slider (8 Kolom di Desktop, Full di HP) */}
+            <div className="lg:col-span-8 flex flex-col">
+              <div
+                className="relative w-full h-full overflow-hidden rounded-[26px] sm:rounded-[34px] shadow-[0_12px_32px_-8px_rgba(18,56,41,0.22)] border border-[#D5EADF]/60 select-none group min-h-[230px] sm:min-h-[290px] lg:min-h-[410px]"
+                style={{ touchAction: "pan-y" }}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
+                {/* Track Slide: Geser Halus Otomatis & Manual */}
                 <div
-                  key={slide.id || idx}
-                  className="w-full shrink-0 relative min-h-[220px] sm:min-h-[290px] md:min-h-[350px] lg:min-h-[380px] flex items-center overflow-hidden"
+                  className="flex transition-transform duration-700 ease-out h-full"
+                  style={{ transform: `translateX(-${activeSlide * 100}%)` }}
                 >
-                  {/* Full Background Foto Kue / Produk */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt={slide.title || "Dapur Rasa"}
-                    src={slide.desktopImg || slide.mobileImg || "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=1600&auto=format&fit=crop&q=85"}
-                    className="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-1000 ease-out"
-                  />
+                  {heroSlides.map((slide, idx) => (
+                    <div
+                      key={slide.id || idx}
+                      className="w-full shrink-0 relative min-h-[230px] sm:min-h-[290px] lg:min-h-[410px] flex items-center overflow-hidden"
+                    >
+                      {/* Full Background Foto Kue / Produk */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        alt={slide.title || "Dapur Rasa"}
+                        src={slide.desktopImg || slide.mobileImg || "https://images.unsplash.com/photo-1626074353765-517a681e40be?w=1600&auto=format&fit=crop&q=85"}
+                        className="absolute inset-0 w-full h-full object-cover transform scale-105 transition-transform duration-1000 ease-out"
+                      />
 
-                  {/* Gradient Overlay Gelap Emerald Agar Teks & Tombol Terbaca Sangat Jelas */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#123829]/95 via-[#123829]/75 sm:via-[#123829]/60 to-black/35" />
+                      {/* Gradient Overlay Gelap Emerald Agar Teks & Tombol Terbaca Sangat Jelas */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#123829]/95 via-[#123829]/75 sm:via-[#123829]/60 to-black/35" />
 
-                  {/* Konten Teks & Tombol Aksi */}
-                  <div className="relative z-10 w-full px-5 sm:px-10 lg:px-14 py-6 sm:py-10 max-w-2xl text-white space-y-2 sm:space-y-3.5">
-                    {slide.badge && (
-                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/20 shadow-xs">
-                        {slide.badge}
-                      </span>
-                    )}
-
-                    <h1 className="text-lg xs:text-xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-[1.18] tracking-tight line-clamp-2 drop-shadow-sm">
-                      {slide.title}
-                    </h1>
-
-                    <p className="text-xs sm:text-sm lg:text-base text-white/90 leading-relaxed line-clamp-2 max-w-lg drop-shadow-xs">
-                      {slide.subtitle}
-                    </p>
-
-                    <div className="pt-2 sm:pt-4 flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
-                      <Link
-                        href={slide.buttonLink || "/produk"}
-                        className="inline-flex items-center gap-2 bg-white text-[#111915] rounded-full px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold shadow-[0_6px_16px_rgba(0,0,0,0.18)] hover:bg-[#F2F7F4] transition active:scale-95"
-                      >
-                        <span>{slide.buttonText || "Lihat Menu Kue"}</span>
-                        <ChevronRight className="w-4 h-4 text-[#123829]" />
-                      </Link>
-
-                      <a
-                        href={buildWhatsAppLink(
-                          `Halo Dapur Rasa, saya ingin pesan: *${slide.title}*`,
-                          settings?.whatsappNumber
+                      {/* Konten Teks & Tombol Aksi */}
+                      <div className="relative z-10 w-full px-5 sm:px-10 lg:px-12 py-6 sm:py-10 max-w-2xl text-white space-y-2 sm:space-y-4">
+                        {slide.badge && (
+                          <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/20 shadow-xs">
+                            {slide.badge}
+                          </span>
                         )}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm backdrop-blur-md border border-white/25 transition active:scale-95 shadow-xs"
-                      >
-                        <Phone className="w-3.5 h-3.5 text-[#47C98E]" />
-                        <span>Pesan via WA</span>
-                      </a>
+
+                        <h1 className="text-lg xs:text-xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-white leading-[1.16] tracking-tight line-clamp-2 drop-shadow-sm">
+                          {slide.title}
+                        </h1>
+
+                        <p className="text-xs sm:text-sm lg:text-base text-white/90 leading-relaxed line-clamp-2 max-w-lg drop-shadow-xs">
+                          {slide.subtitle}
+                        </p>
+
+                        <div className="pt-2 sm:pt-4 flex items-center gap-2.5 sm:gap-3.5 flex-wrap">
+                          <Link
+                            href={slide.buttonLink || "/produk"}
+                            className="inline-flex items-center gap-2 bg-white text-[#111915] rounded-full px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold shadow-[0_6px_16px_rgba(0,0,0,0.18)] hover:bg-[#F2F7F4] transition active:scale-95"
+                          >
+                            <span>{slide.buttonText || "Lihat Menu Kue"}</span>
+                            <ChevronRight className="w-4 h-4 text-[#123829]" />
+                          </Link>
+
+                          <a
+                            href={buildWhatsAppLink(
+                              `Halo Dapur Rasa, saya ingin pesan: *${slide.title}*`,
+                              settings?.whatsappNumber
+                            )}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm backdrop-blur-md border border-white/25 transition active:scale-95 shadow-xs"
+                          >
+                            <Phone className="w-3.5 h-3.5 text-[#47C98E]" />
+                            <span>Pesan via WA</span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+
+                {/* Tombol Geser Kiri (Sebelumnya) */}
+                <button
+                  type="button"
+                  onClick={handlePrevSlide}
+                  className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
+                  aria-label="Slide sebelumnya"
+                >
+                  <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
+                </button>
+
+                {/* Tombol Geser Kanan (Berikutnya) */}
+                <button
+                  type="button"
+                  onClick={handleNextSlide}
+                  className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
+                  aria-label="Slide berikutnya"
+                >
+                  <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
+                </button>
+
+                {/* Indikator Titik Slide: Klik untuk Lompat ke Slide */}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-black/25 backdrop-blur-xs px-3 py-1 rounded-full border border-white/15">
+                  {heroSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setActiveSlide(i)}
+                      className={`rounded-full transition-all duration-300 cursor-pointer ${
+                        activeSlide === i
+                          ? "bg-white w-5 h-2 shadow-xs"
+                          : "bg-white/45 hover:bg-white/75 w-2 h-2"
+                      }`}
+                      aria-label={`Ke slide ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Tombol Geser Kiri (Sebelumnya) */}
-            <button
-              type="button"
-              onClick={handlePrevSlide}
-              className="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
-              aria-label="Slide sebelumnya"
-            >
-              <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" />
-            </button>
+            {/* Kolom Kanan: 2 Kartu Fitur Khusus Desktop (Hidden di HP, Tampil Elegan di Layar Komputer) */}
+            <div className="hidden lg:flex lg:col-span-4 flex-col gap-4">
+              {/* Card Desktop 1: Menu Best Seller Spotlight */}
+              <div className="flex-1 bg-[#E8F5EE] border border-[#D5EADF] rounded-[28px] p-5 shadow-xs flex flex-col justify-between hover:shadow-card hover:-translate-y-0.5 transition-all duration-300">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#123829] text-white text-[10px] font-bold uppercase tracking-wider">
+                      ★ Favorit Pelanggan
+                    </span>
+                    <span className="text-xs font-bold text-[#2E9E6B]">Rating 4.9/5</span>
+                  </div>
+                  <h3 className="font-extrabold text-base text-[#111915] leading-snug">
+                    Pastel Renyah &amp; Risol Mayo Lumer
+                  </h3>
+                  <p className="text-xs text-[#687871] leading-relaxed line-clamp-2">
+                    Kulit renyah gurih dengan isian daging ayam, sayuran segar &amp; telur asli.
+                  </p>
+                </div>
 
-            {/* Tombol Geser Kanan (Berikutnya) */}
-            <button
-              type="button"
-              onClick={handleNextSlide}
-              className="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-black/35 hover:bg-black/60 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 active:scale-90 cursor-pointer shadow-md opacity-80 group-hover:opacity-100"
-              aria-label="Slide berikutnya"
-            >
-              <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
-            </button>
+                <div className="pt-3 flex items-center justify-between border-t border-[#D5EADF]/80 mt-2">
+                  <div>
+                    <span className="text-[10px] text-[#687871] block">Mulai dari</span>
+                    <span className="font-extrabold text-base text-[#2E9E6B] font-mono leading-none">
+                      Rp 3.000 / pcs
+                    </span>
+                  </div>
+                  <Link
+                    href="/produk"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold transition shadow-xs"
+                  >
+                    <span>Pesan Sekarang</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              </div>
 
-            {/* Indikator Titik Slide: Klik untuk Lompat ke Slide */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-black/25 backdrop-blur-xs px-3 py-1 rounded-full border border-white/15">
-              {heroSlides.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setActiveSlide(i)}
-                  className={`rounded-full transition-all duration-300 cursor-pointer ${
-                    activeSlide === i
-                      ? "bg-white w-5 h-2 shadow-xs"
-                      : "bg-white/45 hover:bg-white/75 w-2 h-2"
-                  }`}
-                  aria-label={`Ke slide ${i + 1}`}
-                />
-              ))}
+              {/* Card Desktop 2: Jaminan Pengantaran Griya Cileungsi 5 */}
+              <div className="flex-1 bg-gradient-to-br from-[#123829] to-[#1A4D39] text-white rounded-[28px] p-5 shadow-md flex flex-col justify-between hover:shadow-card hover:-translate-y-0.5 transition-all duration-300">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 text-[#47C98E] text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs border border-white/10">
+                    <MapPin className="w-3 h-3 text-[#47C98E]" />
+                    <span>Layanan Spesial</span>
+                  </div>
+                  <h3 className="font-extrabold text-base text-white leading-snug">
+                    Antar Cepat Griya Cileungsi 5
+                  </h3>
+                  <p className="text-xs text-white/80 leading-relaxed">
+                    Pengantaran hangat langsung ke rumah Anda tanpa repot keluar komplek. Free ongkir &amp; bisa bayar COD.
+                  </p>
+                </div>
+
+                <div className="pt-3 flex items-center justify-between border-t border-white/15 mt-2">
+                  <span className="text-xs font-bold text-[#47C98E]">
+                    Buka: 07.00 - 21.00 WIB
+                  </span>
+                  <a
+                    href={buildWhatsAppLink(
+                      "Halo Dapur Rasa, saya ingin order kue untuk diantar ke Griya Cileungsi 5",
+                      settings?.whatsappNumber
+                    )}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#47C98E] hover:bg-[#3db780] text-[#123829] text-xs font-bold transition shadow-xs"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Chat WhatsApp</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -487,10 +564,10 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: BAR FILTER KATEGORI 5 KOLOM (Kapsul Vertikal Aktif) */}
+        {/* SECTION 3: BAR FILTER KATEGORI (Kapsul Vertikal & Board Desktop) */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="py-1 flex items-center justify-between sm:justify-center gap-2 sm:gap-3.5 overflow-x-auto scrollbar-none">
+          <div className="py-1 flex items-center justify-between sm:justify-center gap-2 sm:gap-3.5 md:gap-4 overflow-x-auto scrollbar-none">
             {categoryCapsules.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = selectedCategory === cat.slug;
@@ -499,24 +576,27 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[64px] sm:min-w-[76px] h-[82px] sm:h-[86px] rounded-[28px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 active:scale-95 shrink-0 ${
+                  className={`min-w-[64px] sm:min-w-[80px] md:min-w-[130px] h-[82px] sm:h-[88px] md:h-[94px] rounded-[24px] sm:rounded-[28px] md:rounded-[30px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 active:scale-95 shrink-0 px-2 sm:px-4 ${
                     isActive
-                      ? "bg-[#123829] text-white shadow-[0_8px_20px_-4px_rgba(18,56,41,0.35)]"
-                      : "bg-[#F2F7F4] hover:bg-[#E8F5EE] border border-[#D5EADF] text-[#111915]"
+                      ? "bg-[#123829] text-white shadow-[0_10px_24px_-4px_rgba(18,56,41,0.38)] scale-102"
+                      : "bg-[#F2F7F4] hover:bg-[#E8F5EE] border border-[#D5EADF] text-[#111915] hover:scale-102 hover:border-[#47C98E]/50"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
                 >
                   <IconComponent
-                    className={`w-5 h-5 transition-transform ${
+                    className={`w-5 h-5 md:w-6 md:h-6 transition-transform ${
                       isActive ? "text-white scale-110" : "text-[#111915] stroke-[1.8]"
                     }`}
                   />
                   <span
-                    className={`text-[0.72rem] leading-none ${
+                    className={`text-[0.72rem] md:text-xs leading-none ${
                       isActive ? "font-bold text-white tracking-wide" : "font-semibold text-[#687871]"
                     }`}
                   >
                     {cat.name}
+                  </span>
+                  <span className="hidden md:block text-[10px] text-[#687871] font-normal">
+                    {cat.desc}
                   </span>
                 </button>
               );
@@ -575,7 +655,7 @@ export default function HomePage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full">
               {topPickProducts.map((prod) => {
                 const currentPrice = prod.price;
                 const isOutOfStock = !prod.is_available && !prod.isAvailable;
@@ -591,19 +671,35 @@ export default function HomePage() {
                 return (
                   <article
                     key={prod.id}
-                    className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[22px] sm:rounded-[24px] p-3 sm:p-3.5 shadow-2xs hover:shadow-card hover:-translate-y-1 transition-all duration-300 cursor-pointer min-w-0"
+                    className="group relative flex flex-col justify-between bg-[#E8F5EE] rounded-[22px] sm:rounded-[24px] lg:rounded-[28px] p-3 sm:p-3.5 lg:p-4 shadow-2xs hover:shadow-card hover:-translate-y-1.5 transition-all duration-300 cursor-pointer min-w-0"
                   >
-                    {/* Wadah Foto Seragam 134px-150px: Berada di atas kartu secara alami */}
-                    <div className="relative w-full h-[134px] sm:h-[152px] rounded-[16px] overflow-hidden bg-white/70 shrink-0">
+                    {/* Wadah Foto Seragam 134px-185px: Berada di atas kartu secara alami */}
+                    <div className="relative w-full h-[134px] sm:h-[152px] lg:h-[185px] rounded-[16px] lg:rounded-[18px] overflow-hidden bg-white/70 shrink-0">
                       <Link href={`/produk/${prod.slug}`} prefetch={true} className="w-full h-full block">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           alt={prod.name}
                           src={primaryImage}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
                           loading="lazy"
                         />
                       </Link>
+
+                      {/* Desktop Hover Quick View Overlay (Khusus Desktop) */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setQuickViewProduct(prod as any);
+                        }}
+                        className="hidden lg:flex absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 items-center justify-center cursor-pointer pointer-events-auto"
+                      >
+                        <span className="px-3.5 py-1.5 rounded-full bg-white/95 text-[#123829] text-xs font-bold shadow-md flex items-center gap-1.5 backdrop-blur-xs hover:scale-105 transition-transform">
+                          <Eye className="w-3.5 h-3.5 text-[#2E9E6B]" />
+                          <span>Lihat Detail</span>
+                        </span>
+                      </button>
 
                       {/* Tombol Wishlist Terintegrasi Alami di Pojok Kanan Atas Foto */}
                       <div className="absolute top-2.5 right-2.5 z-10">
@@ -623,21 +719,21 @@ export default function HomePage() {
                     </div>
 
                     {/* Area Informasi Bawah */}
-                    <div className="min-w-0 pr-9 pt-2.5">
-                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block">
-                        <h3 className="text-[0.92rem] font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
+                    <div className="min-w-0 pr-9 lg:pr-0 pt-2.5 lg:pt-3">
+                      <span className="text-[0.74rem] lg:text-xs text-[#2E9E6B] font-bold uppercase tracking-wider block">
+                        {categoryDisplay}
+                      </span>
+                      <Link href={`/produk/${prod.slug}`} prefetch={true} className="block mt-0.5">
+                        <h3 className="text-[0.92rem] lg:text-base font-extrabold text-[#111915] group-hover:text-[#123829] transition-colors line-clamp-1 leading-snug">
                           {prod.name}
                         </h3>
                       </Link>
-                      <span className="text-[0.74rem] text-[#687871] line-clamp-1 block mt-0.5">
-                        {categoryDisplay}
-                      </span>
-                      <div className="text-[1.02rem] font-extrabold text-[#2E9E6B] font-mono mt-1.5 leading-none">
+                      <div className="text-[1.02rem] lg:text-lg font-extrabold text-[#2E9E6B] font-mono mt-1.5 leading-none">
                         {formatPrice(currentPrice)}
                       </div>
                     </div>
 
-                    {/* Tombol Bulat + Sudut Kanan Bawah Kartu 36px x 36px */}
+                    {/* Versi Mobile: Tombol Bulat + Sudut Kanan Bawah Kartu 36px x 36px */}
                     <button
                       type="button"
                       disabled={isOutOfStock}
@@ -646,7 +742,7 @@ export default function HomePage() {
                         e.stopPropagation();
                         handleQuickAdd(prod);
                       }}
-                      className={`absolute bottom-3.5 right-3.5 w-[36px] h-[36px] rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white inline-flex items-center justify-center active:scale-90 shadow-xs transition-transform cursor-pointer ${
+                      className={`lg:hidden absolute bottom-3.5 right-3.5 w-[36px] h-[36px] rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white inline-flex items-center justify-center active:scale-90 shadow-xs transition-transform cursor-pointer ${
                         isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
                       }`}
                       title={isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
@@ -654,6 +750,25 @@ export default function HomePage() {
                     >
                       <Plus className="w-4 h-4 stroke-[2.2]" />
                     </button>
+
+                    {/* Versi Desktop: Tombol Pill Lebar di Bawah Informasi */}
+                    <div className="hidden lg:block pt-3 mt-1.5 border-t border-[#D5EADF]/60">
+                      <button
+                        type="button"
+                        disabled={isOutOfStock}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleQuickAdd(prod);
+                        }}
+                        className={`w-full py-2 px-3 rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 active:scale-95 shadow-xs transition-all cursor-pointer ${
+                          isOutOfStock ? "opacity-50 cursor-not-allowed bg-stone-400" : ""
+                        }`}
+                      >
+                        <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                        <span>{isOutOfStock ? "Stok Habis" : "+ Keranjang"}</span>
+                      </button>
+                    </div>
                   </article>
                 );
               })}
@@ -978,6 +1093,31 @@ export default function HomePage() {
           </div>
         </div>
       )}
+      {/* Floating Desktop Action Hub (Khusus Tampilan Desktop >= 768px) */}
+      <div className="hidden md:flex flex-col gap-2.5 fixed bottom-6 right-6 z-40 items-end">
+        {/* Tombol Scroll ke Atas */}
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="w-10 h-10 rounded-full bg-white/95 hover:bg-white text-[#123829] shadow-md border border-[#D5EADF] flex items-center justify-center transition active:scale-90 hover:scale-105 cursor-pointer"
+          title="Kembali ke atas"
+          aria-label="Kembali ke atas"
+        >
+          <ArrowUp className="w-4 h-4 stroke-[2.2]" />
+        </button>
+
+        {/* Tombol Chat WhatsApp Mengambang */}
+        <a
+          href={buildWhatsAppLink("Halo Dapur Rasa, saya ingin order kue", settings?.whatsappNumber)}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#123829] hover:bg-[#1A4D39] text-white text-xs font-bold shadow-lg hover:shadow-xl border border-[#47C98E]/40 transition active:scale-95 group cursor-pointer"
+          title="Chat WhatsApp Dapur Rasa"
+        >
+          <Phone className="w-4 h-4 text-[#47C98E] group-hover:scale-110 transition-transform" />
+          <span>Chat WhatsApp</span>
+        </a>
+      </div>
     </>
   );
 }

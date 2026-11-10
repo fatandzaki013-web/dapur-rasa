@@ -32,8 +32,8 @@ import {
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { settings } = useStore();
-  const { totalItems, setIsCartOpen } = useCart();
+  const { settings, formatPrice } = useStore();
+  const { totalItems, subtotal, setIsCartOpen } = useCart();
   const { totalWishlist, setIsWishlistOpen } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -128,9 +128,34 @@ export default function Navbar() {
 
   return (
     <>
+      {/* 1. TOP ANNOUNCEMENT BAR (Khusus Tampilan Desktop >= 768px) */}
+      <div className="hidden md:block fixed top-0 left-0 right-0 bg-[#123829] text-white py-1.5 px-4 text-[11px] border-b border-[#2E9E6B]/25 z-50">
+        <div className="mx-auto max-w-7xl flex items-center justify-between">
+          <div className="flex items-center gap-2 text-white/90">
+            <MapPin className="w-3.5 h-3.5 text-[#47C98E] shrink-0" />
+            <span>Perum Griya Cileungsi 5 Blok A8 No. 01 • Buka Setiap Hari (07.00 - 21.00 WIB)</span>
+          </div>
+          <div className="flex items-center gap-4 text-xs font-semibold">
+            <span className="text-[#47C98E] flex items-center gap-1.5">
+              <span>🛵</span> Gratis Ongkir Khusus Area Griya Cileungsi 5
+            </span>
+            <span className="text-white/30">|</span>
+            <a
+              href={buildWhatsAppLink("Halo Dapur Rasa, saya ingin order kue", settings?.whatsappNumber)}
+              target="_blank"
+              rel="noreferrer"
+              className="text-white hover:text-[#47C98E] flex items-center gap-1.5 transition"
+            >
+              <Phone className="w-3 h-3 text-[#47C98E]" />
+              <span>{waDisplayNum}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out ${
-          isScrolled ? "pt-1.5 sm:pt-2" : "pt-2 sm:pt-4"
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ease-out ${
+          isScrolled ? "pt-1.5 md:pt-9" : "pt-2 md:pt-11"
         }`}
       >
         <div className="mx-auto max-w-7xl px-2.5 sm:px-4">
@@ -167,7 +192,7 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links (Liquid Glass) */}
+            {/* Desktop Navigation Links */}
             <nav className="hidden md:flex items-center gap-1.5">
               {navLinks.slice(0, 6).map((link) => {
                 const isActive =
@@ -178,10 +203,10 @@ export default function Navbar() {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 liquid-glass-shine ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                       isActive
-                        ? "liquid-glass-mint text-[#123829] shadow-xs"
-                        : "text-[#4A5D54] hover:text-[#123829] hover:bg-white/60"
+                        ? "bg-[#123829] text-white shadow-xs"
+                        : "text-[#4A5D54] hover:text-[#123829] hover:bg-white/80"
                     }`}
                   >
                     {link.label}
@@ -190,17 +215,17 @@ export default function Navbar() {
               })}
             </nav>
 
-            {/* Desktop Search Form (Liquid Glass) */}
+            {/* Desktop Search Form */}
             <form
               onSubmit={handleSearchSubmit}
-              className="hidden md:flex items-center relative max-w-[190px] lg:max-w-[240px] w-full mx-2"
+              className="hidden md:flex items-center relative max-w-[180px] lg:max-w-[220px] w-full mx-2"
             >
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari produk favoritmu..."
-                className="w-full h-8 pl-3 pr-8 rounded-full border border-white/80 liquid-glass focus:outline-none focus:border-[#2E9E6B] focus:ring-1 focus:ring-[#2E9E6B]/30 text-[11px] transition text-[#111915] placeholder-[#687871]"
+                placeholder="Cari pastel, risol... (Ctrl+K)"
+                className="w-full h-8 pl-3 pr-8 rounded-full border border-[#D5EADF] bg-white/90 focus:outline-none focus:border-[#2E9E6B] focus:bg-white text-[11px] transition text-[#111915] placeholder-[#687871]"
               />
               <button
                 type="submit"
@@ -212,7 +237,7 @@ export default function Navbar() {
             </form>
 
             {/* Right Action Icons */}
-            <div className="flex items-center gap-1 sm:gap-1.5">
+            <div className="flex items-center gap-1 sm:gap-2">
               
               {/* Wishlist Button */}
               <button
@@ -234,11 +259,35 @@ export default function Navbar() {
                 )}
               </button>
 
-              {/* Cart Button */}
+              {/* Desktop Cart Button dengan Rincian Subtotal */}
               <button
                 type="button"
                 onClick={() => setIsCartOpen(true)}
-                className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#E8F5EE] relative w-8 h-8 sm:w-9 sm:h-9 text-[#687871] hover:text-[#123829] cursor-pointer"
+                className="hidden md:flex items-center gap-2 h-9 px-3.5 rounded-xl bg-[#E8F5EE] hover:bg-[#DCEEE5] text-[#123829] font-bold text-xs transition cursor-pointer border border-[#D5EADF] shadow-2xs active:scale-95"
+                aria-label="Buka keranjang"
+                title="Keranjang Belanja"
+              >
+                <div className="relative">
+                  <ShoppingCart className="h-4 w-4 text-[#123829]" />
+                  {totalItems > 0 && (
+                    <span className="absolute -top-2 -right-2 min-w-[15px] h-[15px] px-0.5 bg-red-600 text-white text-[8.5px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
+                      {totalItems}
+                    </span>
+                  )}
+                </div>
+                <span>Keranjang</span>
+                {totalItems > 0 && (
+                  <span className="font-extrabold text-[#2E9E6B] font-mono pl-1.5 border-l border-[#D5EADF]">
+                    {formatPrice(subtotal)}
+                  </span>
+                )}
+              </button>
+
+              {/* Mobile Cart Button */}
+              <button
+                type="button"
+                onClick={() => setIsCartOpen(true)}
+                className="md:hidden flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#E8F5EE] relative w-8 h-8 sm:w-9 sm:h-9 text-[#687871] hover:text-[#123829] cursor-pointer"
                 aria-label="Buka keranjang"
                 title="Keranjang Belanja"
               >
@@ -249,6 +298,20 @@ export default function Navbar() {
                   </span>
                 )}
               </button>
+
+              {/* Desktop Direct WhatsApp CTA */}
+              <a
+                href={buildWhatsAppLink(
+                  "Halo Dapur Rasa, saya ingin memesan kue dari website",
+                  settings?.whatsappNumber
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-[#123829] hover:bg-[#1A4D39] text-white font-bold text-xs shadow-xs transition active:scale-95 cursor-pointer ml-0.5"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#47C98E]" />
+                <span>Pesan WA</span>
+              </a>
 
               {/* Mobile Menu Button (Garis 3 di Kanan Atas) */}
               <button

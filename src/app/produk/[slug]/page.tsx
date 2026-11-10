@@ -252,7 +252,7 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
   const currentImageUrl = images[0]?.url || "";
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-36 min-w-0 box-border">
+    <div className="w-full max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-24 md:pt-36 pb-36 min-w-0 box-border">
       {/* Toast Notification (Floating Pill Toast) */}
       {toastMessage && (
         <div className="fixed bottom-24 right-4 sm:right-6 z-50 bg-[#123829] text-white px-5 py-2.5 rounded-full shadow-floating text-xs sm:text-sm font-semibold flex items-center gap-2 animate-fadeIn border border-[#47C98E]">
