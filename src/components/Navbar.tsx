@@ -113,7 +113,7 @@ export default function Navbar() {
     { label: "Beranda", href: "/", icon: Home, desc: "Halaman utama toko" },
     { label: "Produk", href: "/produk", icon: Cake, desc: "Katalog aneka kue & frozen" },
     { label: "Galeri", href: "/galeri", icon: ImageIcon, desc: "Koleksi foto olahan dapur" },
-    { label: "FAQ", href: "/#faq", icon: HelpCircle, desc: "Pertanyaan seputar pemesanan & ongkir" },
+    { label: "FAQ", href: "/faq", icon: HelpCircle, desc: "Pertanyaan seputar pemesanan & ongkir" },
     { label: "Artikel", href: "/artikel", icon: BookOpen, desc: "Tips & info menarik" },
     { label: "Tentang Kami", href: "/tentang-kami", icon: Info, desc: "Dapur Griya Cileungsi 5" },
     { label: "Kontak", href: "/kontak", icon: Phone, desc: "Lokasi & nomor WhatsApp" },
@@ -243,17 +243,17 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setIsWishlistOpen(true)}
-                className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-rose-50 relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-rose-600 cursor-pointer"
+                className="flex items-center justify-center rounded-xl transition-all duration-200 hover:bg-[#E8F5EE] relative w-8 h-8 sm:w-9 sm:h-9 text-gray-600 hover:text-[#123829] cursor-pointer"
                 aria-label="Buka daftar disukai"
                 title="Produk Disukai"
               >
                 <Heart
                   className={`h-4 w-4 sm:h-[18px] sm:w-[18px] transition-colors ${
-                    totalWishlist > 0 ? "fill-rose-500 text-rose-500" : ""
+                    totalWishlist > 0 ? "fill-[#2E9E6B] text-[#2E9E6B]" : ""
                   }`}
                 />
                 {totalWishlist > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-rose-600 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-[#123829] text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-xs animate-scaleIn">
                     {totalWishlist}
                   </span>
                 )}
@@ -476,9 +476,9 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     setIsWishlistOpen(true);
                   }}
-                  className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-700 font-bold text-xs shadow-2xs active:scale-95 cursor-pointer"
+                  className="flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#E8F5EE] border border-[#D5EADF] text-[#123829] font-bold text-xs shadow-2xs active:scale-95 cursor-pointer"
                 >
-                  <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                  <Heart className="w-4 h-4 fill-[#2E9E6B] text-[#2E9E6B]" />
                   <span>Koleksi Disukai ({totalWishlist})</span>
                 </button>
 

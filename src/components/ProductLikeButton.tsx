@@ -43,8 +43,8 @@ export default function ProductLikeButton({
         <Heart
           className={`w-5 h-5 transition-colors duration-200 ${
             liked
-              ? "fill-rose-500 text-rose-500 stroke-rose-500"
-              : "text-[#111915]/80 hover:text-rose-500 stroke-[2]"
+              ? "fill-[#2E9E6B] text-[#2E9E6B] stroke-[#2E9E6B]"
+              : "text-[#111915]/80 hover:text-[#2E9E6B] stroke-[2]"
           }`}
         />
       </button>
@@ -72,15 +72,15 @@ export default function ProductLikeButton({
       aria-label={liked ? "Hapus dari favorit" : "Sukai produk ini"}
       className={`rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer select-none active:scale-75 ${sizeClasses} ${
         liked
-          ? "bg-white text-rose-500 border border-rose-100 shadow-[0_2px_8px_rgba(244,63,94,0.25)] scale-105"
-          : "bg-white/85 hover:bg-white text-stone-600 hover:text-rose-500 backdrop-blur-md border border-white/70 shadow-[0_2px_6px_rgba(0,0,0,0.06)] hover:shadow-xs"
+          ? "bg-white text-[#2E9E6B] border border-[#2E9E6B]/40 shadow-[0_2px_8px_rgba(18,56,41,0.2)] scale-105"
+          : "bg-white/85 hover:bg-white text-stone-600 hover:text-[#2E9E6B] backdrop-blur-md border border-white/70 shadow-[0_2px_6px_rgba(0,0,0,0.06)] hover:shadow-xs"
       } ${className}`}
     >
       <Heart
         className={`${iconSizes} transition-all duration-200 ${
           liked
-            ? "fill-rose-500 text-rose-500 stroke-rose-500"
-            : "stroke-[2] text-[#111915]/80 group-hover:text-rose-500"
+            ? "fill-[#2E9E6B] text-[#2E9E6B] stroke-[#2E9E6B]"
+            : "stroke-[2] text-[#111915]/80 group-hover:text-[#2E9E6B]"
         }`}
       />
     </button>

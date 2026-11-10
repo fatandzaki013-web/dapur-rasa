@@ -86,11 +86,11 @@ export default function MobileBottomNav() {
       >
         <Heart
           className={`w-[22px] h-[22px] stroke-[2] transition-transform ${
-            totalWishlist > 0 ? "fill-rose-400 text-rose-400 stroke-rose-400" : "text-white/70 group-hover:text-white"
+            totalWishlist > 0 ? "fill-[#47C98E] text-[#47C98E] stroke-[#47C98E]" : "text-white/70 group-hover:text-white"
           }`}
         />
         {totalWishlist > 0 && (
-          <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-0.5 bg-rose-500 text-white text-[9px] font-extrabold rounded-full flex items-center justify-center shadow-2xs">
+          <span className="absolute top-1 right-1 min-w-[15px] h-[15px] px-0.5 bg-[#47C98E] text-[#123829] text-[9px] font-black rounded-full flex items-center justify-center shadow-2xs">
             {totalWishlist}
           </span>
         )}

@@ -66,7 +66,7 @@ export default function WishlistDrawer() {
           <div className="px-4 py-3.5 sm:px-5 sm:py-4 bg-[#123829] text-white flex items-center justify-between shadow-xs shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center">
-                <Heart className="w-4 h-4 fill-rose-400 text-rose-400" />
+                <Heart className="w-4 h-4 fill-[#47C98E] text-[#47C98E]" />
               </div>
               <h2 className="text-sm sm:text-base font-bold font-heading">
                 Produk Disukai ({wishlist.length})
@@ -85,12 +85,12 @@ export default function WishlistDrawer() {
           <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-2.5">
             {wishlist.length === 0 ? (
               <div className="text-center py-16 px-4">
-                <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
-                  <Heart className="w-7 h-7 fill-rose-100 text-rose-400" />
+                <div className="w-16 h-16 bg-[#E8F5EE] text-[#123829] rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner border border-[#D5EADF]">
+                  <Heart className="w-7 h-7 fill-[#2E9E6B] text-[#2E9E6B]" />
                 </div>
                 <h3 className="text-stone-800 font-bold text-sm mb-1">Belum Ada Produk yang Disukai</h3>
                 <p className="text-xs text-stone-500 mb-5 max-w-xs mx-auto leading-relaxed">
-                  Klik ikon hati ❤️ di atas foto produk untuk menyimpan kue favorit Anda ke daftar ini.
+                  Klik ikon favorit di atas foto produk untuk menyimpan kue pilihan Anda ke daftar ini.
                 </p>
                 <Link
                   href="/produk"

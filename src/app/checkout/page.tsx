@@ -31,6 +31,8 @@ import {
   ArrowLeft,
   Smartphone,
   Loader2,
+  Clock,
+  Sparkles,
 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
@@ -45,30 +47,11 @@ import {
 // ==========================================
 export const checkoutOrderSchema = z
   .object({
-    customer_name: z
-      .string()
-      .trim()
-      .min(2, "Nama pemesan minimal 2 karakter, wajib diisi"),
-    customer_phone: z
-      .string()
-      .trim()
-      .min(1, "Nomor WhatsApp wajib diisi")
-      .refine(
-        (val) => {
-          const clean = val.replace(/[^0-9]/g, "");
-          const normalized = clean.startsWith("8") ? "0" + clean : clean;
-          return (
-            normalized.length >= 10 &&
-            (normalized.startsWith("08") || normalized.startsWith("628"))
-          );
-        },
-        {
-          message:
-            "Format nomor HP/WA Indonesia valid (panjang minimal 10 digit, contoh: 081234567890)",
-        }
-      ),
+    customer_name: z.string().trim().optional(),
+    customer_phone: z.string().trim().optional(),
     fulfillment_type: z.enum(["PICKUP", "DELIVERY"]).default("PICKUP"),
     delivery_address: z.string().trim().optional(),
+    pickup_time: z.string().trim().optional(),
     notes: z.string().trim().optional(),
     items: z
       .array(z.any())
@@ -77,6 +60,36 @@ export const checkoutOrderSchema = z
       .number()
       .positive("Total harga harus angka positif lebih dari 0"),
   })
+  .refine(
+    (data) => {
+      if (data.fulfillment_type === "DELIVERY") {
+        return (data.customer_name || "").trim().length >= 2;
+      }
+      return true;
+    },
+    {
+      message: "Nama pemesan minimal 2 karakter, wajib diisi untuk opsi Diantar ke Rumah",
+      path: ["customer_name"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.fulfillment_type === "DELIVERY") {
+        const clean = (data.customer_phone || "").replace(/[^0-9]/g, "");
+        const normalized = clean.startsWith("8") ? "0" + clean : clean;
+        return (
+          normalized.length >= 10 &&
+          (normalized.startsWith("08") || normalized.startsWith("628"))
+        );
+      }
+      return true;
+    },
+    {
+      message:
+        "Nomor WhatsApp aktif wajib diisi (minimal 10 digit, contoh: 081234567890)",
+      path: ["customer_phone"],
+    }
+  )
   .refine(
     (data) => {
       if (data.fulfillment_type === "DELIVERY") {
@@ -102,6 +115,7 @@ interface CompletedOrderInfo {
   customerPhone: string;
   fulfillmentType: "DELIVERY" | "PICKUP";
   deliveryAddress: string;
+  pickupTime?: string;
   paymentMethod: "COD" | "QRIS" | "GOPAY";
   paymentMethodLabel: string;
   notes: string;
@@ -122,8 +136,9 @@ export default function CheckoutPage() {
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [fulfillmentType, setFulfillmentType] = useState<"DELIVERY" | "PICKUP">("DELIVERY");
+  const [fulfillmentType, setFulfillmentType] = useState<"DELIVERY" | "PICKUP">("PICKUP");
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [pickupTime, setPickupTime] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "QRIS" | "GOPAY">("COD");
   const [notes, setNotes] = useState("");
 
@@ -154,6 +169,7 @@ export default function CheckoutPage() {
     setCustomerName("");
     setCustomerPhone("");
     setDeliveryAddress("");
+    setPickupTime("");
     setNotes("");
     setFieldErrors({});
     setCompletedOrder(null);
@@ -199,14 +215,17 @@ ${brandTagline}
 ====================================
 No. Referensi : ${completedOrder.orderCode}
 Tanggal Waktu : ${completedOrder.createdAtFormatted}
-Nama Pemesan  : ${completedOrder.customerName}
-No. WhatsApp  : ${completedOrder.customerPhone}
-
-PENGIRIMAN:
 ${
   completedOrder.fulfillmentType === "DELIVERY"
-    ? `• Status: DIANTAR KE RUMAH\n• Alamat Rumah: ${completedOrder.deliveryAddress}`
-    : "• Status: DIAMBIL SENDIRI DI DAPUR TOKO"
+    ? `Nama Pemesan  : ${completedOrder.customerName}\nNo. WhatsApp  : ${completedOrder.customerPhone}`
+    : `Pengambilan   : Ambil di Dapur Toko${completedOrder.customerName && completedOrder.customerName !== "Pembeli (Ambil di Dapur)" ? ` (${completedOrder.customerName})` : ""}`
+}
+
+PENGANTARAN / PENGAMBILAN:
+${
+  completedOrder.fulfillmentType === "DELIVERY"
+    ? `• Status       : DIANTAR KE RUMAH\n• Alamat Rumah : ${completedOrder.deliveryAddress}`
+    : `• Status       : DIAMBIL SENDIRI DI DAPUR (Griya Cileungsi 5 Blok A8 No. 01)${completedOrder.pickupTime ? `\n• Perkiraan Jam : ${completedOrder.pickupTime}` : ""}`
 }
 
 PEMBAYARAN:
@@ -243,18 +262,27 @@ Terima kasih banyak telah memesan di ${brandName}!
     setErrorMessage(null);
     setFieldErrors({});
 
-    // Tentukan alamat pengantaran
+    // Tentukan data kontak & alamat berdasarkan fulfillmentType
+    const finalCustomerName =
+      fulfillmentType === "PICKUP"
+        ? (customerName.trim() || "Pembeli (Ambil di Dapur)")
+        : customerName.trim();
+
+    const cleanPhone = customerPhone.replace(/[^0-9]/g, "");
+    const finalPhone = fulfillmentType === "PICKUP" ? (cleanPhone || "-") : cleanPhone;
+
     const finalAddress =
       fulfillmentType === "DELIVERY"
         ? deliveryAddress.trim()
         : "Ambil Sendiri di Dapur (Blok A8 No. 01)";
 
     const rawFormData = {
-      customer_name: customerName,
-      customer_phone: customerPhone,
+      customer_name: finalCustomerName,
+      customer_phone: finalPhone,
       fulfillment_type: fulfillmentType,
       delivery_address: finalAddress,
-      notes: notes,
+      pickup_time: pickupTime.trim(),
+      notes: notes.trim(),
       items: items,
       total_price: totalAmount,
     };
@@ -284,7 +312,6 @@ Terima kasih banyak telah memesan di ${brandName}!
     }
 
     const validData = validation.data;
-    const cleanPhone = customerPhone.replace(/[^0-9]/g, "");
 
     // 2. Tampilkan state loading ("Memproses pesanan...")
     setIsSubmitting(true);
@@ -312,21 +339,19 @@ Terima kasih banyak telah memesan di ${brandName}!
 
     let generatedOrderCode = `DR-${Date.now().toString().slice(-6)}`;
 
-    const deliveryOptionLabel =
-      fulfillmentType === "DELIVERY"
-        ? "Diantar ke Rumah (Khusus Area Griya Cileungsi 5)"
-        : "Ambil Sendiri di Dapur (Blok A8 No. 01)";
-
     try {
       // 3. Simpan order ke tabel Supabase public.orders dengan payload lengkap
       const orderPayload = {
-        customer_name: validData.customer_name,
-        customer_phone: cleanPhone,
+        customer_name: finalCustomerName,
+        customer_phone: finalPhone,
         delivery_address:
           fulfillmentType === "DELIVERY"
             ? `[Diantar ke Rumah]: ${validData.delivery_address}`
             : `[Ambil Sendiri di Dapur (Blok A8 No. 01)]`,
-        notes: `[Pengiriman: ${deliveryOptionLabel}] ${validData.notes || ""}`.trim(),
+        notes:
+          fulfillmentType === "DELIVERY"
+            ? `[Diantar ke Rumah] ${validData.notes || ""}`.trim()
+            : `[Ambil di Dapur${pickupTime.trim() ? ` - Jam: ${pickupTime.trim()}` : ""}] ${validData.notes || ""}`.trim(),
         items: orderItemsSnapshot,
         total_price: totalAmount,
         status: "pending",
@@ -343,7 +368,7 @@ Terima kasih banyak telah memesan di ${brandName}!
         generatedOrderCode = `DR-${savedOrder[0].id.slice(0, 6).toUpperCase()}`;
       }
 
-      // 4. Susun Pesan WhatsApp Rapi & Link Redirect
+      // 4. Susun Pesan WhatsApp Rapi & Bersih (Tanpa no pesanan sesuai instruksi)
       const itemsSummary = items
         .map(
           (it) =>
@@ -353,21 +378,28 @@ Terima kasih banyak telah memesan di ${brandName}!
         )
         .join("\n");
 
-      const deliveryText =
-        fulfillmentType === "DELIVERY"
-          ? `*Opsi Pengiriman:* Diantar ke Rumah (Khusus Area Griya Cileungsi 5)\n*Alamat Rumah:* ${validData.delivery_address}`
-          : `*Opsi Pengambilan:* Ambil Sendiri di Dapur (Blok A8 No. 01)`;
+      const pickupTimeLine = pickupTime.trim() ? `*Rencana Jam Ambil:* ${pickupTime.trim()}\n` : "";
+      const notesLine = validData.notes?.trim() ? `*Catatan:* ${validData.notes.trim()}\n` : "";
 
-      const notesText = validData.notes ? `\n*Catatan:* ${validData.notes}` : "";
+      const waText =
+        fulfillmentType === "PICKUP"
+          ? `Halo ${brandName}, saya mau pesan:
 
-      const waText = `Halo ${brandName}, saya mau pesan:
+${itemsSummary}
+
+*Total:* ${formatPrice(totalAmount)}
+*Metode:* Ambil Sendiri di Dapur (Griya Cileungsi 5 Blok A8 No. 01)
+${pickupTimeLine}${notesLine}
+Mohon disiapkan ya, terima kasih!`
+          : `Halo ${brandName}, saya mau pesan:
 
 ${itemsSummary}
 
 *Total:* ${formatPrice(totalAmount)}
 *Pemesan:* ${validData.customer_name} (${cleanPhone})
-${deliveryText}${notesText}
-
+*Opsi Pengiriman:* Diantar ke Rumah (Khusus Area Griya Cileungsi 5)
+*Alamat Rumah:* ${validData.delivery_address}
+${validData.notes?.trim() ? `*Catatan:* ${validData.notes.trim()}\n` : ""}
 Mohon segera diproses ya, terima kasih!`;
 
       const whatsappUrl = buildWhatsAppApiUrl(waText, settings?.whatsappNumber);
@@ -384,25 +416,26 @@ Mohon segera diproses ya, terima kasih!`;
       setCustomerName("");
       setCustomerPhone("");
       setDeliveryAddress("");
+      setPickupTime("");
       setNotes("");
       setFieldErrors({});
 
-      const completedData = {
+      const completedData: CompletedOrderInfo = {
         orderCode: generatedOrderCode,
         totalAmount,
         subtotal,
         shippingFee: 0,
-        customerName: validData.customer_name,
-        customerPhone: cleanPhone,
+        customerName: finalCustomerName,
+        customerPhone: finalPhone,
         fulfillmentType,
         deliveryAddress: validData.delivery_address || finalAddress,
+        pickupTime: pickupTime.trim(),
         paymentMethod,
         paymentMethodLabel: paymentLabel,
         notes: validData.notes || "",
         createdAtFormatted: nowFormatted,
         items: orderItemsSnapshot,
         whatsappUrl,
-        savedAt: Date.now(),
       };
 
       try {
@@ -448,7 +481,7 @@ Mohon segera diproses ya, terima kasih!`;
             Pesanan Berhasil Tercatat
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900 font-heading">
-            Terima Kasih, {completedOrder.customerName}!
+            Terima Kasih{completedOrder.customerName && completedOrder.customerName !== "Pembeli (Ambil di Dapur)" ? `, ${completedOrder.customerName}` : ""}!
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
             Pesanan Anda telah kami catat dalam antrean dapur. Jika aplikasi WhatsApp belum otomatis terbuka di perangkat Anda, silakan tekan tombol hijau di bawah:
@@ -515,13 +548,21 @@ Mohon segera diproses ya, terima kasih!`;
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs bg-stone-50/80 p-4 sm:p-5 rounded-2xl border border-stone-200/90">
             <div>
               <span className="text-stone-400 text-[10px] uppercase font-bold block mb-1">
-                Data Pemesan:
+                {isDelivery ? "Data Pemesan:" : "Penerima Pesanan:"}
               </span>
-              <p className="font-bold text-stone-900 text-sm">{completedOrder.customerName}</p>
-              <p className="text-stone-600 mt-0.5 flex items-center gap-1.5">
-                <Phone className="w-3.5 h-3.5 text-stone-400" />
-                <span>{completedOrder.customerPhone}</span>
+              <p className="font-bold text-stone-900 text-sm">
+                {isDelivery
+                  ? completedOrder.customerName
+                  : completedOrder.customerName !== "Pembeli (Ambil di Dapur)"
+                  ? completedOrder.customerName
+                  : "Pembeli Langsung (Ambil di Dapur)"}
               </p>
+              {isDelivery && completedOrder.customerPhone && completedOrder.customerPhone !== "-" && (
+                <p className="text-stone-600 mt-0.5 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-stone-400" />
+                  <span>{completedOrder.customerPhone}</span>
+                </p>
+              )}
               {completedOrder.notes && (
                 <p className="text-stone-500 text-[11px] mt-1.5 italic">
                   Catatan: {completedOrder.notes}
@@ -531,15 +572,23 @@ Mohon segera diproses ya, terima kasih!`;
 
             <div>
               <span className="text-stone-400 text-[10px] uppercase font-bold block mb-1">
-                Pengiriman &amp; Pembayaran:
+                {isDelivery ? "Pengiriman & Pembayaran:" : "Pengambilan & Pembayaran:"}
               </span>
               <div className="flex items-center gap-1.5 font-bold text-[#123829]">
                 {isDelivery ? <Truck className="w-4 h-4 text-[#2E9E6B]" /> : <Store className="w-4 h-4 text-[#123829]" />}
                 <span>
-                  {isDelivery ? `Diantar ke: ${completedOrder.deliveryAddress}` : "Diambil Sendiri"}
+                  {isDelivery
+                    ? `Diantar ke: ${completedOrder.deliveryAddress}`
+                    : "Ambil di Dapur: Griya Cileungsi 5 Blok A8 No. 01"}
                 </span>
               </div>
-              <p className="text-[11px] text-emerald-800 font-semibold mt-1 bg-emerald-50 px-2 py-0.5 rounded inline-block">
+              {completedOrder.pickupTime && (
+                <p className="text-[11px] text-[#123829] font-medium mt-1 flex items-center gap-1.5 bg-[#E8F5EE] px-2 py-0.5 rounded-md inline-flex">
+                  <Clock className="w-3.5 h-3.5 text-[#2E9E6B]" />
+                  <span>Rencana Jam Ambil: <strong>{completedOrder.pickupTime}</strong></span>
+                </p>
+              )}
+              <p className="text-[11px] text-emerald-800 font-semibold mt-1 bg-emerald-50 px-2 py-0.5 rounded block">
                 Pembayaran: {completedOrder.paymentMethodLabel}
               </p>
             </div>
@@ -750,112 +799,13 @@ Mohon segera diproses ya, terima kasih!`;
         {/* LEFT COLUMN: FORM DETAILS LENGKAP & RAPI (7 COLS) */}
         {/* ============================================================== */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Section 1: Kontak Pemesan */}
+          {/* ============================================================== */}
+          {/* SECTION 1: PILIHAN PENGANTARAN / PENGAMBILAN PESANAN           */}
+          {/* ============================================================== */}
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
             <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
               <span className="w-7 h-7 rounded-xl bg-[#123829] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
                 1
-              </span>
-              <span>Data Kontak Pemesan</span>
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                  Nama Lengkap Pemesan <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
-                    <User className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="field-customer_name"
-                    name="customer_name"
-                    type="text"
-                    required
-                    value={customerName}
-                    onChange={(e) => {
-                      setCustomerName(e.target.value);
-                      if (fieldErrors.customer_name) {
-                        setFieldErrors((prev) => ({ ...prev, customer_name: "" }));
-                      }
-                    }}
-                    placeholder="Contoh: Ibu Rina / Bpk. Hendra"
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
-                      fieldErrors.customer_name
-                        ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
-                        : "border-stone-300 focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
-                    }`}
-                  />
-                </div>
-                {fieldErrors.customer_name && (
-                  <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>{fieldErrors.customer_name}</span>
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                  Nomor WhatsApp Aktif <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="field-customer_phone"
-                    name="customer_phone"
-                    type="tel"
-                    required
-                    value={customerPhone}
-                    onChange={(e) => {
-                      setCustomerPhone(e.target.value);
-                      if (fieldErrors.customer_phone) {
-                        setFieldErrors((prev) => ({ ...prev, customer_phone: "" }));
-                      }
-                    }}
-                    placeholder="Contoh: 081234567890"
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
-                      fieldErrors.customer_phone
-                        ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
-                        : "border-stone-300 focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
-                    }`}
-                  />
-                </div>
-                {fieldErrors.customer_phone ? (
-                  <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
-                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>{fieldErrors.customer_phone}</span>
-                  </p>
-                ) : (
-                  <p className="text-[11px] text-stone-500 mt-1">
-                    Nomor aktif untuk konfirmasi pesanan via WhatsApp.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                Catatan Tambahan Pesanan (Opsional)
-              </label>
-              <textarea
-                rows={2}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Misal: Tolong kirim hangat sebelum jam 10 pagi, sambal cabai rawit ekstra, dll."
-                className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B] bg-white"
-              />
-            </div>
-          </div>
-
-          {/* Section 2: Pilihan Pengantaran (Radio Button Diantar vs Ambil Sendiri) */}
-          <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
-            <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
-              <span className="w-7 h-7 rounded-xl bg-[#123829] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
-                2
               </span>
               <span>Pilihan Pengantaran / Pengambilan Pesanan</span>
             </h2>
@@ -897,7 +847,7 @@ Mohon segera diproses ya, terima kasih!`;
                     Ambil Sendiri di Dapur (Blok A8 No. 01)
                   </h3>
                   <p className="text-[11px] text-stone-600 mt-0.5 leading-relaxed">
-                    Ambil pesanan langsung di dapur kami tanpa biaya ongkir.
+                    Ambil pesanan langsung di dapur toko tanpa perlu isi data kontak.
                   </p>
                 </div>
               </label>
@@ -920,15 +870,15 @@ Mohon segera diproses ya, terima kasih!`;
                         value="DELIVERY"
                         checked={fulfillmentType === "DELIVERY"}
                         onChange={() => setFulfillmentType("DELIVERY")}
-                        className="w-4 h-4 text-emerald-600 focus:ring-emerald-500"
+                        className="w-4 h-4 text-[#123829] focus:ring-[#2E9E6B]"
                       />
-                      <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                      <div className="w-8 h-8 rounded-xl bg-[#E8F5EE] flex items-center justify-center text-[#123829]">
                         <Truck className="w-4 h-4" />
                       </div>
                     </div>
                     {fulfillmentType === "DELIVERY" && (
-                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                        <CheckCircle className="w-3 h-3 text-emerald-700" />
+                      <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-[#123829] bg-[#DCEEE5] px-2 py-0.5 rounded-full">
+                        <CheckCircle className="w-3 h-3 text-[#2E9E6B]" />
                         Dipilih
                       </span>
                     )}
@@ -942,15 +892,205 @@ Mohon segera diproses ya, terima kasih!`;
                 </div>
               </label>
             </div>
+          </div>
 
-            {/* KONDISIONAL FORM SESUAI PILIHAN PENGANTARAN */}
-            {fulfillmentType === "DELIVERY" ? (
-              <div className="p-4 bg-emerald-50/80 rounded-2xl border-2 border-emerald-300 space-y-2 animate-fadeIn">
-                <label className="block text-xs font-bold text-emerald-950">
+          {/* ============================================================== */}
+          {/* SECTION 2: DETAIL DATA (KONDISIONAL PICKUP VS DELIVERY)         */}
+          {/* ============================================================== */}
+          {fulfillmentType === "PICKUP" ? (
+            /* --- KONDISI A: AMBIL SENDIRI DI DAPUR (TANPA DATA KONTAK WAJIB) --- */
+            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4 animate-fadeIn">
+              <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
+                <span className="w-7 h-7 rounded-xl bg-[#123829] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
+                  2
+                </span>
+                <span>Detail Pengambilan di Dapur</span>
+              </h2>
+
+              {/* Info Lokasi Dapur */}
+              <div className="p-4 bg-[#E8F5EE] rounded-2xl border border-[#D5EADF] text-xs text-stone-700 flex items-start gap-3">
+                <Store className="w-5 h-5 text-[#123829] shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-extrabold text-[#123829] text-sm">
+                    Lokasi Dapur: Perumahan Griya Cileungsi 5 Blok A8 No. 01
+                  </p>
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    Pesanan Anda akan disiapkan fresh di dapur toko kami. Anda bisa langsung datang dan mengambil pesanan sesuai perkiraan jam yang Anda tentukan di bawah.
+                  </p>
+                  <div className="pt-1 flex items-center gap-1.5 text-[11px] font-bold text-[#2E9E6B]">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Tanpa antre, tanpa biaya ongkir, langsung disiapkan saat Anda datang!</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rencana Jam Pengambilan (Opsional) */}
+              <div className="space-y-2 pt-1">
+                <label className="block text-xs font-semibold text-stone-800">
+                  Mau Diambil Jam Berapa? (Pilihan Opsional)
+                </label>
+                <p className="text-[11px] text-stone-500">
+                  Pilih waktu cepat atau ketik jam pengambilan yang Anda inginkan:
+                </p>
+
+                {/* Quick time selection pills */}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {[
+                    "Pagi (08:00 - 10:00)",
+                    "Siang (11:00 - 14:00)",
+                    "Sore (15:00 - 18:00)",
+                    "Malam (18:30 - 21:00)",
+                  ].map((timeOption) => {
+                    const isSelected = pickupTime === timeOption;
+                    return (
+                      <button
+                        key={timeOption}
+                        type="button"
+                        onClick={() => setPickupTime(isSelected ? "" : timeOption)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-[#123829] text-white shadow-xs"
+                            : "bg-[#F4F7F5] text-stone-700 hover:bg-[#E8F5EE] hover:text-[#123829] border border-stone-200"
+                        }`}
+                      >
+                        {isSelected ? "✓ " : ""}{timeOption}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Custom Time Input */}
+                <div className="relative pt-1.5">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 pt-1.5 flex items-center pointer-events-none text-stone-400">
+                    <Clock className="w-4 h-4 text-[#2E9E6B]" />
+                  </div>
+                  <input
+                    type="text"
+                    value={pickupTime}
+                    onChange={(e) => setPickupTime(e.target.value)}
+                    placeholder="Atau ketik jam sendiri (contoh: Jam 10.30 pagi / Jam 4 sore)"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B] bg-white transition"
+                  />
+                </div>
+              </div>
+
+              {/* Catatan Tambahan (Opsional) */}
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  Catatan Tambahan untuk Dapur (Opsional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Contoh: Tolong digoreng agak garing saat saya sampai, minta rawit dipisah, dll."
+                  className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B] bg-white"
+                />
+              </div>
+
+              {/* Pemberitahuan ramah: tidak butuh data kontak */}
+              <div className="p-3 bg-[#E8F5EE] rounded-xl border border-[#D5EADF] text-[11.5px] text-[#123829] flex items-start gap-2">
+                <CheckCircle className="w-4 h-4 text-[#2E9E6B] shrink-0 mt-0.5" />
+                <span>
+                  <strong>Praktis &amp; Cepat:</strong> Khusus opsi ambil di dapur, data kontak dan alamat tidak wajib diisi. Pesanan Anda akan langsung kami proses saat terhubung ke WhatsApp dapur!
+                </span>
+              </div>
+            </div>
+          ) : (
+            /* --- KONDISI B: DIANTAR KE RUMAH (WAJIB NAMA, TELEPON & ALAMAT) --- */
+            <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4 animate-fadeIn">
+              <h2 className="font-heading font-bold text-base text-stone-900 flex items-center gap-2.5">
+                <span className="w-7 h-7 rounded-xl bg-[#123829] text-white text-xs flex items-center justify-center font-bold shadow-2xs">
+                  2
+                </span>
+                <span>Data Kontak &amp; Alamat Pengantaran</span>
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                    Nama Lengkap Pemesan <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="field-customer_name"
+                      name="customer_name"
+                      type="text"
+                      required
+                      value={customerName}
+                      onChange={(e) => {
+                        setCustomerName(e.target.value);
+                        if (fieldErrors.customer_name) {
+                          setFieldErrors((prev) => ({ ...prev, customer_name: "" }));
+                        }
+                      }}
+                      placeholder="Contoh: Ibu Rina / Bpk. Hendra"
+                      className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
+                        fieldErrors.customer_name
+                          ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
+                          : "border-stone-300 focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
+                      }`}
+                    />
+                  </div>
+                  {fieldErrors.customer_name && (
+                    <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fieldErrors.customer_name}</span>
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                    Nomor WhatsApp Aktif <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="field-customer_phone"
+                      name="customer_phone"
+                      type="tel"
+                      required
+                      value={customerPhone}
+                      onChange={(e) => {
+                        setCustomerPhone(e.target.value);
+                        if (fieldErrors.customer_phone) {
+                          setFieldErrors((prev) => ({ ...prev, customer_phone: "" }));
+                        }
+                      }}
+                      placeholder="Contoh: 081234567890"
+                      className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm focus:outline-none transition bg-white ${
+                        fieldErrors.customer_phone
+                          ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
+                          : "border-stone-300 focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
+                      }`}
+                    />
+                  </div>
+                  {fieldErrors.customer_phone ? (
+                    <p className="text-xs text-rose-600 mt-1.5 font-semibold flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fieldErrors.customer_phone}</span>
+                    </p>
+                  ) : (
+                    <p className="text-[11px] text-stone-500 mt-1">
+                      Nomor aktif untuk konfirmasi pengantaran via WhatsApp.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Alamat Pengantaran */}
+              <div className="p-4 bg-[#E8F5EE]/60 rounded-2xl border-2 border-[#D5EADF] space-y-2">
+                <label className="block text-xs font-bold text-[#123829]">
                   Alamat / Blok Rumah Anda (Khusus Area Griya Cileungsi 5) <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute top-3 left-3.5 pointer-events-none text-emerald-700">
+                  <div className="absolute top-3 left-3.5 pointer-events-none text-[#2E9E6B]">
                     <MapPin className="w-4 h-4" />
                   </div>
                   <textarea
@@ -969,7 +1109,7 @@ Mohon segera diproses ya, terima kasih!`;
                     className={`w-full pl-10 pr-4 py-2.5 rounded-xl border bg-white text-sm focus:outline-none transition shadow-2xs leading-relaxed placeholder:text-stone-400 ${
                       fieldErrors.delivery_address
                         ? "border-rose-400 bg-rose-50/30 text-rose-900 focus:ring-2 focus:ring-rose-200"
-                        : "border-emerald-300 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600"
+                        : "border-[#D5EADF] focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B]"
                     }`}
                   />
                 </div>
@@ -979,24 +1119,25 @@ Mohon segera diproses ya, terima kasih!`;
                     <span>{fieldErrors.delivery_address}</span>
                   </p>
                 )}
-                <p className="text-[11px] text-emerald-800 font-medium">
+                <p className="text-[11px] text-[#123829] font-medium">
                   ⚠️ <strong>Wajib diisi:</strong> Sebutkan alamat rumah Anda berada di <strong>Blok berapa dan Nomor berapa</strong> agar kurir dapat mengantar tepat waktu ke depan pintu rumah Anda.
                 </p>
               </div>
-            ) : (
-              <div className="p-3.5 bg-[#E8F5EE] rounded-2xl border border-[#D5EADF] text-xs text-stone-700 flex items-start gap-2.5 animate-fadeIn">
-                <Store className="w-4 h-4 text-[#123829] shrink-0 mt-0.5" />
-                <div className="space-y-0.5">
-                  <p className="font-bold text-[#123829]">
-                    Lokasi Pengambilan: Dapur Rasa (Blok A8 No. 01)
-                  </p>
-                  <p className="text-[11px] text-stone-600">
-                    Perumahan Griya Cileungsi 5 Blok A8 No. 01, Cileungsi. Pesanan Anda akan disiapkan dan siap diambil saat matang / sesuai jadwal yang disepakati.
-                  </p>
-                </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  Catatan Tambahan Pesanan (Opsional)
+                </label>
+                <textarea
+                  rows={2}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Misal: Tolong kirim hangat sebelum jam 10 pagi, titip di pos satpam bila rumah kosong, dll."
+                  className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs focus:outline-none focus:ring-2 focus:ring-[#2E9E6B]/20 focus:border-[#2E9E6B] bg-white"
+                />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Section 3: Pilihan Pembayaran (COD / QRIS / No Rek Gopay) */}
           <div className="bg-white p-5 sm:p-6 rounded-3xl border border-stone-200 shadow-sm space-y-4">
