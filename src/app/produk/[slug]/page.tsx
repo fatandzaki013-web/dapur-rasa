@@ -17,7 +17,6 @@ import {
   PackageCheck,
   ChevronRight,
   ChevronLeft,
-  Star,
   Plus,
   Minus,
   AlertCircle,
@@ -400,82 +399,14 @@ Apakah produk ini tersedia untuk dipesan? Terima kasih.`;
 
         {/* Lembar Detail Putih (White Detail Sheet) */}
         <div className="bg-white p-5 sm:p-8 space-y-6 sm:space-y-7">
-          {/* Baris Deskripsi & Rating Bintang */}
+          {/* Baris Deskripsi */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <h2 className="text-base sm:text-lg font-extrabold text-[#111915] font-heading">
-                Deskripsi
-              </h2>
-              <div className="flex items-center gap-1.5 bg-[#E8F5EE] px-3 py-1 rounded-full border border-[#D5EADF]">
-                <div className="flex items-center gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-[#2E9E6B] text-[#2E9E6B]" />
-                  ))}
-                </div>
-                <span className="text-xs font-bold text-[#123829] font-mono">(128 ulasan)</span>
-              </div>
-            </div>
-
+            <h2 className="text-base sm:text-lg font-extrabold text-[#111915] font-heading">
+              Deskripsi
+            </h2>
             <p className="text-xs sm:text-sm text-[#687871] leading-relaxed whitespace-pre-line break-words">
               {product.description || product.shortDescription || "Kue lezat berkualitas tinggi buatan rumahan higienis dengan resep istimewa."}
             </p>
-          </div>
-
-          {/* Pemilih Varian Visual (4 Kotak Thumbnail Squircle Liquid Glass) */}
-          <div className="space-y-2.5">
-            <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
-              Pilih Varian &amp; Paket:
-            </span>
-            <div className="grid grid-cols-4 gap-2.5 max-w-md">
-              {[
-                { label: "Original", sub: "Favorit", active: true },
-                { label: "Spesial", sub: "Ekstra", active: false },
-                { label: "Frozen", sub: "Praktis", active: false },
-                { label: "Snack Box", sub: "Paket", active: false },
-              ].map((variant, idx) => (
-                <div
-                  key={idx}
-                  className={`h-[68px] rounded-[18px] p-2 flex flex-col items-center justify-center text-center cursor-pointer transition-all liquid-glass-shine active:scale-95 ${
-                    variant.active
-                      ? "liquid-glass-active shadow-md"
-                      : "liquid-glass hover:text-[#123829]"
-                  }`}
-                >
-                  <span className={`text-xs font-bold leading-tight ${variant.active ? "text-white" : "text-[#111915]"}`}>
-                    {variant.label}
-                  </span>
-                  <span className={`text-[10px] leading-none mt-1 ${variant.active ? "text-white/80" : "text-[#687871]"}`}>
-                    {variant.sub}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Pemilih Opsi Squircle (Pilih Ukuran / Porsi Rekomendasi Liquid Glass) */}
-          <div className="space-y-2.5">
-            <span className="block text-xs font-bold text-[#111915] uppercase tracking-wider">
-              Porsi / Jumlah Cepat:
-            </span>
-            <div className="flex items-center gap-2 flex-wrap">
-              {[1, 5, 10, 20].map((qtyOption) => {
-                const isActive = quantity === qtyOption;
-                return (
-                  <button
-                    key={qtyOption}
-                    type="button"
-                    onClick={() => setQuantity(Math.min(availableStock, qtyOption))}
-                    className={`min-w-[62px] h-[44px] px-4 rounded-[14px] font-bold text-xs sm:text-sm flex items-center justify-center transition-all cursor-pointer liquid-glass-shine active:scale-95 ${
-                      isActive
-                        ? "liquid-glass-active shadow-md"
-                        : "liquid-glass text-[#111915] hover:text-[#123829]"
-                    }`}
-                  >
-                    {qtyOption} {product.unit}
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {/* Pengatur Kuantitas Manual (- 1 +) & Total (Liquid Glass) */}
