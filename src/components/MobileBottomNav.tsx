@@ -9,7 +9,7 @@ import { useWishlist } from "@/context/WishlistContext";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
-  const { totalItems, setIsCartOpen, isCartOpen } = useCart();
+  const { totalItems, isCartOpen } = useCart();
   const { totalWishlist, setIsWishlistOpen, isWishlistOpen } = useWishlist();
 
   // Sembunyikan bottom nav di dashboard admin, saat checkout, saat di detail produk, atau saat drawer keranjang/wishlist aktif
@@ -43,7 +43,6 @@ export default function MobileBottomNav() {
             isHome ? "text-[#47C98E]" : "text-white/70 group-hover:text-white"
           }`}
         />
-        {isHome && <span className="w-1.5 h-1.5 rounded-full bg-[#47C98E] mt-1 shadow-[0_0_8px_#47C98E]" />}
       </Link>
 
       {/* 2. Menu / Produk */}
@@ -57,24 +56,24 @@ export default function MobileBottomNav() {
             isProducts ? "text-[#47C98E]" : "text-white/70 group-hover:text-white"
           }`}
         />
-        {isProducts && <span className="w-1.5 h-1.5 rounded-full bg-[#47C98E] mt-1 shadow-[0_0_8px_#47C98E]" />}
       </Link>
 
-      {/* 3. Center FAB (Keranjang Belanja) */}
+      {/* 3. Center FAB (Pilihan Produk & Belanja Langsung) */}
       <div className="relative flex items-center justify-center shrink-0 -translate-y-4">
-        <button
-          type="button"
-          onClick={() => setIsCartOpen(true)}
+        <Link
+          href="/produk"
+          prefetch={true}
           className="w-[58px] h-[58px] rounded-full bg-gradient-to-br from-[#47C98E] to-[#2E9E6B] border-4 border-[#123829] shadow-[0_10px_24px_rgba(46,158,107,0.48)] flex items-center justify-center text-white active:scale-90 hover:scale-105 transition-transform cursor-pointer relative"
-          aria-label="Buka Keranjang Belanja"
+          aria-label="Lihat Semua Pilihan Produk & Mulai Belanja"
+          title="Semua Pilihan Produk"
         >
           <ShoppingCart className="w-[22px] h-[22px] text-white stroke-[2.2]" />
           {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md border-2 border-[#123829] animate-scaleIn">
+            <span className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 bg-[#123829] text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-md border-2 border-[#47C98E] animate-scaleIn">
               {totalItems > 99 ? "99+" : totalItems}
             </span>
           )}
-        </button>
+        </Link>
       </div>
 
       {/* 4. Wishlist / Favorit */}
@@ -107,7 +106,6 @@ export default function MobileBottomNav() {
             isGallery ? "text-[#47C98E]" : "text-white/70 group-hover:text-white"
           }`}
         />
-        {isGallery && <span className="w-1.5 h-1.5 rounded-full bg-[#47C98E] mt-1 shadow-[0_0_8px_#47C98E]" />}
       </Link>
     </nav>
   );
