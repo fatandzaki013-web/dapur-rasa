@@ -573,7 +573,7 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: BAR FILTER KATEGORI (Setengah Atas Putih, Bawah Hijau, Shadow Bawah) */}
+        {/* SECTION 3: BAR FILTER KATEGORI (Gradasi Halus & Shadow Hijau Bergradasi) */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
           <div className="py-4 px-1 flex items-center justify-between sm:justify-center gap-2.5 sm:gap-4 md:gap-5 overflow-x-auto scrollbar-none">
@@ -585,48 +585,36 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[66px] sm:min-w-[88px] md:min-w-[136px] h-[90px] sm:h-[98px] md:h-[106px] rounded-[22px] sm:rounded-[26px] md:rounded-[30px] overflow-hidden flex flex-col justify-between cursor-pointer transition-all duration-300 active:scale-95 shrink-0 ${
+                  className={`group relative min-w-[66px] sm:min-w-[88px] md:min-w-[136px] h-[88px] sm:h-[96px] md:h-[104px] rounded-[22px] sm:rounded-[26px] md:rounded-[30px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 active:scale-95 shrink-0 px-2 sm:px-4 ${
                     isActive
-                      ? "border-2 border-[#123829] shadow-[0_14px_22px_-6px_rgba(18,56,41,0.55),0_10px_16px_-6px_rgba(46,158,107,0.45)] -translate-y-1 scale-[1.03]"
-                      : "border-2 border-[#D5EADF] hover:border-[#2E9E6B] shadow-[0_12px_18px_-6px_rgba(46,158,107,0.32)] hover:shadow-[0_16px_22px_-6px_rgba(46,158,107,0.48)] hover:-translate-y-1"
+                      ? "bg-gradient-to-t from-[#123829] via-[#164332] to-[#1F543F] text-white border-2 border-[#47C98E] shadow-[0_8px_12px_-3px_rgba(18,56,41,0.35),0_18px_24px_-6px_rgba(46,158,107,0.45),0_26px_34px_-10px_rgba(46,158,107,0.3)] -translate-y-1 scale-[1.03]"
+                      : "bg-gradient-to-t from-[#D5EADF] via-[#E8F5EE] via-60% to-white border-2 border-[#D5EADF] hover:border-[#2E9E6B] text-[#111915] shadow-[0_6px_10px_-2px_rgba(46,158,107,0.14),0_14px_18px_-4px_rgba(46,158,107,0.26),0_22px_28px_-8px_rgba(46,158,107,0.18)] hover:shadow-[0_8px_12px_-2px_rgba(46,158,107,0.2),0_18px_24px_-4px_rgba(46,158,107,0.38),0_28px_36px_-8px_rgba(46,158,107,0.28)] hover:-translate-y-1 hover:scale-102"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
                 >
-                  {/* Setengah Keatas: PUTIH */}
-                  <div className="w-full flex-1 bg-white flex items-center justify-center pt-2 sm:pt-2.5 pb-1">
-                    <IconComponent
-                      className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 ${
-                        isActive
-                          ? "text-[#123829] scale-110 stroke-[2.4]"
-                          : "text-[#2E9E6B] stroke-[2.2]"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Setengah Kebawah: HIJAU */}
-                  <div
-                    className={`w-full py-1.5 sm:py-2 px-1 flex flex-col items-center justify-center transition-colors duration-300 ${
+                  <IconComponent
+                    className={`w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 ${
                       isActive
-                        ? "bg-[#123829] border-t border-[#123829]"
-                        : "bg-gradient-to-b from-[#E8F5EE] to-[#D5EADF] border-t border-[#D5EADF]/80"
+                        ? "text-[#47C98E] scale-110 stroke-[2.4]"
+                        : "text-[#2E9E6B] stroke-[2.2] group-hover:scale-110"
+                    }`}
+                  />
+
+                  <span
+                    className={`text-[0.74rem] sm:text-xs md:text-sm font-extrabold leading-tight ${
+                      isActive ? "text-white tracking-wide" : "text-[#111915]"
                     }`}
                   >
-                    <span
-                      className={`text-[0.74rem] sm:text-xs md:text-sm font-extrabold leading-tight ${
-                        isActive ? "text-white tracking-wide" : "text-[#111915]"
-                      }`}
-                    >
-                      {cat.name}
-                    </span>
+                    {cat.name}
+                  </span>
 
-                    <span
-                      className={`text-[9px] sm:text-[10px] md:text-[11px] leading-tight mt-0.5 ${
-                        isActive ? "text-[#47C98E] font-bold" : "text-[#2E9E6B] font-semibold"
-                      }`}
-                    >
-                      {cat.desc}
-                    </span>
-                  </div>
+                  <span
+                    className={`text-[9px] sm:text-[10px] md:text-[11px] leading-tight ${
+                      isActive ? "text-[#47C98E] font-bold" : "text-[#2E9E6B] font-semibold"
+                    }`}
+                  >
+                    {cat.desc}
+                  </span>
                 </button>
               );
             })}
