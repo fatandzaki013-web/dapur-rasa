@@ -512,62 +512,71 @@ export default function HomePage() {
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 2: 3 FITUR UNGGULAN (Trust Badges Mobile-Optimized)     */}
+        {/* SECTION 2: 3 FITUR UNGGULAN (Soft Rounded Cards Aesthetic)       */}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="grid grid-cols-3 gap-2 sm:gap-6">
-            {/* Fitur 1: Ambil di Toko / Antar Griya Cileungsi 5 */}
-            <div className="bg-[#E8F5EE]/70 border border-[#D5EADF] p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-card transition-all duration-300">
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-[#D5EADF]">
-                <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-[#123829]" />
+          <div className="grid grid-cols-3 gap-2.5 sm:gap-5 lg:gap-6">
+            {/* Card 1: Ambil di Toko / Antar Griya Cileungsi 5 */}
+            <div className="group relative bg-gradient-to-br from-white via-[#E8F5EE]/50 to-[#E8F5EE] border-2 border-[#D5EADF] hover:border-[#2E9E6B]/60 p-3 sm:p-5 lg:p-6 rounded-[20px] sm:rounded-[26px] shadow-[0_8px_24px_-6px_rgba(18,56,41,0.1)] hover:shadow-[0_16px_32px_-6px_rgba(46,158,107,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-[14px] sm:rounded-[16px] bg-gradient-to-br from-[#123829] to-[#1A4D39] text-[#47C98E] flex items-center justify-center shrink-0 shadow-[0_6px_16px_rgba(18,56,41,0.28)] border border-[#47C98E]/30 group-hover:scale-105 transition-transform duration-300">
+                <MapPin className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
               <div className="space-y-0.5 sm:space-y-1 min-w-0">
-                <h3 className="font-bold text-[10.5px] sm:text-base text-[#111915] leading-tight">
+                <h3 className="font-heading font-extrabold text-[11px] sm:text-base text-[#111915] leading-snug tracking-tight">
                   Ambil / Antar Griya 5
                 </h3>
-                <p className="text-[11px] sm:text-sm text-[#687871] leading-relaxed hidden sm:block">
+                <p className="text-[11px] sm:text-xs text-[#687871] leading-relaxed hidden sm:block">
                   Pilih kue favorit Anda, ambil langsung di dapur atau diantar khusus area Perum Griya Cileungsi 5.
                 </p>
+                <span className="sm:hidden inline-block text-[9px] font-bold text-[#2E9E6B] bg-[#E8F5EE] px-2 py-0.5 rounded-full border border-[#D5EADF]">
+                  Area Griya 5
+                </span>
               </div>
             </div>
 
-            {/* Fitur 2: 100% Halal & Higienis */}
-            <div className="bg-[#E8F5EE]/70 border border-[#D5EADF] p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-card transition-all duration-300">
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-[#D5EADF]">
-                <ShieldCheck className="w-4 h-4 sm:w-6 sm:h-6 text-[#2E9E6B]" />
+            {/* Card 2: 100% Halal & Higienis */}
+            <div className="group relative bg-gradient-to-br from-white via-[#E8F5EE]/50 to-[#E8F5EE] border-2 border-[#D5EADF] hover:border-[#2E9E6B]/60 p-3 sm:p-5 lg:p-6 rounded-[20px] sm:rounded-[26px] shadow-[0_8px_24px_-6px_rgba(18,56,41,0.1)] hover:shadow-[0_16px_32px_-6px_rgba(46,158,107,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-[14px] sm:rounded-[16px] bg-gradient-to-br from-[#2E9E6B] to-[#47C98E] text-white flex items-center justify-center shrink-0 shadow-[0_6px_16px_rgba(46,158,107,0.35)] group-hover:scale-105 transition-transform duration-300">
+                <ShieldCheck className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
               <div className="space-y-0.5 sm:space-y-1 min-w-0">
-                <h3 className="font-bold text-[10.5px] sm:text-base text-[#111915] leading-tight">
+                <h3 className="font-heading font-extrabold text-[11px] sm:text-base text-[#111915] leading-snug tracking-tight">
                   100% Halal &amp; Higienis
                 </h3>
-                <p className="text-[11px] sm:text-sm text-[#687871] leading-relaxed hidden sm:block">
+                <p className="text-[11px] sm:text-xs text-[#687871] leading-relaxed hidden sm:block">
                   Seluruh olahan kue dibuat higienis dengan bahan segar berkualitas tanpa bahan pengawet berbahaya.
                 </p>
+                <span className="sm:hidden inline-block text-[9px] font-bold text-[#2E9E6B] bg-[#E8F5EE] px-2 py-0.5 rounded-full border border-[#D5EADF]">
+                  Bahan Segar
+                </span>
               </div>
             </div>
 
-            {/* Fitur 3: Kualitas & Rasa Terbaik */}
-            <div className="bg-[#E8F5EE]/70 border border-[#D5EADF] p-2.5 sm:p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center sm:items-start gap-1.5 sm:gap-3.5 text-center sm:text-left hover:shadow-card transition-all duration-300">
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-xs border border-[#D5EADF]">
-                <Award className="w-4 h-4 sm:w-6 sm:h-6 text-[#2E9E6B]" />
+            {/* Card 3: Kualitas & Rasa Terbaik */}
+            <div className="group relative bg-gradient-to-br from-white via-[#E8F5EE]/50 to-[#E8F5EE] border-2 border-[#D5EADF] hover:border-[#2E9E6B]/60 p-3 sm:p-5 lg:p-6 rounded-[20px] sm:rounded-[26px] shadow-[0_8px_24px_-6px_rgba(18,56,41,0.1)] hover:shadow-[0_16px_32px_-6px_rgba(46,158,107,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-4 text-center sm:text-left">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-[14px] sm:rounded-[16px] bg-gradient-to-br from-[#123829] via-[#1A4D39] to-[#2E9E6B] text-[#47C98E] flex items-center justify-center shrink-0 shadow-[0_6px_16px_rgba(18,56,41,0.28)] border border-[#47C98E]/30 group-hover:scale-105 transition-transform duration-300">
+                <Award className="w-4 h-4 sm:w-6 sm:h-6" />
               </div>
               <div className="space-y-0.5 sm:space-y-1 min-w-0">
-                <h3 className="font-bold text-[10.5px] sm:text-base text-[#111915] leading-tight">
+                <h3 className="font-heading font-extrabold text-[11px] sm:text-base text-[#111915] leading-snug tracking-tight">
                   Kualitas &amp; Rasa
                 </h3>
-                <p className="text-[11px] sm:text-sm text-[#687871] leading-relaxed hidden sm:block">
+                <p className="text-[11px] sm:text-xs text-[#687871] leading-relaxed hidden sm:block">
                   Dibuat fresh setiap hari dengan resep autentik rumahan untuk cita rasa istimewa terjangkau.
                 </p>
+                <span className="sm:hidden inline-block text-[9px] font-bold text-[#2E9E6B] bg-[#E8F5EE] px-2 py-0.5 rounded-full border border-[#D5EADF]">
+                  Resep Autentik
+                </span>
               </div>
             </div>
           </div>
         </section>
 
         {/* ============================================================== */}
-        {/* SECTION 3: BAR FILTER KATEGORI (Kapsul Vertikal & Board Desktop) */}
+        {/* SECTION 3: BAR FILTER KATEGORI (5 Kapsul Berwarna & Shadow Tema)*/}
         {/* ============================================================== */}
         <section className="mx-auto max-w-7xl px-2.5 sm:px-6">
-          <div className="py-1 flex items-center justify-between sm:justify-center gap-2 sm:gap-3.5 md:gap-4 overflow-x-auto scrollbar-none">
+          <div className="py-3 px-1 flex items-center justify-between sm:justify-center gap-2.5 sm:gap-4 md:gap-5 overflow-x-auto scrollbar-none">
             {categoryCapsules.map((cat) => {
               const IconComponent = cat.icon;
               const isActive = selectedCategory === cat.slug;
@@ -576,26 +585,40 @@ export default function HomePage() {
                   key={cat.name}
                   type="button"
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`min-w-[64px] sm:min-w-[80px] md:min-w-[130px] h-[82px] sm:h-[88px] md:h-[94px] rounded-[24px] sm:rounded-[28px] md:rounded-[30px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 active:scale-95 shrink-0 px-2 sm:px-4 ${
+                  className={`min-w-[66px] sm:min-w-[88px] md:min-w-[136px] h-[86px] sm:h-[94px] md:h-[102px] rounded-[24px] sm:rounded-[28px] md:rounded-[32px] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-300 active:scale-95 shrink-0 px-2 sm:px-4 ${
                     isActive
-                      ? "bg-[#123829] text-white shadow-[0_10px_24px_-4px_rgba(18,56,41,0.38)] scale-102"
-                      : "bg-[#F2F7F4] hover:bg-[#E8F5EE] border border-[#D5EADF] text-[#111915] hover:scale-102 hover:border-[#47C98E]/50"
+                      ? "bg-gradient-to-b from-[#123829] via-[#164332] to-[#123829] text-white border-2 border-[#47C98E] shadow-[0_14px_30px_-4px_rgba(18,56,41,0.5),0_6px_16px_rgba(46,158,107,0.38)] -translate-y-1 scale-[1.03]"
+                      : "bg-gradient-to-b from-white via-[#E8F5EE] to-[#DCEEE5] border-2 border-[#D5EADF] hover:border-[#2E9E6B] text-[#111915] shadow-[0_8px_20px_-4px_rgba(46,158,107,0.22),0_3px_8px_rgba(18,56,41,0.08)] hover:shadow-[0_14px_28px_-4px_rgba(46,158,107,0.36),0_4px_12px_rgba(18,56,41,0.12)] hover:-translate-y-1 hover:scale-102"
                   }`}
                   aria-label={`Kategori ${cat.name}`}
                 >
-                  <IconComponent
-                    className={`w-5 h-5 md:w-6 md:h-6 transition-transform ${
-                      isActive ? "text-white scale-110" : "text-[#111915] stroke-[1.8]"
+                  <div
+                    className={`w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      isActive
+                        ? "bg-white/15 text-[#47C98E] shadow-inner"
+                        : "bg-white text-[#2E9E6B] shadow-xs border border-[#D5EADF]"
                     }`}
-                  />
+                  >
+                    <IconComponent
+                      className={`w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 transition-transform duration-300 ${
+                        isActive ? "scale-110 stroke-[2.2]" : "stroke-[2.2]"
+                      }`}
+                    />
+                  </div>
+
                   <span
-                    className={`text-[0.72rem] md:text-xs leading-none ${
-                      isActive ? "font-bold text-white tracking-wide" : "font-semibold text-[#687871]"
+                    className={`text-[0.74rem] sm:text-xs md:text-sm leading-none ${
+                      isActive ? "font-extrabold text-white tracking-wide" : "font-extrabold text-[#111915]"
                     }`}
                   >
                     {cat.name}
                   </span>
-                  <span className="hidden md:block text-[10px] text-[#687871] font-normal">
+
+                  <span
+                    className={`text-[9px] sm:text-[10px] md:text-[11px] leading-none ${
+                      isActive ? "text-[#47C98E] font-bold" : "text-[#2E9E6B] font-semibold"
+                    }`}
+                  >
                     {cat.desc}
                   </span>
                 </button>
